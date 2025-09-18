@@ -1,0 +1,118 @@
+<div class="dialog-header">
+  <h2>
+    {{ data?.readOnly ? '👀 Ver Paciente' : (data?.patient ? '✏️ Editar Paciente' : '➕ Nuevo Paciente') }}
+  </h2>
+  <button class="close-btn" (click)="cerrar()" aria-label="Cerrar">✖</button>
+</div>
+
+<!-- Barra de navegación -->
+<div class="nav-tabs">
+  <button type="button" (click)="scrollTo('info-basica')">🧾 Info Básica</button>
+  <button type="button" (click)="scrollTo('contacto')">📞 Contacto</button>
+  <button type="button" (click)="scrollTo('salud')">⚕️ Salud</button>
+  <button type="button" (click)="scrollTo('otros')">📂Otros</button>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" class="dialog-form">
+  <!-- sección 1 -->
+  <h3 id="info-basica">Información Básica</h3>
+  <div class="form-row">
+    <div class="form-field">
+      <label>Tipo Doc</label>
+      <input type="text" formControlName="tipo_doc" />
+    </div>
+    <div class="form-field">
+      <label>Número Doc</label>
+      <input type="text" formControlName="num_doc" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label>Nombre</label>
+      <input type="text" formControlName="nombre" />
+    </div>
+    <div class="form-field">
+      <label>Apellido</label>
+      <input type="text" formControlName="apellido" />
+    </div>
+  </div>
+
+  <!-- sección 2 -->
+  <h3 id="contacto">Contacto</h3>
+  <div class="form-row">
+    <div class="form-field">
+      <label>Dirección</label>
+      <input type="text" formControlName="direccion" />
+    </div>
+    <div class="form-field">
+      <label>Teléfono</label>
+      <input type="text" formControlName="telefono" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label>Teléfono secundario</label>
+      <input type="text" formControlName="telefono_secundario" />
+    </div>
+    <div class="form-field">
+      <label>Email</label>
+      <input type="email" formControlName="email" />
+    </div>
+  </div>
+
+  <!-- sección 3 -->
+  <h3 id="salud">Datos de Salud</h3>
+  <div class="form-row">
+    <div class="form-field">
+      <label>Fecha nacimiento</label>
+      <input type="date" formControlName="fecha_nacimiento" />
+    </div>
+    <div class="form-field">
+      <label>Género</label>
+      <input type="text" formControlName="genero" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label>Ocupación</label>
+      <input type="text" formControlName="ocupacion" />
+    </div>
+    <div class="form-field">
+      <label>EPS</label>
+      <input type="text" formControlName="eps" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label>Régimen</label>
+      <input type="text" formControlName="regimen" />
+    </div>
+    <div class="form-field">
+      <label>Modalidad deportiva</label>
+      <input type="text" formControlName="modalidad_deportiva" />
+    </div>
+  </div>
+
+  <!-- sección 4 -->
+  <h3 id="otros">Otros</h3>
+  <div class="form-row">
+    <div class="form-field">
+      <label>Red de apoyo</label>
+      <input type="text" formControlName="red_apoyo" />
+    </div>
+    <div class="form-field">
+      <label>Antecedentes</label>
+      <textarea formControlName="antecedentes"></textarea>
+    </div>
+  </div>
+
+  <!-- acciones -->
+  <div class="acciones" *ngIf="!data?.readOnly">
+    <button type="submit" class="btn btn-primary">💾 Guardar</button>
+    <button type="button" class="btn btn-cancel" (click)="cerrar()">✖ Cancelar</button>
+  </div>
+</form>
