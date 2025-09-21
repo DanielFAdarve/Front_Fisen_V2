@@ -4,8 +4,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { Cie10DataService } from '../../services/cie10-data-service';
-import { Cie10 } from '../../models/cie10';
+import { Cie10DataService } from '../services/cie10-data-service';
+import { Cie10 } from '../models/cie10';
 
 @Component({
   selector: 'app-cie10',

@@ -1,0 +1,53 @@
+<div class="dialog-header">
+  <h2>
+    {{ data?.readOnly ? '👀 Ver Cita' : (data?.appointment ? '✏️ Editar Cita' : '➕ Nueva Cita') }}
+  </h2>
+  <button class="close-btn" (click)="cerrar()" aria-label="Cerrar">✖</button>
+</div>
+
+<!-- Barra de navegación -->
+<div class="nav-tabs">
+  <button type="button" (click)="scrollTo('info-basica')">🧾 Info Básica</button>
+  <button type="button" (click)="scrollTo('detalles')">📋 Detalles</button>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" class="dialog-form">
+  <!-- sección 1 -->
+  <h3 id="info-basica">Información Básica</h3>
+  <div class="form-row">
+    <div class="form-field">
+      <label>Fecha Agendamiento</label>
+      <input type="date" formControlName="fecha_agendamiento" />
+    </div>
+    <div class="form-field">
+      <label>Número Sesión</label>
+      <input type="number" formControlName="numero_sesion" />
+    </div>
+  </div>
+
+  <!-- sección 2 -->
+  <h3 id="detalles">Detalles</h3>
+  <div class="form-row">
+    <div class="form-field">
+      <label>Motivo</label>
+      <textarea formControlName="motivo"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label>ID Profesional</label>
+      <input type="number" formControlName="id_profesional" />
+    </div>
+    <div class="form-field">
+      <label>ID Paquete</label>
+      <input type="number" formControlName="id_paquetes" />
+    </div>
+  </div>
+
+  <!-- acciones -->
+  <div class="acciones" *ngIf="!data?.readOnly">
+    <button type="submit" class="btn btn-primary">💾 Guardar</button>
+    <button type="button" class="btn btn-cancel" (click)="cerrar()">✖ Cancelar</button>
+  </div>
+</form>
