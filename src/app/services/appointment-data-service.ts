@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentDataService {
-  private apiBaseUrl = 'http://localhost:3000/appointments';
+  private apiBaseUrl = 'http://localhost:3000/appointment';
 
   private _appointments = signal<Appointment[]>([]);
   appointments = this._appointments.asReadonly();
@@ -19,6 +19,7 @@ export class AppointmentDataService {
 
   constructor(private http: HttpClient) {}
 
+  // ✅ Obtener todas las citas
   getAppointments(): void {
     this.loading.set(true);
     this.http.get<ApiResponse<Appointment[]>>(`${this.apiBaseUrl}/get-appointments`).subscribe({
@@ -26,39 +27,62 @@ export class AppointmentDataService {
         this._appointments.set(data.response || []);
         this.errorMessage.set(null);
       },
-      error: () => this.errorMessage.set('❌ Error cargando citas'),
+      error: (err) => {
+        console.error('Error cargando citas', err);
+        this.errorMessage.set('❌ Error cargando citas');
+      },
       complete: () => this.loading.set(false)
     });
   }
 
+  // ✅ Obtener cita por ID
   getAppointmentById(id: number) {
     return this.http.get<ApiResponse<Appointment>>(`${this.apiBaseUrl}/get-appointment/${id}`);
   }
 
+  // ✅ Crear nueva cita
   createAppointment(newAppointment: Appointment): void {
     this.loading.set(true);
     this.http.post<ApiResponse<Appointment>>(`${this.apiBaseUrl}/create-appointment`, newAppointment).subscribe({
-      next: (res) => this._appointments.update(cur => [...cur, res.response]),
-      error: () => this.errorMessage.set('❌ No se pudo crear la cita'),
+      next: (res) => {
+        this._appointments.update(current => [...current, res.response]);
+        this.errorMessage.set(null);
+      },
+      error: (err) => {
+        console.error('Error creando cita', err);
+        this.errorMessage.set('❌ No se pudo crear la cita');
+      },
       complete: () => this.loading.set(false)
     });
   }
 
+  // ✅ Actualizar cita
   updateAppointment(id: number, data: Partial<Appointment>): void {
     this.loading.set(true);
     this.http.put<ApiResponse<Appointment>>(`${this.apiBaseUrl}/update-appointment/${id}`, data).subscribe({
-      next: (res) => this._appointments.update(cur => cur.map(a => a.id === id ? res.response : a)),
-      error: () => this.errorMessage.set('❌ No se pudo actualizar la cita'),
+      next: (res) => {
+        this._appointments.update(current =>
+          current.map(a => a.id === id ? res.response : a)
+        );
+        this.errorMessage.set(null);
+      },
+      error: (err) => {
+        console.error('Error actualizando cita', err);
+        this.errorMessage.set('❌ No se pudo actualizar la cita');
+      },
       complete: () => this.loading.set(false)
     });
   }
 
+  // ✅ Eliminar cita
   deleteAppointment(id: number): void {
     const current = this._appointments();
     this._appointments.set(current.filter(a => a.id !== id));
 
     this.http.delete<ApiResponse<null>>(`${this.apiBaseUrl}/delete-appointment/${id}`).subscribe({
-      error: () => {
+      next: () => this.errorMessage.set(null),
+      error: (err) => {
+        console.error('Error eliminando cita', err);
         this.errorMessage.set('❌ No se pudo eliminar la cita');
         this._appointments.set(current); // rollback
       }

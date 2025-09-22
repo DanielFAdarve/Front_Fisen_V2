@@ -1,0 +1,35 @@
+<div class="dialog-header">
+  <h2>
+    {{ data?.readOnly ? '👀 Ver Paquete' : (data?.package ? '✏️ Editar Paquete' : '➕ Nuevo Paquete') }}
+  </h2>
+  <button class="close-btn" (click)="cerrar()" aria-label="Cerrar">✖</button>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" class="dialog-form">
+  <h3>Datos del Paquete</h3>
+  <div class="form-row">
+    <div class="form-field">
+      <label>Nombre</label>
+      <input type="text" formControlName="nombre" />
+    </div>
+    <div class="form-field">
+      <label>Descripción</label>
+      <input type="text" formControlName="descripcion" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label>Estado</label>
+      <select formControlName="id_estado">
+        <option *ngFor="let e of estados()" [value]="e.id">{{ e.nombre }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- acciones -->
+  <div class="acciones" *ngIf="!data?.readOnly">
+    <button type="submit" class="btn btn-primary">💾 Guardar</button>
+    <button type="button" class="btn btn-cancel" (click)="cerrar()">✖ Cancelar</button>
+  </div>
+</form>
