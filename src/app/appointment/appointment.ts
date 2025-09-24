@@ -1,22 +1,22 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { AppointmentDataService } from '../services/appointment-data-service';
 import { Appointment } from '../models/appointment';
 import { AppointmentFormDialogComponent } from './appointment-form-dialog/appointment-form-dialog';
+import { SharedTableComponent } from '../shared/table/shared-table'; 
 
 @Component({
   selector: 'app-appointments',
   standalone: true,
   imports: [
     CommonModule,
-    MatTableModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    SharedTableComponent
   ],
   templateUrl: './appointment.html',
   styleUrls: ['./appointment.scss']
@@ -47,9 +47,10 @@ export class AppointmentsComponent implements OnInit {
     );
   });
 
+  // 👇 ya no incluimos "acciones", SharedTable se encarga
   displayedColumns: string[] = [
     'id', 'fecha_agendamiento', 'numero_sesion', 'motivo', 
-    'id_profesional', 'id_paquetes', 'acciones'
+    'id_profesional', 'id_paquetes'
   ];
 
   selectedAppointment = signal<Appointment | null>(null);

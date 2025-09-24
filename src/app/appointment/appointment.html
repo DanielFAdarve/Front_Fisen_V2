@@ -1,4 +1,4 @@
-<div class="contenedor">
+<!-- <div class="contenedor">
   <h2>📅 Citas</h2>
 
   <div class="acciones-bar">
@@ -70,4 +70,32 @@
   <div *ngIf="!loading() && filteredAppointments().length === 0" class="no-data">
     ⚠️ No hay citas registradas
   </div>
+</div> -->
+
+<div class="contenedor">
+  <h2>📅 Citas</h2>
+
+  <div class="acciones-bar">
+    <button mat-raised-button color="primary" (click)="nuevaCita()">
+      ➕ Nueva Cita
+    </button>
+
+    <input
+      type="text"
+      placeholder="🔍 Buscar"
+      [value]="filtro()"
+      (input)="filtro.set($any($event.target).value)"
+      class="input-filtro"
+    />
+  </div>
+
+  <app-shared-table
+    [dataSource]="filteredAppointments()"
+    [displayedColumns]="['id', 'fecha_agendamiento', 'numero_sesion', 'motivo', 'id_profesional', 'id_paquetes']"
+    [loading]="loading()"
+    [errorMessage]="errorMessage()"
+    (edit)="editarCita($event)"
+    (view)="seleccionar($event)"
+    (delete)="eliminar($event)">
+  </app-shared-table>
 </div>
