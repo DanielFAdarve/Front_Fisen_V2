@@ -19,7 +19,10 @@
   <div class="form-row">
     <div class="form-field">
       <label>Tipo Doc</label>
-      <input type="text" formControlName="tipo_doc" />
+      <select formControlName="tipo_doc">
+        <option value="" disabled>Seleccione...</option>
+        <option *ngFor="let tipo of tiposDocumento" [value]="tipo">{{ tipo }}</option>
+      </select>
     </div>
     <div class="form-field">
       <label>Número Doc</label>
@@ -41,27 +44,15 @@
   <!-- sección 2 -->
   <h3 id="contacto">Contacto</h3>
   <div class="form-row">
-    <div class="form-field">
-      <label>Dirección</label>
-      <input type="text" formControlName="direccion" />
-    </div>
-    <div class="form-field">
-      <label>Teléfono</label>
-      <input type="text" formControlName="telefono" />
-    </div>
+    <div class="form-field"> <label>Dirección</label> <input type="text" formControlName="direccion" /> </div>
+    <div class="form-field"> <label>Teléfono</label> <input type="text" formControlName="telefono" /> </div>
   </div>
-
   <div class="form-row">
-    <div class="form-field">
-      <label>Teléfono secundario</label>
-      <input type="text" formControlName="telefono_secundario" />
-    </div>
-    <div class="form-field">
-      <label>Email</label>
-      <input type="email" formControlName="email" />
-    </div>
+    <div class="form-field"> <label>Teléfono secundario</label> <input type="text"
+        formControlName="telefono_secundario" /> </div>
+    <div class="form-field"> <label>Email</label> <input type="email" formControlName="email" /> </div>
   </div>
-
+  
   <!-- sección 3 -->
   <h3 id="salud">Datos de Salud</h3>
   <div class="form-row">
@@ -71,7 +62,10 @@
     </div>
     <div class="form-field">
       <label>Género</label>
-      <input type="text" formControlName="genero" />
+      <select formControlName="genero">
+        <option value="" disabled>Seleccione...</option>
+        <option *ngFor="let g of generos" [value]="g">{{ g }}</option>
+      </select>
     </div>
   </div>
 
@@ -89,7 +83,10 @@
   <div class="form-row">
     <div class="form-field">
       <label>Régimen</label>
-      <input type="text" formControlName="regimen" />
+      <select formControlName="regimen">
+        <option value="" disabled>Seleccione...</option>
+        <option *ngFor="let r of regimenes" [value]="r">{{ r }}</option>
+      </select>
     </div>
     <div class="form-field">
       <label>Modalidad deportiva</label>
@@ -102,7 +99,10 @@
   <div class="form-row">
     <div class="form-field">
       <label>Red de apoyo</label>
-      <input type="text" formControlName="red_apoyo" />
+      <select formControlName="red_apoyo">
+        <option [ngValue]="true">Sí</option>
+        <option [ngValue]="false">No</option>
+      </select>
     </div>
     <div class="form-field">
       <label>Antecedentes</label>

@@ -17,12 +17,12 @@
     </thead>
     <tbody>
       <tr *ngFor="let p of packages()">
-        <td>{{ p.id }}</td>
+        <!-- <td>{{ p.id }}</td>
         <td>{{ p.nombre }}</td>
         <td>{{ p.descripcion }}</td>
         <td>
-          {{ getEstadoNombre(p.id_estado) }}
-        </td>
+          {{ getEstadoNombre(p.id_estado) }} -->
+        <!-- </td> -->
         <td>
           <button (click)="openDialog(p, true)">👀 Ver</button>
           <button (click)="openDialog(p)">✏️ Editar</button>

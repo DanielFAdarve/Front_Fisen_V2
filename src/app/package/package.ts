@@ -5,11 +5,12 @@ import { StatusPackageDataService } from '../services/status-package-data-servic
 import { Package } from '../models/package';
 import { StatusPackage } from '../models/status-package';
 import { PackageFormDialog } from './package-form-dialog/package-form-dialog';
-
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-package',
   templateUrl: './package.html',
-  styleUrls: ['./package.scss']
+  styleUrls: ['./package.scss'],
+  imports: [CommonModule]
 })
 export class PackageComponent implements OnInit {
   private packageService = inject(PackageDataService);
