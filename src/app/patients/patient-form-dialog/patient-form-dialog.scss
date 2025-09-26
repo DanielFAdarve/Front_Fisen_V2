@@ -1,5 +1,6 @@
 html {
-  scroll-behavior: smooth; /* scroll suave para anclas */
+  scroll-behavior: smooth;
+  /* Scroll suave para anclas */
 }
 
 /* ---------- CABECERA ---------- */
@@ -10,10 +11,11 @@ html {
   padding: 1rem 1.2rem;
   background: #f0fdfa;
   border-radius: 12px 12px 0 0;
+  border-bottom: 1px solid #b2dfdb;
 
   h2 {
     margin: 0;
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     color: #00796b;
     font-weight: 600;
   }
@@ -21,13 +23,14 @@ html {
   .close-btn {
     background: none;
     border: none;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     cursor: pointer;
     color: #555;
-    transition: color 0.3s;
+    transition: transform 0.25s ease, color 0.3s;
 
     &:hover {
       color: #d32f2f;
+      transform: rotate(90deg);
     }
   }
 }
@@ -36,66 +39,53 @@ html {
 ::ng-deep .mat-dialog-container {
   display: flex;
   flex-direction: column;
-  max-height: 90vh; /* altura máxima del modal */
-  padding: 0; /* eliminamos padding por defecto */
+  max-height: 90vh;
+  /* altura máxima del modal */
+  padding: 0;
+  /* quitamos padding por defecto */
   border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 /* ---------- MENÚ DE SECCIONES ---------- */
-// .nav-tabs {
-//   display: flex;
-//   gap: 1rem;
-//   padding: 0.8rem 1.2rem;
-//   background: #e0f7f4;
-//   border-bottom: 2px solid #b2dfdb;
-//   position: sticky;  /* se queda fijo arriba al hacer scroll */
-//   top: 0;
-//   z-index: 10;
-
-//   a {
-//     font-size: 0.9rem;
-//     font-weight: 500;
-//     color: #00796b;
-//     text-decoration: none;
-//     padding: 6px 12px;
-//     border-radius: 8px;
-//     transition: background 0.3s;
-
-//     &:hover {
-//       background: #b2dfdb;
-//     }
-//   }
-// }
-
 .nav-tabs {
   display: flex;
   gap: 0.8rem;
   padding: 0.8rem 1.2rem;
   background: #e0f7fa;
   border-bottom: 1px solid #b2ebf2;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 
   button {
     background: #26a69a;
     color: #fff;
     border: none;
-    border-radius: 6px;
-    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
     font-size: 0.85rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.3s, transform 0.2s;
 
     &:hover {
       background: #1e857c;
+      transform: scale(1.05);
+    }
+
+    &.active {
+      background: #00796b;
     }
   }
 }
 
-
 /* ---------- FORMULARIO ---------- */
 .dialog-form {
   flex: 1;
-  max-height: 70vh;   /* controla altura del área scroll */
+  max-height: 70vh;
+  /* controla altura del área scroll */
   overflow-y: auto;
   padding: 1.5rem;
   background: #fff;
@@ -106,7 +96,7 @@ html {
     font-weight: 600;
     color: #00796b;
     border-left: 4px solid #26a69a;
-    padding-left: 0.5rem;
+    padding-left: 0.6rem;
   }
 }
 
@@ -115,8 +105,13 @@ html {
   display: flex;
   gap: 1rem;
   margin-bottom: 1.2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
+/* ---------- CAMPOS ---------- */
 /* ---------- CAMPOS ---------- */
 .form-field {
   flex: 1;
@@ -131,16 +126,23 @@ html {
   }
 
   input,
-  textarea {
+  textarea,
+  select {
     padding: 10px 14px;
     border: 1px solid #ccc;
     border-radius: 12px;
     font-size: 0.95rem;
     transition: all 0.3s ease;
     outline: none;
+    background: #fafafa;
+    appearance: none;
+    /* quita el estilo nativo del navegador */
+    -webkit-appearance: none;
+    -moz-appearance: none;
 
     &:focus {
       border-color: #26a69a;
+      background: #fff;
       box-shadow: 0 0 6px rgba(38, 166, 154, 0.4);
     }
   }
@@ -148,6 +150,22 @@ html {
   textarea {
     min-height: 80px;
     resize: vertical;
+  }
+
+  /* ---------- SELECT ---------- */
+  select {
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 16px;
+    padding-right: 2.2rem;
+    /* espacio para la flecha */
+    cursor: pointer;
+
+    option {
+      color: #333;
+      background: #fff;
+    }
   }
 }
 
@@ -159,13 +177,17 @@ html {
   margin-top: 1.5rem;
 
   .btn {
-    padding: 0.6rem 1.2rem;
+    padding: 0.6rem 1.4rem;
     font-size: 0.95rem;
-    border-radius: 8px;
+    border-radius: 25px;
     font-weight: 500;
     cursor: pointer;
     border: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease, transform 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
   }
 
   .btn-primary {
