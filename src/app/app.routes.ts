@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { MainLayout } from './layout/main-layout/main-layout';
+import { LayoutComponent } from './layout/layout';
 import { PatientsComponent } from './patients/patients';
 import { PatientFormDialogComponent } from './patients/patient-form-dialog/patient-form-dialog';
 import { AppointmentsComponent } from './appointment/appointment';
@@ -8,7 +8,7 @@ import { AppointmentsComponent } from './appointment/appointment';
 export const routes: Routes = [
   {
     path: '',
-    component: MainLayout,
+    component: LayoutComponent,
     children: [
       // Pacientes
       { path: 'patients', component: PatientsComponent },

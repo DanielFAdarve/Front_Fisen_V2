@@ -1,91 +1,90 @@
-<div class="contenedor">
+<div class="page centered">
+  <div class="page-inner">
+    <div class="contenedor">
 
-  <h2>📋 Pacientes</h2>
+      <h2>📋 Pacientes</h2>
 
-  <!-- Barra de acciones -->
-  <div class="acciones-bar">
-  <button mat-raised-button color="primary" (click)="nuevoPaciente()">
-    ➕ Nuevo Paciente
-  </button>
+      <!-- Barra de acciones -->
+      <div class="acciones-bar">
+        <button mat-raised-button color="primary" (click)="nuevoPaciente()">
+          ➕ Nuevo Paciente
+        </button>
 
-  <!-- Input de búsqueda ligado a la signal 'filtro' -->
-  <input
-    type="text"
-    placeholder="🔍"
-    [value]="filtro()"
-    (input)="filtro.set($any($event.target).value)"
-    class="input-filtro"
-  />
-</div>
+        <!-- Input de búsqueda ligado a la signal 'filtro' -->
+        <input type="text" placeholder="🔍" [value]="filtro()" (input)="filtro.set($any($event.target).value)"
+          class="input-filtro" />
+      </div>
 
-  <!-- Loader -->
-  <div *ngIf="loading()" class="spinner">
-    <mat-spinner diameter="40"></mat-spinner>
-  </div>
+      <!-- Loader -->
+      <div *ngIf="loading()" class="spinner">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
 
-  <!-- Error -->
-  <div *ngIf="errorMessage()" class="error">
-    {{ errorMessage() }}
-  </div>
+      <!-- Error -->
+      <div *ngIf="errorMessage()" class="error">
+        {{ errorMessage() }}
+      </div>
 
-  <!-- Tabla SIEMPRE visible -->
-  <table mat-table [dataSource]="filteredPatients()" class="mat-elevation-z8">
-    <!-- columnas igual que antes -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef> ID </th>
-      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-    </ng-container>
+      <!-- Tabla SIEMPRE visible -->
+      <table mat-table [dataSource]="filteredPatients()" class="mat-elevation-z8">
+        <!-- columnas igual que antes -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
+          <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+        </ng-container>
 
-    <ng-container matColumnDef="tipo_doc">
-      <th mat-header-cell *matHeaderCellDef> Tipo Doc </th>
-      <td mat-cell *matCellDef="let element">{{ element.tipo_doc }}</td>
-    </ng-container>
+        <ng-container matColumnDef="tipo_doc">
+          <th mat-header-cell *matHeaderCellDef> Tipo Doc </th>
+          <td mat-cell *matCellDef="let element">{{ element.tipo_doc }}</td>
+        </ng-container>
 
-    <ng-container matColumnDef="num_doc">
-      <th mat-header-cell *matHeaderCellDef> Documento </th>
-      <td mat-cell *matCellDef="let element">{{ element.num_doc }}</td>
-    </ng-container>
+        <ng-container matColumnDef="num_doc">
+          <th mat-header-cell *matHeaderCellDef> Documento </th>
+          <td mat-cell *matCellDef="let element">{{ element.num_doc }}</td>
+        </ng-container>
 
-    <ng-container matColumnDef="nombre">
-      <th mat-header-cell *matHeaderCellDef> Nombre </th>
-      <td mat-cell *matCellDef="let element">{{ element.nombre }}</td>
-    </ng-container>
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef> Nombre </th>
+          <td mat-cell *matCellDef="let element">{{ element.nombre }}</td>
+        </ng-container>
 
-    <ng-container matColumnDef="apellido">
-      <th mat-header-cell *matHeaderCellDef> Apellido </th>
-      <td mat-cell *matCellDef="let element">{{ element.apellido }}</td>
-    </ng-container>
+        <ng-container matColumnDef="apellido">
+          <th mat-header-cell *matHeaderCellDef> Apellido </th>
+          <td mat-cell *matCellDef="let element">{{ element.apellido }}</td>
+        </ng-container>
 
-    <ng-container matColumnDef="telefono">
-      <th mat-header-cell *matHeaderCellDef> Teléfono </th>
-      <td mat-cell *matCellDef="let element">{{ element.telefono }}</td>
-    </ng-container>
+        <ng-container matColumnDef="telefono">
+          <th mat-header-cell *matHeaderCellDef> Teléfono </th>
+          <td mat-cell *matCellDef="let element">{{ element.telefono }}</td>
+        </ng-container>
 
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef> Email </th>
-      <td mat-cell *matCellDef="let element">{{ element.email }}</td>
-    </ng-container>
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+        </ng-container>
 
-    <ng-container matColumnDef="eps">
-      <th mat-header-cell *matHeaderCellDef> EPS </th>
-      <td mat-cell *matCellDef="let element">{{ element.eps }}</td>
-    </ng-container>
+        <ng-container matColumnDef="eps">
+          <th mat-header-cell *matHeaderCellDef> EPS </th>
+          <td mat-cell *matCellDef="let element">{{ element.eps }}</td>
+        </ng-container>
 
-    <ng-container matColumnDef="acciones">
-      <th mat-header-cell *matHeaderCellDef> Acciones </th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-raised-button color="accent" (click)="editarPaciente(element)">Editar</button>
-        <button mat-raised-button color="primary" (click)="seleccionar(element)">Ver</button>
-        <button mat-raised-button color="warn" (click)="eliminar(element.id)">Eliminar</button>
-      </td>
-    </ng-container>
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-raised-button color="accent" (click)="editarPaciente(element)">Editar</button>
+            <button mat-raised-button color="primary" (click)="seleccionar(element)">Ver</button>
+            <button mat-raised-button color="warn" (click)="eliminar(element.id)">Eliminar</button>
+          </td>
+        </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
 
-  <!-- Mensaje cuando no hay pacientes -->
-  <div *ngIf="!loading() && filteredPatients().length === 0" class="no-data">
-    ⚠️ No hay pacientes registrados
+      <!-- Mensaje cuando no hay pacientes -->
+      <div *ngIf="!loading() && filteredPatients().length === 0" class="no-data">
+        ⚠️ No hay pacientes registrados
+      </div>
+    </div>
   </div>
 </div>

@@ -1,0 +1,40 @@
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  .layout-body {
+    display: flex;
+    flex: 1;
+    background-color: #f7f9fa;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  app-header {
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .sidebar {
+    flex-shrink: 0;
+    height: calc(100vh - 60px);
+    transition: width 0.3s ease;
+    position: sticky;
+    // top: 60px; // para no quedar debajo del header
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+    transition: margin-left 0.3s ease, width 0.3s ease;
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+    background-color: #f9fbfb;
+
+    &.collapsed {
+      margin-left: -10px; // compensar el ancho reducido del sidebar
+    }
+  }
+}

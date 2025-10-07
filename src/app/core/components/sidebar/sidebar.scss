@@ -1,0 +1,113 @@
+.sidebar {
+  width: 250px;
+  background: linear-gradient(180deg, #2c9e95 0%, #8fcadb 100%);
+  color: white;
+  height: 100vh;
+  transition: width 0.3s ease, background 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 3px 0 8px rgba(0, 0, 0, 0.15);
+
+  &.collapsed {
+    width: 80px;
+    .label {
+      display: none;
+    }
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+
+    .brand {
+      font-size: 1.4rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+
+      &:hover {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  .menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .menu-item {
+      .menu-link,
+      .menu-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 0.9rem 1.2rem;
+        background: transparent;
+        color: #fff;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        i {
+          width: 24px;
+          text-align: center;
+        }
+
+        &:hover,
+        &.active {
+          background: rgba(255, 255, 255, 0.2);
+          padding-left: 1.5rem;
+        }
+      }
+
+      .submenu {
+        background: rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        animation: fadeInSub 0.3s ease;
+
+        a {
+          display: block;
+          padding: 0.6rem 2rem;
+          font-size: 0.9rem;
+          color: #eaf6f5;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+          }
+
+          &.active {
+            font-weight: 600;
+            color: #ffffff;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeInSub {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

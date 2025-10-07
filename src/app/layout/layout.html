@@ -1,0 +1,23 @@
+<!-- <div class="main-layout">
+  <app-sidebar [isCollapsed]="isSidebarCollapsed"></app-sidebar>
+  <div class="main-content">
+    <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div> -->
+<div class="layout-container">
+  <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+
+  <div class="layout-body">
+    <app-sidebar class="sidebar"
+      [isCollapsed]="isSidebarCollapsed"
+      [menuItems]="menuItems">
+    </app-sidebar>
+
+    <main class="main-content" [class.collapsed]="isSidebarCollapsed">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
