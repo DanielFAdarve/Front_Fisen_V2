@@ -9,6 +9,9 @@
     "test": "ng test",
     "serve:ssr:Front-Fisen": "node dist/Front-Fisen/server/server.mjs"
   },
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
