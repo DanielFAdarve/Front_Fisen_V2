@@ -5,8 +5,7 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay, withIncrementalHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
-// 👇 Importa esto:
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient,withFetch } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,7 +14,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay(), withIncrementalHydration()),
     provideAnimations(),
-    // 👇 Agrega este provider
-    provideHttpClient(),
+    provideHttpClient(withFetch()),
   ]
 };

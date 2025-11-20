@@ -3,32 +3,32 @@ import { LayoutComponent } from './layout/layout';
 import { PatientsComponent } from './patients/patients';
 import { PatientFormDialogComponent } from './patients/patient-form-dialog/patient-form-dialog';
 import { AppointmentsComponent } from './appointment/appointment';
-// ⚠️ Cuando tengas reportes, importas el componente o lo cargas con loadComponent
+import { authGuard } from './authentication/auth.guard';
 
 export const routes: Routes = [
+
+  // 🔹 LOGIN (no requiere token)
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./authentication/login/login.component').then(m => m.LoginComponent),
+  },
+
+  // 🔹 RUTAS INTERNAS PROTEGIDAS
   {
     path: '',
+    canActivate: [authGuard],     // 🔥 protege TODO lo que está dentro del layout
     component: LayoutComponent,
     children: [
-      // Pacientes
       { path: 'patients', component: PatientsComponent },
-      { path: 'patients/gestion', component: PatientFormDialogComponent },
-
-      // Citas
+      // { path: 'patients/gestion', component: PatientFormDialogComponent },
       { path: 'citas', component: AppointmentsComponent },
 
-      // Reportes (ejemplo con carga diferida)
-      // {
-      //   path: 'reportes',
-      // //   loadComponent: () =>
-      // //     import('./reports/reports').then(m => m.ReportsComponent)
-      // },
-
-      // Redirección por defecto
+      // Default interno
       { path: '', redirectTo: 'patients', pathMatch: 'full' }
     ]
   },
 
-  // Ruta wildcard: 404 o redirección
-  { path: '**', redirectTo: 'patients' }
+  // 🔹 Wildcard
+  { path: '**', redirectTo: 'login' }
 ];
