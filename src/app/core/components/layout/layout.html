@@ -1,0 +1,26 @@
+<div class="app-wrapper" [class.sidebar-collapsed]="isCollapsed">
+
+  <!-- Sidebar -->
+  <app-sidebar
+    class="sidebar-container"
+    [isCollapsed]="isCollapsed"
+    [menuItems]="menuItems"
+    [userRoles]="userRoles"
+    (toggle)="toggleSidebar()">
+  </app-sidebar>
+
+  <!-- Main -->
+  <div class="main-area">
+
+    <app-header
+      [isCollapsed]="isCollapsed"
+      (toggleSidebar)="toggleSidebar()">
+    </app-header>
+
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+
+</div>
