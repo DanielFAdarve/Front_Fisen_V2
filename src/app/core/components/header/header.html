@@ -1,6 +1,23 @@
-<header class="app-header">
-  <button class="menu-btn" (click)="onToggleSidebar()">
-    ☰
+<header class="header">
+
+  <button class="menu-btn" (click)="onToggleSidebar()" (mouseenter)="hovering = true" (mouseleave)="hovering = false">
+
+    <span class="material-icons">
+      {{
+
+      isCollapsed
+      ? (hovering ? 'menu' : 'chevron_right')
+
+
+      : (hovering ? 'chevron_left' : 'menu')
+      }}
+    </span>
+
   </button>
-  <h1 class="title">Centro de Fisioterapia Fysen</h1>
+
+  <div class="header-logo">
+    <img src="/assets/logo_700.webp" class="logo" />
+    <span class="brand">Fisen</span>
+  </div>
+
 </header>
