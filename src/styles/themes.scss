@@ -1,0 +1,41 @@
+/* theme.scss - paleta V3 */
+:root {
+    --color-primary: #21b3a3;
+    --color-primary-600: #1d928a;
+    --color-primary-300: #4fd9c7;
+
+    --bg-900: #040607;
+    --bg-800: #071013;
+
+    --glass-weak: rgba(255, 255, 255, 0.04);
+    --glass: rgba(255, 255, 255, 0.06);
+    --glass-strong: rgba(255, 255, 255, 0.12);
+
+    --white-soft: #e9f7f6;
+    --white-clean: #ffffff;
+
+    --muted: #9aa8a6;
+    --danger: #ef5b5b;
+}
+
+/* tipografías y utilidades pequeñas */
+:root {
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --space-sm: 0.6rem;
+    --space-md: 1rem;
+    --space-lg: 1.6rem;
+    --transition-fast: 180ms ease;
+    --transition-md: 300ms cubic-bezier(.2, .9, .3, 1);
+}
+
+/* pequeños helpers */
+.focus-ring {
+    outline: 3px solid rgba(33, 179, 163, 0.12);
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+
+
+// :root { --color-primary: #21b3a3; --color-primary-600: #1d928a; --color-primary-300: #4fd9c7; --bg-900: #040607; --bg-800: #071013; --glass-weak: rgba(255,255,255,0.04); --glass: rgba(255,255,255,0.06); --glass-strong: rgba(255,255,255,0.12); --white-soft: #e9f7f6; --white-clean: #ffffff; --muted: #9aa8a6; --danger: #ef5b5b; } /* tipografías y utilidades pequeñas */ :root { --radius-lg: 16px; --radius-md: 12px; --space-sm: 0.6rem; --space-md: 1rem; --space-lg: 1.6rem; --transition-fast: 180ms ease; --transition-md: 300ms cubic-bezier(.2,.9,.3,1); } /* pequeños helpers */ .focus-ring { outline: 3px solid rgba(33,179,163,0.12); outline-offset: 2px; border-radius: 8px; }
