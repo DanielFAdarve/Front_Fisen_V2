@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { LayoutComponent } from './layout/layout';
+import { LayoutComponent } from './core/components/layout/layout';
 import { PatientsComponent } from './patients/patients';
 import { PatientFormDialogComponent } from './patients/patient-form-dialog/patient-form-dialog';
 import { AppointmentsComponent } from './appointment/appointment';
@@ -17,11 +17,11 @@ export const routes: Routes = [
   // 🔹 RUTAS INTERNAS PROTEGIDAS
   {
     path: '',
-    canActivate: [authGuard],     // 🔥 protege TODO lo que está dentro del layout
+    canActivate: [authGuard],    
     component: LayoutComponent,
     children: [
       { path: 'patients', component: PatientsComponent },
-      // { path: 'patients/gestion', component: PatientFormDialogComponent },
+      { path: 'patients/gestion', component: PatientFormDialogComponent },
       { path: 'citas', component: AppointmentsComponent },
 
       // Default interno
