@@ -1,50 +1,40 @@
-<aside class="sidebar" role="navigation" aria-label="Menú lateral"
-       [class.collapsed]="isCollapsed"
-       [@sidebarState]="isCollapsed ? 'closed' : 'open'">
-
+<aside class="sidebar" [class.collapsed]="isCollapsed">
   <div class="sidebar-header">
-    <h2 *ngIf="!isCollapsed" class="brand">Fysen</h2>
-    <button class="toggle-btn" aria-label="Alternar barra lateral" (click)="toggle.emit()">☰</button>
+    <mat-icon class="header-icon">home</mat-icon>
   </div>
-
-  <nav>
-    <ul class="menu-list">
-      <ng-container *ngFor="let item of menuItems">
-        <li class="menu-item" *ngIf="canShow(item)">
-          <!-- Submenú -->
-          <ng-container *ngIf="item.children && item.children.length; else singleLink">
-            <button class="menu-btn"
-                    (click)="toggleSubmenu(item.label)"
-                    [attr.aria-expanded]="openSubmenu === item.label">
-              <i *ngIf="item.icon" class="{{ item.icon }}"></i>
-              <span class="label" *ngIf="!isCollapsed">{{ item.label }}</span>
-              <span class="spacer"></span>
-              <span class="badge" *ngIf="item.badge">{{ item.badge.text }}</span>
-            </button>
-
-            <ul class="submenu" [@submenu]="openSubmenu === item.label ? 'open' : 'closed'">
-              <li *ngFor="let child of item.children">
-                <a class="submenu-link" [routerLink]="child.route" routerLinkActive="active">
-                  <i *ngIf="child.icon" class="{{ child.icon }}"></i>
-                  <span>{{ child.label }}</span>
-                </a>
-              </li>
-            </ul>
-          </ng-container>
-
-          <!-- Sin submenú -->
-          <ng-template #singleLink>
-            <a *ngIf="!item.external" class="menu-link" [routerLink]="item.route" routerLinkActive="active">
-              <i *ngIf="item.icon" class="{{ item.icon }}"></i>
-              <span *ngIf="!isCollapsed">{{ item.label }}</span>
-            </a>
-            <a *ngIf="item.external" class="menu-link" [href]="item.route" target="_blank">
-              <i *ngIf="item.icon" class="{{ item.icon }}"></i>
-              <span *ngIf="!isCollapsed">{{ item.label }}</span>
-            </a>
-          </ng-template>
-        </li>
-      </ng-container>
+  <!-- Menú -->
+  <nav class="menu">
+    <ul>
+      <li *ngFor="let item of menuItems">
+        <a [routerLink]="item.route" routerLinkActive="active">
+          <!-- <span class="material-icons">{{ item.icon }}</span> -->
+          <span class="label" *ngIf="!isCollapsed">{{ item.label }}</span>
+        </a>
+      </li>
     </ul>
   </nav>
+
+  <!-- Separador flexible para empujar todo hacia arriba -->
+  <div class="spacer"></div>
+
+  <!-- Footer con logo + nombre + soporte -->
+  <div class="sidebar-footer">
+
+    <div class="footer-logo">
+      <img src="/assets/logo_700.webp" class="logo" />
+      <span class="brand" *ngIf="!isCollapsed">Fisen</span>
+    </div>
+
+    <div class="footer-links" *ngIf="!isCollapsed">
+      <a href="mailto:soporte@fisen.com" class="help-link">
+        Mesa de ayuda
+      </a>
+
+      <small class="copy">
+        © 2025 Fisen
+      </small>
+    </div>
+
+  </div>
+
 </aside>
