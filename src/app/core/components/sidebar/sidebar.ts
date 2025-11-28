@@ -1,39 +1,46 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MenuItem } from '../../../shared/models/menu-item';
+import { listStagger } from '../../../shared/animations/stagger';
+import { MatIconModule } from '@angular/material/icon'; 
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive,MatIconModule],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.scss'],
-  animations: [
-    trigger('submenu', [
-      state('closed', style({ height: '0px', opacity: 0, overflow: 'hidden' })),
-      state('open', style({ height: '*', opacity: 1 })),
-      transition('closed <=> open', animate('250ms ease-in-out')),
-    ]),
-    trigger('sidebarState', [
-      state('open', style({ transform: 'translateX(0)' })),
-      state('closed', style({ transform: 'translateX(-100%)' })),
-      transition('open <=> closed', animate('300ms ease-in-out')),
-    ])
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [listStagger]
 })
 export class SidebarComponent {
+
   @Input() isCollapsed = false;
-  @Input() menuItems: MenuItem[] = [];
-  @Input() userRoles: string[] = []; // pasar desde AuthService/parent
+  @Input() isMobileOpen = false;
+
+  @Input() menuItems: MenuItem[] | null = null;
+  @Input() userRoles: string[] = [];
+
   @Output() toggle = new EventEmitter<void>();
 
-  openSubmenu: string | null = null;
+  openSubmenu = signal<string | null>(null);
 
-  toggleSubmenu(label: string) {
-    this.openSubmenu = this.openSubmenu === label ? null : label;
+  toggleSub(label: string) {
+    this.openSubmenu.set(
+      this.openSubmenu() === label ? null : label
+    );
   }
+
+  trackByLabel(i: number, item: MenuItem) {
+    return item?.label || i;
+  }
+
+  // canShow(item: MenuItem) {
+
+  //   if (!item.roles) return true;
+  //   return item.roles.some(r => this.userRoles.includes(r));
+  // }
 
   canShow(item: MenuItem): boolean {
     if (!item || item.disabled) return false;
