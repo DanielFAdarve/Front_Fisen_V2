@@ -8,7 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { Appointment } from '../../models/appointment';
+
+import { Appointment } from '../../models/appointment_or';
+import { PROFESIONALES, PAQUETES } from '../../mock/mock-data';
 
 @Component({
   selector: 'app-appointment-form-dialog',
@@ -29,6 +31,10 @@ import { Appointment } from '../../models/appointment';
 export class AppointmentFormDialogComponent {
   form: FormGroup;
 
+  // listas disponibles para selects
+  profesionales = PROFESIONALES;
+  paquetes = PAQUETES;
+
   constructor(
     private fb: FormBuilder,
     @Optional() public dialogRef: MatDialogRef<AppointmentFormDialogComponent>,
@@ -37,12 +43,19 @@ export class AppointmentFormDialogComponent {
   ) {
     const a = data?.appointment ?? null;
 
+    // El formulario ahora maneja OBJETOS completos, no IDs
     this.form = this.fb.group({
       fecha_agendamiento: [a?.fecha_agendamiento || null, Validators.required],
       numero_sesion: [a?.numero_sesion || 1, [Validators.required, Validators.min(1)]],
       motivo: [a?.motivo || '', Validators.required],
-      id_profesional: [a?.id_profesional || null, Validators.required],
-      id_paquetes: [a?.id_paquetes || null, Validators.required]
+      profesional: [
+        a ? this.profesionales.find(p => p.id === a.id_profesional) || null : null,
+        Validators.required
+      ],
+      paquete: [
+        a ? this.paquetes.find(pa => pa.id === a.id_paquetes) || null : null,
+        Validators.required
+      ]
     });
 
     if (data?.readOnly) {
@@ -52,7 +65,18 @@ export class AppointmentFormDialogComponent {
 
   guardar() {
     if (this.form.valid) {
-      this.dialogRef?.close(this.form.getRawValue());
+      const raw = this.form.getRawValue();
+
+      // Convertir los objetos seleccionados a ID antes de enviar
+      const result = {
+        fecha_agendamiento: raw.fecha_agendamiento,
+        numero_sesion: raw.numero_sesion,
+        motivo: raw.motivo,
+        id_profesional: raw.profesional.id,
+        id_paquetes: raw.paquete.id
+      };
+
+      this.dialogRef?.close(result);
     }
   }
 

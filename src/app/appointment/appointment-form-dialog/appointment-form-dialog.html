@@ -14,11 +14,13 @@
 <form [formGroup]="form" (ngSubmit)="guardar()" class="dialog-form">
   <!-- sección 1 -->
   <h3 id="info-basica">Información Básica</h3>
+
   <div class="form-row">
     <div class="form-field">
       <label>Fecha Agendamiento</label>
       <input type="date" formControlName="fecha_agendamiento" />
     </div>
+
     <div class="form-field">
       <label>Número Sesión</label>
       <input type="number" formControlName="numero_sesion" />
@@ -27,6 +29,7 @@
 
   <!-- sección 2 -->
   <h3 id="detalles">Detalles</h3>
+
   <div class="form-row">
     <div class="form-field">
       <label>Motivo</label>
@@ -36,12 +39,21 @@
 
   <div class="form-row">
     <div class="form-field">
-      <label>ID Profesional</label>
-      <input type="number" formControlName="id_profesional" />
+      <label>Profesional</label>
+      <select formControlName="profesional">
+        <option *ngFor="let p of profesionales" [ngValue]="p">
+          {{ p.nombre }}
+        </option>
+      </select>
     </div>
+
     <div class="form-field">
-      <label>ID Paquete</label>
-      <input type="number" formControlName="id_paquetes" />
+      <label>Paquete</label>
+      <select formControlName="paquete">
+        <option *ngFor="let pa of paquetes" [ngValue]="pa">
+          {{ pa.nombre }}
+        </option>
+      </select>
     </div>
   </div>
 
