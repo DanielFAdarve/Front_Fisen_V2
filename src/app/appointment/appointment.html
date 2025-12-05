@@ -20,7 +20,6 @@
     [dataSource]="filteredAppointments()"
     [displayedColumns]="['id', 'fecha_agendamiento', 'numero_sesion', 'motivo', 'id_profesional', 'id_paquetes']"
     [loading]="loading()"
-    [errorMessage]="errorMessage()"
     (edit)="editarCita($event)"
     (view)="seleccionar($event)"
     (delete)="eliminar($event)">
