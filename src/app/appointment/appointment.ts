@@ -1,104 +1,77 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { AppointmentDataService } from '../services/appointment-data-service';
+import { PatientDataService } from '../services/patient-data-service';
 import { Appointment } from '../models/appointment';
-import { AppointmentFormDialogComponent } from './appointment-form-dialog/appointment-form-dialog';
-import { SharedTableComponent } from '../shared/table/shared-table'; 
+import { SharedTableComponent } from '../shared/table/shared-table';
 
 @Component({
   selector: 'app-appointments',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    MatDialogModule,
-    SharedTableComponent
-  ],
+  imports: [CommonModule, MatButtonModule, MatDialogModule,SharedTableComponent ],
   templateUrl: './appointment.html',
   styleUrls: ['./appointment.scss']
 })
 export class AppointmentsComponent implements OnInit {
-  private appointmentService = inject(AppointmentDataService);
+
+  private appointmentsService = inject(AppointmentDataService);
+  private patientService = inject(PatientDataService);
   private dialog = inject(MatDialog);
 
-  appointments = this.appointmentService.appointments;
-  loading = this.appointmentService.loading;
-  errorMessage = this.appointmentService.errorMessage;
+  appointments = this.appointmentsService.appointments;
+  loading = this.appointmentsService.loading;
+  errorMessage = this.appointmentsService.errorMessage;
 
-  filtro = signal<string>('');
+  filtro = signal('');
 
   filteredAppointments = computed(() => {
     const term = this.filtro().toLowerCase().trim();
     const list = this.appointments();
+
     if (!term) return list;
 
-    return list.filter((a: Appointment) =>
-      Object.values(a).some(val => {
-        if (val === null || val === undefined) return false;
-        if (val instanceof Date) {
-          return val.toISOString().toLowerCase().includes(term);
-        }
-        return String(val).toLowerCase().includes(term);
-      })
+    return list.filter((c) =>
+      Object.values(c).some((val: any) =>
+        val?.toString().toLowerCase().includes(term)
+      )
     );
   });
 
-  // 👇 ya no incluimos "acciones", SharedTable se encarga
-  displayedColumns: string[] = [
-    'id', 'fecha_agendamiento', 'numero_sesion', 'motivo', 
-    'id_profesional', 'id_paquetes'
+  displayedColumns = [
+    'id',
+    'id_paciente',
+    'fecha_agendamiento',
+    'numero_sesion',
+    'motivo',
+    'id_profesional',
+    'id_paquetes'
   ];
 
-  selectedAppointment = signal<Appointment | null>(null);
-
   ngOnInit(): void {
-    this.appointmentService.getAppointments();
+    // Primero cargar pacientes
+    this.patientService.getPatients();
+
+    // Cuando los pacientes ya están cargados, generamos citas
+    setTimeout(() => {
+      this.appointmentsService.seedAppointments();
+    }, 400);
   }
 
-  seleccionar(appointment: Appointment) {
-    this.selectedAppointment.set(appointment);
-    this.dialog.open(AppointmentFormDialogComponent, {
-      width: '800px',
-      maxWidth: '90vw',
-      data: { appointment, readOnly: true }
-    });
+  seleccionar(cita: Appointment) {
+    console.log("Ver cita", cita);
   }
 
   eliminar(id: number) {
-    if (confirm('¿Seguro que deseas eliminar esta cita?')) {
-      this.appointmentService.deleteAppointment(id);
-    }
+    this.appointmentsService.eliminarCita(id);
   }
 
   nuevaCita() {
-    const dialogRef = this.dialog.open(AppointmentFormDialogComponent, {
-      width: '800px',
-      maxWidth: '90vw',
-      data: { appointment: null }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.appointmentService.createAppointment(result);
-      }
-    });
+    console.log("Abrir diálogo crear cita");
   }
 
-  editarCita(appointment: Appointment) {
-    const dialogRef = this.dialog.open(AppointmentFormDialogComponent, {
-      width: '800px',
-      maxWidth: '90vw',
-      data: { appointment }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.appointmentService.updateAppointment(appointment.id, result);
-      }
-    });
+  editarCita(cita: Appointment) {
+    console.log("Editar cita", cita);
   }
 }
