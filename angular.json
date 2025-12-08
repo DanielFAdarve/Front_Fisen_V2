@@ -20,29 +20,21 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "outputPath": "dist/Front-Fisen",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public",
-                "output": "/"
-              },
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
-              }
+              { "glob": "**/*", "input": "public", "output": "/" },
+              { "glob": "**/*", "input": "src/assets", "output": "assets" }
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "server": "src/main.server.ts",
             "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "ssr": { "entry": "src/server.ts" }
           },
+
           "configurations": {
             "production": {
+              "outputMode": "static",
+              "prerender": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -60,11 +52,14 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "outputMode": "server"
             }
           },
+
           "defaultConfiguration": "production"
         },
+
         "serve": {
           "builder": "@angular/build:dev-server",
           "configurations": {
@@ -77,9 +72,20 @@
           },
           "defaultConfiguration": "development"
         },
+
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "/Front_Fisen_V2/",
+            "branch": "gh-pages",
+            "repo": "https://github.com/DanielFAdarve/Front_Fisen_V2.git"
+          }
+        },
+
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
         },
+
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
@@ -91,7 +97,5 @@
       }
     }
   },
-  "cli": {
-    "analytics": false
-  }
+  "cli": { "analytics": false }
 }
