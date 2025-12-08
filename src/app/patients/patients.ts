@@ -6,6 +6,8 @@ import { PatientDataService } from '../services/patient-data-service';
 import { Patient } from '../models/patient';
 import { PatientFormDialogComponent } from './patient-form-dialog/patient-form-dialog';
 import { SharedTableComponent } from '../shared/table/shared-table';
+import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog';
+
 
 @Component({
   selector: 'app-patients',
@@ -71,10 +73,38 @@ export class PatientsComponent implements OnInit {
     });
   }
 
+  // eliminar(id: number) {
+  //   if (confirm('¿Seguro que deseas eliminar este paciente?')) {
+  //     this.patientService.deletePatientData(id);
+  //   }
+  // }
+
   eliminar(id: number) {
-    if (confirm('¿Seguro que deseas eliminar este paciente?')) {
-      this.patientService.deletePatientData(id);
-    }
+    // const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    //   width: '450px',
+    //   data: {
+    //     title: 'Eliminar Paciente',
+    //     message: '¿Estás seguro? Esta acción no se puede deshacer.'
+    //   }
+    // });
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '480px',
+      maxWidth: '90vw',
+      height: 'auto',
+      maxHeight: '90vh',
+      panelClass: 'custom-dialog-container',
+      disableClose: true,
+      data: {
+        title: 'Eliminar Paciente',
+        message: '¿Estás seguro? Esta acción no se puede deshacer.'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.patientService.deletePatientData(id);
+      }
+    });
   }
 
   nuevoPaciente() {
