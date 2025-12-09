@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay, withIncrementalHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideHttpClient,withFetch } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
@@ -15,5 +15,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay(), withIncrementalHydration()),
     provideAnimations(),
     provideHttpClient(withFetch()),
+    provideNativeDateAdapter() 
   ]
 };
