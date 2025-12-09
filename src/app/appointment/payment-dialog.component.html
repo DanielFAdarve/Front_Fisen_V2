@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Pagar</h2>
+<mat-dialog-content [formGroup]="form">
+    <mat-form-field appearance="fill" class="full">
+        <mat-label>Valor</mat-label>
+        <input matInput formControlName="valor" type="number">
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill" class="full">
+        <mat-label>Método</mat-label>
+        <input matInput formControlName="metodo_pago">
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill" class="full">
+        <mat-label>Observación</mat-label>
+        <input matInput formControlName="observacion">
+    </mat-form-field>
+
+
+    <div class="error" *ngIf="error">{{ error }}</div>
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="busy">Pagar</button>
