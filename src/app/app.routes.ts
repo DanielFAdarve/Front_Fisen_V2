@@ -22,7 +22,8 @@ export const routes: Routes = [
     children: [
       { path: 'patients', component: PatientsComponent },
       { path: 'patients/gestion', component: PatientFormDialogComponent },
-      { path: 'citas', component: AppointmentsComponent },
+      // { path: 'citas', component: AppointmentsComponent },
+      { path: 'citas', loadComponent: () => import('./appointment/appointment').then(m => m.AppointmentsComponent) },
 
       // Default interno
       { path: '', redirectTo: 'patients', pathMatch: 'full' }
