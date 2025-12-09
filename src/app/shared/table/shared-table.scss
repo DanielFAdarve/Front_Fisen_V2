@@ -1,0 +1,27 @@
+.pay-btn {
+  background: #2ecc71;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+
+  mat-icon {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background: #27ae60;
+  }
+}
+
+.badge.paid {
+  background: #3498db;
+  color: white;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 8px;
+}

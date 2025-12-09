@@ -20,7 +20,8 @@ export class SharedTableComponent {
   @Output() edit = new EventEmitter<any>();
   @Output() view = new EventEmitter<any>();
   @Output() delete = new EventEmitter<number>();
-
+  @Output() pay = new EventEmitter<any>();
+  
   onEdit(row: any) {
     this.edit.emit(row);
   }

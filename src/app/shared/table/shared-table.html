@@ -28,7 +28,26 @@
       </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns.concat(['acciones'])"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns.concat(['acciones']);"></tr>
+    <ng-container matColumnDef="pagar">
+      <th mat-header-cell *matHeaderCellDef>Pagar</th>
+
+      <td mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!row.pagado; else yaPagado">
+          <button class="pay-btn" (click)="pay.emit(row)">
+            <mat-icon>payments</mat-icon>
+            Pagar
+          </button>
+        </ng-container>
+
+        <ng-template #yaPagado>
+          <span class="badge paid">Pagado</span>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns.concat(['acciones'])"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns.concat(['acciones']);"></tr> -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns.concat(['acciones','pagar'])"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns.concat(['acciones','pagar']);"></tr>
   </table>
 </div>
