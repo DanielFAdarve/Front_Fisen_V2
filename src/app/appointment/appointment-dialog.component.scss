@@ -1,0 +1,44 @@
+.row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.flex {
+    flex: 1;
+}
+
+.full {
+    width: 100%;
+}
+
+.error {
+    color: #b00020;
+    margin-top: 8px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.row {
+    display: flex;
+    gap: 16px;
+
+    mat-form-field {
+        flex: 1;
+    }
+}
+
+.full {
+    width: 100%;
+}
+
+.error {
+    color: red;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
