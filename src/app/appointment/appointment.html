@@ -1,4 +1,4 @@
-
+<!-- 
 <div class="contenedor">
   <h2>📅 Citas</h2>
 
@@ -23,5 +23,23 @@
     (edit)="editarCita($event)"
     (view)="seleccionar($event)"
     (delete)="eliminar($event)">
+  </app-shared-table>
+</div> -->
+
+<div class="contenedor">
+  <h2>📅 Citas</h2>
+
+
+  <div class="acciones-bar">
+    <button mat-raised-button color="primary" (click)="nuevaCita()">➕ Nueva Cita</button>
+
+
+    <input matInput placeholder="🔍 Buscar" [value]="filtro()" (input)="filtro.set($any($event.target).value)"
+      class="input-filtro" />
+  </div>
+
+
+  <app-shared-table [dataSource]="filteredAppointments()" [displayedColumns]="displayedColumns" [loading]="loading()"
+    (edit)="editarCita($event)" (view)="seleccionar($event)" (delete)="eliminar($event)" (pay)="pagarCita($event)">
   </app-shared-table>
 </div>
