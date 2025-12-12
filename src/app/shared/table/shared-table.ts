@@ -16,12 +16,20 @@ export class SharedTableComponent {
   @Input() displayedColumns: string[] = [];
   @Input() loading: boolean = false;
   @Input() errorMessage: string = '';
+  @Input() showPayColumn = false;
 
   @Output() edit = new EventEmitter<any>();
   @Output() view = new EventEmitter<any>();
   @Output() delete = new EventEmitter<number>();
   @Output() pay = new EventEmitter<any>();
-  
+
+
+  get finalColumns() {
+    return this.showPayColumn
+      ? this.displayedColumns.concat(['acciones', 'pagar'])
+      : this.displayedColumns.concat(['acciones']);
+  }
+
   onEdit(row: any) {
     this.edit.emit(row);
   }
