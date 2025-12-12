@@ -8,7 +8,7 @@ export class ProfessionalDataService {
     private http = inject(HttpClient);
     professionals = signal<Professional[]>([]);
     loading = signal(false);
-    base = `http://localhost:3000/professionals`;
+    base = `https://back-fisent.onrender.com/professionals`;
 
     async loadAll() {
         this.loading.set(true);

@@ -7,7 +7,7 @@ import { firstValueFrom } from 'rxjs';
 export class PaymentDataService {
 
     private http = inject(HttpClient);
-    base = `http://localhost:3000/payments`;
+    base = `https://back-fisent.onrender.com/payments`;
 
     async createPayment(payment: Payment) {
         const res = await firstValueFrom(

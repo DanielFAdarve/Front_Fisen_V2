@@ -9,7 +9,7 @@ export class PatientDataService {
     private http = inject(HttpClient);
     patients = signal<Patient[]>([]);
     loading = signal(false);
-    base = `http://localhost:3000/patient`;
+    base = `https://back-fisent.onrender.com/patient`;
 
     async getPatients() {
         this.loading.set(true);
