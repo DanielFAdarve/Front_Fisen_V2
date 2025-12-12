@@ -179,6 +179,19 @@ html {
   }
 }
 
+.form-field.invalid input,
+.form-field.invalid select,
+.form-field.invalid textarea {
+  border-color: #d32f2f !important;
+  background: #ffebee;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 0.75rem;
+  margin-top: 0.3rem;
+}
+
 /* ---------- BOTONES ---------- */
 .acciones {
   display: flex;

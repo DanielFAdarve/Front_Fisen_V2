@@ -14,58 +14,109 @@
 </div>
 
 <form [formGroup]="form" (ngSubmit)="guardar()" class="dialog-form">
+
   <!-- sección 1 -->
   <h3 id="info-basica">Información Básica</h3>
+
   <div class="form-row">
-    <div class="form-field">
+    <!-- Tipo Doc -->
+    <div class="form-field" 
+         [class.invalid]="form.get('tipo_doc')?.invalid && form.get('tipo_doc')?.touched">
       <label>Tipo Doc</label>
       <select formControlName="tipo_doc">
         <option value="" disabled>Seleccione...</option>
         <option *ngFor="let tipo of tiposDocumento" [value]="tipo">{{ tipo }}</option>
       </select>
+      <small class="error" *ngIf="form.get('tipo_doc')?.invalid && form.get('tipo_doc')?.touched">
+        Este campo es obligatorio
+      </small>
     </div>
-    <div class="form-field">
+
+    <!-- Número Doc -->
+    <div class="form-field" 
+         [class.invalid]="form.get('num_doc')?.invalid && form.get('num_doc')?.touched">
       <label>Número Doc</label>
       <input type="text" formControlName="num_doc" />
+      <small class="error" *ngIf="form.get('num_doc')?.invalid && form.get('num_doc')?.touched">
+        Este campo es obligatorio
+      </small>
     </div>
   </div>
 
   <div class="form-row">
-    <div class="form-field">
+    <!-- Nombre -->
+    <div class="form-field" 
+         [class.invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched">
       <label>Nombre</label>
       <input type="text" formControlName="nombre" />
+      <small class="error" *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+        Este campo es obligatorio
+      </small>
     </div>
-    <div class="form-field">
+
+    <!-- Apellido -->
+    <div class="form-field" 
+         [class.invalid]="form.get('apellido')?.invalid && form.get('apellido')?.touched">
       <label>Apellido</label>
       <input type="text" formControlName="apellido" />
+      <small class="error" *ngIf="form.get('apellido')?.invalid && form.get('apellido')?.touched">
+        Este campo es obligatorio
+      </small>
     </div>
   </div>
 
   <!-- sección 2 -->
   <h3 id="contacto">Contacto</h3>
+
   <div class="form-row">
-    <div class="form-field"> <label>Dirección</label> <input type="text" formControlName="direccion" /> </div>
-    <div class="form-field"> <label>Teléfono</label> <input type="text" formControlName="telefono" /> </div>
+    <div class="form-field">
+      <label>Dirección</label>
+      <input type="text" formControlName="direccion" />
+    </div>
+
+    <div class="form-field" 
+         [class.invalid]="form.get('telefono')?.invalid && form.get('telefono')?.touched">
+      <label>Teléfono</label>
+      <input type="text" formControlName="telefono" />
+      <small class="error" *ngIf="form.get('telefono')?.invalid && form.get('telefono')?.touched">
+        Este campo es obligatorio
+      </small>
+    </div>
   </div>
+
   <div class="form-row">
-    <div class="form-field"> <label>Teléfono secundario</label> <input type="text"
-        formControlName="telefono_secundario" /> </div>
-    <div class="form-field"> <label>Email</label> <input type="email" formControlName="email" /> </div>
+    <div class="form-field">
+      <label>Teléfono secundario</label>
+      <input type="text" formControlName="telefono_secundario" />
+    </div>
+
+    <div class="form-field">
+      <label>Email</label>
+      <input type="email" formControlName="email" />
+    </div>
   </div>
-  
+
   <!-- sección 3 -->
   <h3 id="salud">Datos de Salud</h3>
+
   <div class="form-row">
     <div class="form-field">
       <label>Fecha nacimiento</label>
       <input type="date" formControlName="fecha_nacimiento" />
     </div>
-    <div class="form-field">
+
+    <div class="form-field" 
+         [class.invalid]="form.get('genero')?.invalid && form.get('genero')?.touched">
       <label>Género</label>
       <select formControlName="genero">
         <option value="" disabled>Seleccione...</option>
-        <option *ngFor="let g of generos" [value]="g">{{ g }}</option>
+        <option *ngFor="let g of generos" [value]="g.value">
+          {{ g.label }}
+        </option>
       </select>
+      <small class="error" *ngIf="form.get('genero')?.invalid && form.get('genero')?.touched">
+        Este campo es obligatorio
+      </small>
     </div>
   </div>
 
@@ -81,13 +132,18 @@
   </div>
 
   <div class="form-row">
-    <div class="form-field">
+    <div class="form-field" 
+         [class.invalid]="form.get('regimen')?.invalid && form.get('regimen')?.touched">
       <label>Régimen</label>
       <select formControlName="regimen">
         <option value="" disabled>Seleccione...</option>
         <option *ngFor="let r of regimenes" [value]="r">{{ r }}</option>
       </select>
+      <small class="error" *ngIf="form.get('regimen')?.invalid && form.get('regimen')?.touched">
+        Este campo es obligatorio
+      </small>
     </div>
+
     <div class="form-field">
       <label>Modalidad deportiva</label>
       <input type="text" formControlName="modalidad_deportiva" />
@@ -96,6 +152,7 @@
 
   <!-- sección 4 -->
   <h3 id="otros">Otros</h3>
+
   <div class="form-row">
     <div class="form-field">
       <label>Red de apoyo</label>
@@ -104,6 +161,7 @@
         <option [ngValue]="false">No</option>
       </select>
     </div>
+
     <div class="form-field">
       <label>Antecedentes</label>
       <textarea formControlName="antecedentes"></textarea>
@@ -115,4 +173,5 @@
     <button type="submit" class="btn btn-primary">💾 Guardar</button>
     <button type="button" class="btn btn-cancel" (click)="cerrar()">✖ Cancelar</button>
   </div>
+
 </form>

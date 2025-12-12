@@ -88,7 +88,11 @@ export class PatientFormDialogComponent {
 
   // 👉 Arrays para alimentar los dropdowns
   tiposDocumento: string[] = ['CC', 'TI', 'RC', 'CE', 'PP', 'PT', 'PEP', 'SC'];
-  generos: string[] = ['Masculino', 'Femenino', 'Otro'];
+  generos = [
+    { label: 'Masculino', value: 'M' },
+    { label: 'Femenino', value: 'F' },
+    { label: 'Otro', value: 'O' }
+  ];
   regimenes: string[] = ['CONTRIBUTIVO', 'SUBSIDIADO', 'ESPECIAL', 'NO APLICA'];
 
   constructor(
@@ -107,7 +111,7 @@ export class PatientFormDialogComponent {
       direccion: [p?.direccion || ''],
       telefono: [p?.telefono || '', Validators.required],
       telefono_secundario: [p?.telefono_secundario || ''],
-      email: [p?.email || '', [Validators.required, Validators.email]],
+      email: [p?.email || ''],
       fecha_nacimiento: [p?.fecha_nacimiento || null],
       genero: [p?.genero || '', Validators.required],
       procedencia: [p?.procedencia || ''],
@@ -117,7 +121,9 @@ export class PatientFormDialogComponent {
       regimen: [p?.regimen || '', Validators.required],
       modalidad_deportiva: [p?.modalidad_deportiva || ''],
       red_apoyo: [p?.red_apoyo ?? false, Validators.required],
-      antecedentes: [p?.antecedentes || '']
+      antecedentes: [p?.antecedentes || ''],
+      estado: true
+
     });
 
     if (data?.readOnly) {
@@ -125,10 +131,19 @@ export class PatientFormDialogComponent {
     }
   }
 
+  // guardar() {
+  //   if (this.form.valid) {
+  //     this.dialogRef?.close(this.form.getRawValue());
+  //   }
+  // }
+
   guardar() {
-    if (this.form.valid) {
-      this.dialogRef?.close(this.form.getRawValue());
+    if (this.form.invalid) {
+      this.form.markAllAsTouched(); // 🔥 muestra todos los errores
+      return;
     }
+
+    this.dialogRef?.close(this.form.getRawValue());
   }
 
   cerrar() {
