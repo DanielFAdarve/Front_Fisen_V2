@@ -13,10 +13,11 @@ export class MenuService {
         id:'patients',
         label:'Pacientes',
         icon:'fas fa-users',
-        children:[
-          { label:'Lista Pacientes', icon:'fas fa-list', route:'/patients' },
-          { label:'Gestión Usuario', icon:'fas fa-user-cog', route:'/patients/gestion', badge:{text:'NEW'} }
-        ]
+        // children:[
+        //   { label:'Lista Pacientes', icon:'fas fa-list', route:'/patients' },
+        //   { label:'Gestión Usuario', icon:'fas fa-user-cog', route:'/patients/gestion', badge:{text:'NEW'} }
+        // ]
+        route:'/patients', badge:{text:'5'} 
       },
       { id:'citas', label:'Citas', icon:'fas fa-calendar-alt', route:'/citas', badge:{text:'5'} },
       { id:'reportes', label:'Reportes', icon:'fas fa-chart-bar', route:'/reportes' }

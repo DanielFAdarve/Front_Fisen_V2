@@ -158,3 +158,31 @@
     font-size: 0.75rem;
   }
 }
+.submenu-btn {
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding: .6rem .8rem;
+  text-align: left;
+  color: #000;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(33,179,163,0.12);
+  }
+}
+
+.submenu {
+  padding-left: 1rem;
+
+  li a {
+    padding: .4rem .8rem;
+    display: block;
+    border-radius: 12px;
+    color: #000;
+
+    &:hover {
+      background: rgba(33,179,163,0.12);
+    }
+  }
+}
