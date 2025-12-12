@@ -10,6 +10,8 @@
   box-shadow: 0 0 25px rgba(33,179,163,0.15);
 
   transition: 200ms ease;
+  flex: 0 0 auto;
+  width: 98%;
 }
 
 .menu-btn {
@@ -46,5 +48,30 @@
     color: #21b3a3;
     font-size: 1.2rem;
     font-weight: 600;
+  }
+}
+
+.logout-btn {
+  margin-left: auto;              // 🔹 Lo envía totalmente a la derecha
+  background: #ff4b4b;            // 🔹 Color rojo
+  border: none;
+  color: white;
+  font-size: 1.4rem;
+  width: 42px;                    // 🔹 Tamaño para hacerlo circular
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;             // 🔹 Circular
+  cursor: pointer;
+  transition: 180ms ease;
+
+  &:hover {
+    background: #ff2d2d;          // 🔹 Rojo más fuerte al pasar el mouse
+    transform: scale(1.1);
+  }
+
+  .material-icons {
+    font-size: 1.6rem;
   }
 }
