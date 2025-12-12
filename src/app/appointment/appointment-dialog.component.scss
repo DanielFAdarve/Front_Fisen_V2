@@ -1,44 +1,88 @@
-.row {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
+:host {
+  display: block;
+  width: 100%;
+  max-width: 750px;
 }
 
-.flex {
-    flex: 1;
+mat-dialog-content {
+  padding: 0 !important;
 }
 
-.full {
-    width: 100%;
+.contenedor {
+  width: 100%;
+  padding: 20px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
 }
 
-.error {
-    color: #b00020;
-    margin-top: 8px;
+h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.row {
-    display: flex;
-    gap: 16px;
-
-    mat-form-field {
-        flex: 1;
-    }
-}
-
+/* FORM FIELD FULL WIDTH */
 .full {
-    width: 100%;
+  width: 100%;
 }
 
-.error {
-    color: red;
-    margin-top: 8px;
-    font-size: 14px;
-    font-weight: 500;
+/* FILAS */
+.row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.row mat-form-field {
+  flex: 1;
+}
+
+/* BOTÓN PARA CREAR PAQUETE */
+button[mat-stroked-button] {
+  margin-top: 4px;
+  border-radius: 8px !important;
+  font-weight: 500;
+}
+
+/* ACTIONS */
+mat-dialog-actions {
+  padding: 12px 20px !important;
+  border-top: 1px solid #eee;
+}
+
+button[mat-flat-button] {
+  font-weight: 600;
+}
+
+/* HINT DE CARGA */
+mat-hint {
+  font-size: 0.8rem;
+  color: #7f8c8d !important;
+  margin-top: -6px;
+}
+
+/* BOTÓN PRIMARIO */
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-flat-button.mat-primary {
+  border-radius: 8px !important;
+}
+
+/* ESPACIADOS EN FORM-FIELD */
+mat-form-field {
+  width: 100%;
+}
+
+.mt-2 {
+  margin-top: 8px;
 }
