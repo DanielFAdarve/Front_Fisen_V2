@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +16,14 @@ export class HeaderComponent {
 
   hovering = false;
 
+  constructor(private router: Router) {}
+
   onToggleSidebar() {
     this.toggleSidebar.emit();
+  }
+
+  logout() {
+    localStorage.removeItem('token'); // o sessionStorage
+    this.router.navigate(['/login']);
   }
 }
