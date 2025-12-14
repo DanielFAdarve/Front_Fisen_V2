@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class StatusQuoteDataService {
-  private apiBaseUrl = 'http://localhost:3000/estado-citas';
+  private apiBaseUrl = 'https://back-fisent.onrender.com/estado-citas';
 
   private _estados = signal<StatusQuote[]>([]);
   estados = this._estados.asReadonly();

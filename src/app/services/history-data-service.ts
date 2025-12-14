@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class HistoryDataService {
-  private apiBaseUrl = 'http://localhost:3000/history';
+  private apiBaseUrl = 'https://back-fisent.onrender.com/history';
 
   private _histories = signal<History[]>([]);
   histories = this._histories.asReadonly();

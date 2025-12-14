@@ -12,7 +12,7 @@ interface ApiResponse<T> {
   providedIn: 'root'
 })
 export class PatientDataService {
-  private apiBaseUrl = 'http://localhost:3000/patient';
+  private apiBaseUrl = 'https://back-fisent.onrender.com/patient';
 
   private _patients = signal<Patient[]>([]);
   patients = this._patients.asReadonly();

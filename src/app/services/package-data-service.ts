@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class PackageDataService {
-  private apiBaseUrl = 'http://localhost:3000/packages';
+  private apiBaseUrl = 'https://back-fisent.onrender.com/packages';
 
   private _packages = signal<Package[]>([]);
   packages = this._packages.asReadonly();

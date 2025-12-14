@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class QuoteDataService {
-  private apiBaseUrl = 'http://localhost:3000/quotes';
+  private apiBaseUrl = 'https://back-fisent.onrender.com/quotes';
 
   private _quotes = signal<Quote[]>([]);
   quotes = this._quotes.asReadonly();

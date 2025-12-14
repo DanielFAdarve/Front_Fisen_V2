@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class Cie10DataService {
-  private apiBaseUrl = 'http://localhost:3000/cie10';
+  private apiBaseUrl = 'https://back-fisent.onrender.com/cie10';
 
   private _cie10 = signal<Cie10[]>([]);
   cie10 = this._cie10.asReadonly();

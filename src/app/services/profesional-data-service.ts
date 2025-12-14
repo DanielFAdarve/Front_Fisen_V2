@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class ProfesionalDataService {
-  private apiBaseUrl = 'http://localhost:3000/professional';
+  private apiBaseUrl = 'https://back-fisent.onrender.com/professional';
 
   private _profesionales = signal<Profesional[]>([]);
   profesionales = this._profesionales.asReadonly();
