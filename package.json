@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:Front-Fisen": "node dist/Front-Fisen/server/server.mjs",
-    "build:ghpages": "ng build --base-href \"/Front_Fisen_V2/\"",
+    
+    "build:ghpages": "ng build --base-href \"/\"",
     "deploy:ghpages": "npm run build:ghpages && npx angular-cli-ghpages --dir=dist/Front-Fisen/browser --repo=https://github.com/DanielFAdarve/Front_Fisen_V2.git"
 
   },
