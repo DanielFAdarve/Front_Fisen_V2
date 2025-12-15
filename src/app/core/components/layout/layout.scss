@@ -29,6 +29,12 @@
   flex-direction: column;
 }
 
+.main-area app-header {
+  width: 100%;
+  display: block;
+  flex-shrink: 0;
+}
+
 /* Contenido */
 .content-wrapper {
   flex: 1;

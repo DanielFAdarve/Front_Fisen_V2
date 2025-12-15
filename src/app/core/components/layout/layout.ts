@@ -6,6 +6,7 @@ import { SidebarComponent } from '../sidebar/sidebar';
 import { HeaderComponent } from '../header/header';
 import { MenuItem } from '../../../shared/models/menu-item';
 import { Subscription } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-layout',
@@ -30,11 +31,13 @@ export class LayoutComponent {
 
   // constructor() {}
   private sub?: Subscription;
-  constructor(private menuService: MenuService) { }
+  constructor(private menuService: MenuService,
+    private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.sub = this.menuService.menu$.subscribe(items => {
       this.menuItems = items;
+      this.cdr.markForCheck(); // 🔥 fuerza el refresco de OnPush
     });
   }
 
