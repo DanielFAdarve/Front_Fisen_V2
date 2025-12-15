@@ -1,4 +1,4 @@
-import { Component ,ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule, } from '@angular/forms';
@@ -8,7 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule,HttpClientModule], 
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -17,15 +17,17 @@ export class LoginComponent {
   password = '';
   errorMessage = '';
 
-  baseURL = 'http://localhost:3000';
-
+  // baseURL = 'http://localhost:3000';
+  baseURL = 'https://back-fisent.onrender.com';
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private router: Router,
-    private cdr: ChangeDetectorRef 
+    private cdr: ChangeDetectorRef
   ) { }
 
-  login() {
+  login(event?: Event) {
+    console.log("⚡ login ejecutado");
+    event?.preventDefault();
     console.log("Login intentado");
     this.errorMessage = '';
 
@@ -50,7 +52,7 @@ export class LoginComponent {
       },
       error: (err) => {
 
-        this.errorMessage = err.error?.message == "Usuario no encontrado"  ? "Credenciales Invalidas" : err.error?.message;
+        this.errorMessage = err.error?.message == "Usuario no encontrado" ? "Credenciales Invalidas" : err.error?.message;
         this.cdr.detectChanges();
       }
     });

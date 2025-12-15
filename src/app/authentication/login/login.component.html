@@ -4,30 +4,32 @@
 
     <div class="logo-box">
       <img src="/assets/logo_700.webp" alt="Logo Fisen" class="logo-img">
-      
       <h3 class="brand">Fisen</h3>
     </div>
 
     <h2 class="title">Bienvenido</h2>
     <p class="subtitle">Ingresa tus credenciales para continuar</p>
 
-    <!-- Campo usuario -->
-    <div class="form-group">
-      <span class="icon material-icons">person</span>
-      <input type="text" placeholder="Usuario" [(ngModel)]="username">
-    </div>
+    <!-- FORM -->
+    <form #form="ngForm" (ngSubmit)="login()" (submit)="$event.preventDefault()" autocomplete="off">
 
-    <!-- Campo contraseña -->
-    <div class="form-group">
-      <span class="icon material-icons">lock</span>
-      <input type="password" placeholder="Contraseña" [(ngModel)]="password">
-    </div>
+      <div class="form-group">
+        <span class="icon material-icons">person</span>
+        <input type="text" placeholder="Usuario" [(ngModel)]="username" name="username">
+      </div>
 
-    <div *ngIf="errorMessage" class="error">
-      {{ errorMessage }}
-    </div>
+      <div class="form-group">
+        <span class="icon material-icons">lock</span>
+        <input type="password" placeholder="Contraseña" [(ngModel)]="password" name="password">
+      </div>
 
-    <button class="btn-login" (click)="login()">Ingresar</button>
+      <div *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
+      </div>
+
+      <button class="btn-login" type="submit">Ingresar</button>
+
+    </form>
 
     <p class="footer-text">© 2025 Fisen | Plataforma clínica</p>
 
