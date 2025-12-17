@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentDataService {
-  private apiBaseUrl = 'http://localhost:3000/appointment';
+  private apiBaseUrl = 'https://back-fisent.onrender.com/appointment';
 
   private _appointments = signal<Appointment[]>([]);
   appointments = this._appointments.asReadonly();
