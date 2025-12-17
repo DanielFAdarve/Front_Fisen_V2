@@ -1,87 +1,77 @@
-<h2 mat-dialog-title>{{ isEdit ? 'Editar cita' : 'Nueva cita' }}</h2>
+<h2 mat-dialog-title>Nueva cita</h2>
 
-<mat-dialog-content [formGroup]="form" class="content">
+<form [formGroup]="form" mat-dialog-content>
 
-  <!-- PACIENTE -->
-  <mat-form-field appearance="fill" class="full">
+  <mat-form-field appearance="fill">
     <mat-label>Paciente</mat-label>
-    <mat-select formControlName="id_paciente" (selectionChange)="onPatientChange($event.value)">
+    <mat-select formControlName="id_paciente">
       <mat-option *ngFor="let p of patients()" [value]="p.id">
         {{ p.nombre }} {{ p.apellido }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
-  <!-- FECHA Y HORAS -->
-  <div class="row">
-    <mat-form-field appearance="fill">
-      <mat-label>Fecha</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="fecha_agendamiento">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Hora inicio</mat-label>
-      <input matInput formControlName="horario_inicio" placeholder="09:00">
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Hora fin</mat-label>
-      <input matInput formControlName="horario_fin" placeholder="09:45">
-    </mat-form-field>
-  </div>
-
-  <!-- PROFESIONAL + PAQUETE -->
-  <div class="row">
-
-    <!-- PROFESIONAL -->
-    <mat-form-field appearance="fill" class="flex">
-      <mat-label>Profesional</mat-label>
-      <mat-select formControlName="id_profesional">
-        <mat-option *ngFor="let p of professionals()" [value]="p.id">
-          {{ p.nombre }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- PAQUETE -->
-    <mat-form-field appearance="fill" class="flex">
-      <mat-label>Paquete (opcional)</mat-label>
-
-      <mat-select formControlName="id_paquetes" [disabled]="packagesLoading">
-        <mat-option [value]="null">-- Ninguno --</mat-option>
-
-        <!-- LOS PAQUETES SON SOLO ID → SE MUESTRA COMO PAQUETE #ID -->
-        <mat-option *ngFor="let pack of packages()" [value]="pack.id">
-          Paquete #{{ pack.id }}
-        </mat-option>
-      </mat-select>
-
-      <!-- Estado -->
-      <mat-hint *ngIf="packagesLoading">Cargando paquetes...</mat-hint>
-
-      <div *ngIf="!packagesLoading && packages().length === 0" class="mt-2">
-        <button mat-stroked-button color="primary" (click)="createPackageForPatient()">
-          Crear paquete para este paciente
-        </button>
-      </div>
-
-    </mat-form-field>
-
-  </div>
-
-  <!-- MOTIVO -->
-  <mat-form-field appearance="fill" class="full">
-    <mat-label>Motivo</mat-label>
-    <input matInput formControlName="motivo">
+  <mat-form-field appearance="fill">
+    <mat-label>Profesional</mat-label>
+    <mat-select formControlName="id_profesional">
+      <mat-option *ngFor="let prof of professionals()" [value]="prof.id">
+        {{ prof.nombre }}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
 
-</mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Fecha</mat-label>
+    <input matInput type="date" formControlName="fecha_agendamiento">
+  </mat-form-field>
+
+  <div class="grid grid-cols-2 gap-4">
+    <mat-form-field appearance="fill">
+      <mat-label>Inicio</mat-label>
+      <input matInput type="time" formControlName="horario_inicio">
+    </mat-form-field>
+
+    <!-- <mat-form-field appearance="fill">
+      <mat-label>Fin</mat-label>
+      <input matInput type="time" formControlName="horario_fin">
+    </mat-form-field> -->
+  </div>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Paquete</mat-label>
+    <mat-select
+      formControlName="id_paquetes"
+      [disabled]="packagesLoading() || !hasAvailablePackages()"
+    >
+      <mat-option [value]="null">Sin paquete</mat-option>
+
+      <mat-option
+        *ngFor="let pack of availablePackages()"
+        [value]="pack.id"
+      >
+        {{ attentionPackageMap().get(pack.id_paquetes_atenciones) }}
+      </mat-option>
+    </mat-select>
+
+    <mat-hint *ngIf="packagesLoading()">Cargando paquetes...</mat-hint>
+    <mat-hint *ngIf="!packagesLoading() && !hasAvailablePackages()">
+      El paciente no tiene paquetes activos
+    </mat-hint>
+  </mat-form-field>
+
+  <button
+    mat-stroked-button
+    color="primary"
+    type="button"
+    *ngIf="!packagesLoading() && !hasAvailablePackages()"
+    (click)="createPackageForPatient()"
+  >
+    ➕ Crear paquete
+  </button>
+
+</form>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="cancel()">Cancelar</button>
-  <button mat-flat-button color="primary" (click)="save()" [disabled]="busy || form.invalid">
-    {{ isEdit ? 'Guardar' : 'Crear' }}
-  </button>
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="save()">Guardar</button>
 </mat-dialog-actions>
