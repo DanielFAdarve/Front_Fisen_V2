@@ -12,7 +12,7 @@ export class AppointmentDataService {
     loading = signal(false);
     errorMessage = signal('');
 
-    base = `http://localhost:3000/quotes`;
+    base = `https://back-fisent.onrender.com/quotes`;
 
     async loadAll() {
         this.loading.set(true);
