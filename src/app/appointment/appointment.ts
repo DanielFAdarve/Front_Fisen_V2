@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { AppointmentDataService } from './services/appointment.service';
-import { PatientDataService } from './services/patient.service';
 import { ProfessionalDataService } from './services/professional.service';
 import { PackageDataService } from './services/package.service';
 import { AppointmentDialogComponent } from './appointment-dialog.component';
@@ -11,53 +10,160 @@ import { SharedTableComponent } from '../shared/table/shared-table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { PaymentDialogComponent } from './payment-dialog.component';
-
+import { effect } from '@angular/core';
 
 @Component({
   selector: 'app-appointments',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatInputModule, SharedTableComponent],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    SharedTableComponent,
+
+  ],
   templateUrl: './appointment.html',
   styleUrls: ['./appointment.scss']
 })
 export class AppointmentsComponent implements OnInit {
-  private appointmentsService = inject(AppointmentDataService);
-  private patientService = inject(PatientDataService);
-  private professionalService = inject(ProfessionalDataService);
-  private packageService = inject(PackageDataService);
+
+
+  constructor() {
+    effect(() => {
+      const appointments = this.appointments();
+
+      const cache = this.packageCache();
+
+      const idsToLoad = appointments
+        .map(a => a.id_paquetes)
+        .filter(
+          (id): id is number =>
+            !!id && !cache.has(id)
+        );
+
+      idsToLoad.forEach(id => {
+        this.loadPackageDetail(id);
+      });
+    });
+  }
+
+  public appointmentsService = inject(AppointmentDataService);
+  public professionalService = inject(ProfessionalDataService);
+  public packageService = inject(PackageDataService);
   private dialog = inject(MatDialog);
 
-
   appointments = this.appointmentsService.appointments;
-  loading = this.appointmentsService.loading;
-  errorMessage = this.appointmentsService.errorMessage;
-
+  professionals = this.professionalService.professionals;
 
   filtro = signal('');
+  filtroFecha = signal<string | null>(null);
+  filtroProfesional = signal<number | null>(null);
 
+  // 🚀 Signal para cache de paquetes
+  private packageCache = signal<Map<number, any>>(new Map());
 
-  filteredAppointments = computed(() => {
-    const term = this.filtro().toLowerCase().trim();
-    const list = this.appointments();
-    if (!term) return list;
-    return list.filter((c: any) =>
-      Object.values(c).some((val: any) =>
-        val?.toString().toLowerCase().includes(term)
-      )
-    );
-  });
+  // -------------------------------------
+  // Handlers
+  // -------------------------------------
+  onProfesionalChange(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    this.filtroProfesional.set(value ? Number(value) : null);
+  }
 
+  onFechaChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.filtroFecha.set(value || null);
+  }
 
-  displayedColumns = ['id', 'fecha_agendamiento', 'numero_sesion', 'motivo', 'id_profesional', 'id_paquetes' ];
+  onFiltroTexto(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.filtro.set(value);
+  }
 
+  seleccionar(item: any) {
+    console.log("Seleccionado:", item);
+  }
 
   ngOnInit(): void {
-    this.patientService.getPatients();
     this.professionalService.loadAll();
-    this.packageService.getAttentionPackages();
     this.appointmentsService.loadAll();
   }
 
+
+  private async loadPackageDetail(idPaquete: number) {
+    if (!idPaquete) return;
+
+    const cache = this.packageCache();
+    if (cache.has(idPaquete)) return;
+
+    try {
+      const detail = await this.packageService.getPackageDetail(idPaquete);
+      if (detail) {
+        this.packageCache.set(
+          new Map(this.packageCache()).set(idPaquete, detail)
+        );
+      }
+    } catch (e) {
+      console.error('Error cargando paquete', e);
+    }
+  }
+  filteredAppointments = computed(() => {
+    const term = this.filtro().toLowerCase();
+    const date = this.filtroFecha();
+    const prof = this.filtroProfesional();
+
+    let list = [...this.appointments()];
+
+    if (term) {
+      list = list.filter(a =>
+        JSON.stringify(a).toLowerCase().includes(term)
+      );
+    }
+
+    if (date) {
+      list = list.filter(a => a.fecha_agendamiento === date);
+    }
+
+    if (prof) {
+      list = list.filter(a => a.id_profesional === prof);
+    }
+
+    const cache = this.packageCache();
+    const professionals = this.professionals();
+
+    return list.map(a => {
+      const paquete = a.id_paquetes
+        ? cache.get(a.id_paquetes)
+        : null;
+
+      return {
+        ...a,
+        fecha_completa: `${a.fecha_agendamiento} ${a.horario_inicio}`,
+        profesional_nombre:
+          professionals.find(p => p.id === a.id_profesional)?.nombre || '—',
+        paciente_nombre: paquete?.patient
+          ? `${paquete.patient.nombre} ${paquete.patient.apellido}`
+          : '—',
+        paciente_documento: paquete?.patient?.num_doc || '—',
+        paquete_nombre: paquete?.attentionPackage?.descripcion || '—',
+        paquete_sesiones: paquete?.attentionPackage?.cantidad_sesiones || '—',
+        estado_paquete: paquete?.statusPackage?.nombre || '—'
+      };
+    });
+  });
+
+  displayedColumns = [
+    'id',
+    'fecha_completa',
+    'paciente_nombre',
+    'paciente_documento',
+    'numero_sesion',
+    'profesional_nombre',
+    'paquete_nombre',
+
+
+  ];
 
   nuevaCita() {
     const ref = this.dialog.open(AppointmentDialogComponent, {
@@ -65,14 +171,10 @@ export class AppointmentsComponent implements OnInit {
       data: { mode: 'create' }
     });
 
-
-    ref.afterClosed().subscribe(async (result: any) => {
-      if (result?.created) {
-        await this.appointmentsService.refresh();
-      }
+    ref.afterClosed().subscribe(async r => {
+      if (r?.created) await this.appointmentsService.refresh();
     });
   }
-
 
   editarCita(cita: any) {
     const ref = this.dialog.open(AppointmentDialogComponent, {
@@ -80,17 +182,10 @@ export class AppointmentsComponent implements OnInit {
       data: { mode: 'edit', appointment: cita }
     });
 
-
-    ref.afterClosed().subscribe(async (result: any) => {
-      if (result?.updated) {
-        await this.appointmentsService.refresh();
-      }
+    ref.afterClosed().subscribe(async r => {
+      if (r?.updated) await this.appointmentsService.refresh();
     });
   }
-  seleccionar(cita: any) {
-    console.log('ver', cita);
-  }
-
 
   async eliminar(id: number) {
     await this.appointmentsService.delete(id);
@@ -103,10 +198,8 @@ export class AppointmentsComponent implements OnInit {
       data: cita
     });
 
-    ref.afterClosed().subscribe(async done => {
-      if (done) {
-        await this.appointmentsService.refresh();
-      }
+    ref.afterClosed().subscribe(async ok => {
+      if (ok) await this.appointmentsService.refresh();
     });
   }
 }
