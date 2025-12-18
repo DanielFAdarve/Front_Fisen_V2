@@ -1,88 +1,130 @@
-:host {
-  display: block;
-  width: 100%;
-  max-width: 750px;
+/* ---------- CONTENEDOR MODAL ---------- */
+/* ==========================================
+   FIX REAL PARA ANGULAR MATERIAL MDC
+   ========================================== */
+
+::ng-deep .cdk-overlay-pane {
+  z-index: 2000 !important;
 }
 
-mat-dialog-content {
-  padding: 0 !important;
+/* PANEL DEL SELECT (MDC) */
+::ng-deep .mat-mdc-select-panel {
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22) !important;
+  padding: 0.5rem 0;
 }
 
-.contenedor {
-  width: 100%;
-  padding: 20px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+/* OPCIONES */
+::ng-deep .mat-mdc-option {
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem !important;
+  background-color: #ffffff !important;
 }
 
-h2 {
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #2c3e50;
+/* HOVER */
+::ng-deep .mat-mdc-option:hover,
+::ng-deep .mat-mdc-option.mdc-list-item--selected,
+::ng-deep .mat-mdc-option.mdc-list-item--activated {
+  background-color: #e0f2f1 !important;
+}
+
+/* TEXTO */
+::ng-deep .mat-mdc-option .mdc-list-item__primary-text {
+  color: #263238;
+}
+
+/* BACKDROP (evita transparencias raras) */
+::ng-deep .cdk-overlay-backdrop {
+  background: transparent !important;
+}
+
+::ng-deep .mat-dialog-container {
+  padding: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  max-height: 90vh;
+}
+
+/* ---------- CABECERA ---------- */
+.dialog-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  padding: 1rem 1.3rem;
+  background: #f0fdfa;
+  border-bottom: 1px solid #b2dfdb;
+
+  h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #00796b;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #555;
+    transition: transform 0.25s ease, color 0.25s;
+
+    &:hover {
+      color: #d32f2f;
+      transform: rotate(90deg);
+    }
+  }
 }
 
-.content {
+/* ---------- FORMULARIO ---------- */
+.dialog-form {
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: 65vh;
+  background: #fff;
+
+  h3 {
+    margin: 1.2rem 0 0.8rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #00796b;
+    border-left: 4px solid #26a69a;
+    padding-left: 0.6rem;
+  }
+}
+
+/* ---------- GRID ---------- */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* ---------- BOTÓN CREAR PAQUETE ---------- */
+.package-action {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  justify-content: flex-end;
+  margin: 0.5rem 0 1rem;
 }
 
-/* FORM FIELD FULL WIDTH */
-.full {
-  width: 100%;
-}
-
-/* FILAS */
-.row {
+/* ---------- ACCIONES ---------- */
+.dialog-actions {
   display: flex;
-  gap: 16px;
-  width: 100%;
-}
-
-.row mat-form-field {
-  flex: 1;
-}
-
-/* BOTÓN PARA CREAR PAQUETE */
-button[mat-stroked-button] {
-  margin-top: 4px;
-  border-radius: 8px !important;
-  font-weight: 500;
-}
-
-/* ACTIONS */
-mat-dialog-actions {
-  padding: 12px 20px !important;
-  border-top: 1px solid #eee;
-}
-
-button[mat-flat-button] {
-  font-weight: 600;
-}
-
-/* HINT DE CARGA */
-mat-hint {
-  font-size: 0.8rem;
-  color: #7f8c8d !important;
-  margin-top: -6px;
-}
-
-/* BOTÓN PRIMARIO */
-.mat-mdc-raised-button.mat-primary,
-.mat-mdc-flat-button.mat-primary {
-  border-radius: 8px !important;
-}
-
-/* ESPACIADOS EN FORM-FIELD */
-mat-form-field {
-  width: 100%;
-}
-
-.mt-2 {
-  margin-top: 8px;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem 1.3rem;
+  background: #fafafa;
+  border-top: 1px solid #e0e0e0;
 }
