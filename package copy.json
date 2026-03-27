@@ -8,8 +8,10 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:Front-Fisen": "node dist/Front-Fisen/server/server.mjs",
+    
     "build:ghpages": "ng build --base-href \"/\"",
     "deploy:ghpages": "npm run build:ghpages && npx angular-cli-ghpages --dir=dist/Front-Fisen/browser --repo=https://github.com/DanielFAdarve/Front_Fisen_V2.git"
+
   },
   "engines": {
     "node": ">=20.19.0"
@@ -38,11 +40,6 @@
     "@angular/platform-server": "^20.1.0",
     "@angular/router": "^20.1.0",
     "@angular/ssr": "^20.1.6",
-    "@fullcalendar/angular": "^6.1.20",
-    "@fullcalendar/core": "^6.1.20",
-    "@fullcalendar/daygrid": "^6.1.20",
-    "@fullcalendar/interaction": "^6.1.20",
-    "@fullcalendar/timegrid": "^6.1.20",
     "express": "^5.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

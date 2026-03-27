@@ -5,12 +5,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { AppointmentDataService } from './services/appointment.service';
 import { ProfessionalDataService } from './services/professional.service';
 import { PackageDataService } from './services/package.service';
-import { AppointmentDialogComponent } from './appointment-dialog.component';
+import { AppointmentDialogComponent } from './components/dialog/appointment-dialog.component';
 import { SharedTableComponent } from '../shared/table/shared-table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { PaymentDialogComponent } from './payment-dialog.component';
 import { effect } from '@angular/core';
+import { AppointmentCalendarComponent } from './components/calendar/appointment-calendar.component';
+
 
 @Component({
   selector: 'app-appointments',
@@ -21,6 +23,7 @@ import { effect } from '@angular/core';
     MatIconModule,
     MatInputModule,
     SharedTableComponent,
+    AppointmentCalendarComponent
 
   ],
   templateUrl: './appointment.html',
@@ -202,4 +205,15 @@ export class AppointmentsComponent implements OnInit {
       if (ok) await this.appointmentsService.refresh();
     });
   }
+
+  verDetalle(cita: any) {
+    this.dialog.open(AppointmentDialogComponent, {
+      width: '720px',
+      data: {
+        mode: 'edit',
+        appointment: cita
+      }
+    })
+  }
+  
 }

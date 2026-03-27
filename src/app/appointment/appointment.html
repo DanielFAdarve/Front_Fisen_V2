@@ -1,45 +1,41 @@
-<!-- 
 <div class="contenedor">
   <h2>📅 Citas</h2>
 
   <div class="acciones-bar">
+
     <button mat-raised-button color="primary" (click)="nuevaCita()">
       ➕ Nueva Cita
     </button>
 
-    <input
-      type="text"
-      placeholder="🔍 Buscar"
-      [value]="filtro()"
-      (input)="filtro.set($any($event.target).value)"
-      class="input-filtro"
-    />
-  </div>
+    <!-- Filtro general -->
+    <input matInput placeholder="🔍 Buscar" [value]="filtro()" (input)="onFiltroTexto($event)" />
 
+    <!-- Filtro por fecha -->
+    <input type="date" matInput (change)="onFechaChange($event)" />
+
+    <!-- Filtro por profesional -->
+    <select matInput (change)="onProfesionalChange($event)">
+      <option value="">Todos los profesionales</option>
+      <option *ngFor="let p of professionals()" [value]="p.id">
+        {{ p.nombre }}
+      </option>
+    </select>
+
+  </div>
+  <!-- 
   <app-shared-table
     [dataSource]="filteredAppointments()"
-    [displayedColumns]="['id', 'fecha_agendamiento', 'numero_sesion', 'motivo', 'id_profesional', 'id_paquetes']"
-    [loading]="loading()"
+    [displayedColumns]="displayedColumns"
+    [loading]="appointmentsService.loading()"
     (edit)="editarCita($event)"
     (view)="seleccionar($event)"
-    (delete)="eliminar($event)">
-  </app-shared-table>
-</div> -->
+    (delete)="eliminar($event)"
+    (pay)="pagarCita($event)"
+  >
+  </app-shared-table> -->
+  <!-- <app-appointment-calendar [appointments]="filteredAppointments()" (eventClick)="verDetalle($event)">
+  </app-appointment-calendar> -->
 
-<div class="contenedor">
-  <h2>📅 Citas</h2>
-
-
-  <div class="acciones-bar">
-    <button mat-raised-button color="primary" (click)="nuevaCita()">➕ Nueva Cita</button>
-
-
-    <input matInput placeholder="🔍 Buscar" [value]="filtro()" (input)="filtro.set($any($event.target).value)"
-      class="input-filtro" />
-  </div>
-
-
-  <app-shared-table [dataSource]="filteredAppointments()" [displayedColumns]="displayedColumns" [loading]="loading()"
-    (edit)="editarCita($event)" (view)="seleccionar($event)" (delete)="eliminar($event)" (pay)="pagarCita($event)">
-  </app-shared-table>
+  <app-appointment-calendar [appointments]="filteredAppointments()" (eventClick)="verDetalle($event)">
+  </app-appointment-calendar>
 </div>

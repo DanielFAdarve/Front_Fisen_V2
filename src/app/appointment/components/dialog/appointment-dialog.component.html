@@ -1,0 +1,233 @@
+<div class="dialog-header">
+
+  <h2>
+
+    {{
+      data?.mode === 'create'
+        ? '📅 Nueva cita'
+        : data?.mode === 'edit'
+        ? '✏️ Editar cita'
+        : '👁️ Detalle de cita'
+    }}
+
+  </h2>
+
+  <button class="close-btn" (click)="close()">✖</button>
+
+</div>
+
+
+<form [formGroup]="form" class="dialog-form">
+
+  <h3>🧾 Información general</h3>
+
+  <div class="form-row">
+
+    <mat-form-field appearance="fill">
+
+      <mat-label>Paciente</mat-label>
+
+      <input
+        matInput
+        formControlName="pacienteSearch"
+        [matAutocomplete]="autoPaciente"
+      />
+
+      <mat-autocomplete
+        #autoPaciente="matAutocomplete"
+        (optionSelected)="selectPatient($event.option.value)"
+      >
+
+        <mat-option
+          *ngFor="let p of filteredPatients()"
+          [value]="p"
+        >
+
+          <strong>
+            {{ p.nombre }} {{ p.apellido }}
+          </strong>
+
+          <small>
+            Doc: {{ p.num_doc }}
+          </small>
+
+        </mat-option>
+
+      </mat-autocomplete>
+
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill">
+
+      <mat-label>Profesional</mat-label>
+
+      <mat-select formControlName="id_profesional">
+
+        <mat-option
+          *ngFor="let prof of professionals()"
+          [value]="prof.id"
+        >
+
+          {{ prof.nombre }}
+
+        </mat-option>
+
+      </mat-select>
+
+    </mat-form-field>
+
+  </div>
+
+
+  <div class="form-row">
+
+    <mat-form-field appearance="fill">
+
+      <mat-label>Fecha</mat-label>
+
+      <input
+        matInput
+        type="date"
+        formControlName="fecha_agendamiento"
+      />
+
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill">
+
+      <mat-label>Hora</mat-label>
+
+      <input
+        matInput
+        type="time"
+        formControlName="horario_inicio"
+      />
+
+    </mat-form-field>
+
+  </div>
+
+
+  <h3>🎟️ Paquete</h3>
+
+  <div class="form-row">
+
+    <mat-form-field appearance="fill">
+
+      <mat-label>Paquete paciente</mat-label>
+
+      <mat-select
+        formControlName="id_paquetes"
+        [disabled]="packagesLoading()"
+      >
+
+        <mat-option [value]="null">
+
+          Sin paquete
+
+        </mat-option>
+
+
+        <mat-option
+          *ngFor="let pack of availablePackages()"
+          [value]="pack.id"
+        >
+
+          {{
+            attentionPackageMap()
+              .get(pack.id_paquetes_atenciones)
+          }}
+
+        </mat-option>
+
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill">
+
+      <mat-label>Nuevo paquete</mat-label>
+
+      <mat-select formControlName="id_tipo_paquete">
+
+        <mat-option
+          *ngFor="let t of packageTypes()"
+          [value]="t.id"
+        >
+
+          {{ t.descripcion }}
+          ({{ t.cantidad_sesiones }} sesiones)
+
+        </mat-option>
+
+      </mat-select>
+
+    </mat-form-field>
+
+  </div>
+
+
+  <div
+    class="package-action"
+    *ngIf="data?.mode !== 'view'"
+  >
+
+    <button
+      mat-stroked-button
+      color="primary"
+      type="button"
+      (click)="createPackageForPatient()"
+    >
+
+      ➕ Crear paquete
+
+    </button>
+
+  </div>
+
+
+  <h3>📝 Motivo</h3>
+
+  <mat-form-field
+    appearance="fill"
+    class="full-width"
+  >
+
+    <textarea
+      matInput
+      rows="3"
+      formControlName="motivo"
+    ></textarea>
+
+  </mat-form-field>
+
+</form>
+
+
+<div class="dialog-actions">
+
+  <button
+    mat-button
+    (click)="close()"
+  >
+
+    Cerrar
+
+  </button>
+
+
+  <button
+    *ngIf="data?.mode !== 'view'"
+    mat-flat-button
+    color="primary"
+    (click)="save()"
+  >
+
+    Guardar
+
+  </button>
+
+</div>
