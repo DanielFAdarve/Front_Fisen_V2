@@ -1,16 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Package } from '../models/package';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { Package } from '../../models/package';
 
-interface ApiResponse<T> {
-  status: number;
-  message: string;
-  response: T;
-}
 
 @Injectable({ providedIn: 'root' })
-export class PackageDataService {
-  private apiBaseUrl = 'https://back-fisent.onrender.com/packages';
+export class PackageService {
+  private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.packages}`;
 
   private _packages = signal<Package[]>([]);
   packages = this._packages.asReadonly();

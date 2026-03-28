@@ -4,7 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { Cie10DataService } from '../services/cie10-data-service';
+import { Cie10Service } from './data-access/cie10.service';
 import { Cie10 } from '../models/cie10';
 
 @Component({
@@ -21,7 +21,7 @@ import { Cie10 } from '../models/cie10';
   styleUrls: ['./cie10.scss']
 })
 export class Cie10Component implements OnInit {
-  private cie10Service = inject(Cie10DataService);
+  private cie10Service = inject(Cie10Service);
   private dialog = inject(MatDialog);
 
   cie10 = this.cie10Service.cie10;

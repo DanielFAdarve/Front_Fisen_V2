@@ -2,34 +2,28 @@ import { Routes } from '@angular/router';
 import { LayoutComponent } from './core/components/layout/layout';
 import { PatientsComponent } from './patients/patients';
 import { PatientFormDialogComponent } from './patients/patient-form-dialog/patient-form-dialog';
-import { AppointmentsComponent } from './appointment/appointment';
 import { authGuard } from './authentication/auth.guard';
+import { APP_ROUTES } from './core/constants/app-routes.constants';
 
 export const routes: Routes = [
-
-  // 🔹 LOGIN (no requiere token)
   {
-    path: 'login',
+    path: APP_ROUTES.login,
     loadComponent: () =>
-      import('./authentication/login/login.component').then(m => m.LoginComponent),
+      import('./authentication/login/login.component').then((m) => m.LoginComponent)
   },
-
-  // 🔹 RUTAS INTERNAS PROTEGIDAS
   {
-    path: '',
-    canActivate: [authGuard],    
+    path: APP_ROUTES.root,
+    canActivate: [authGuard],
     component: LayoutComponent,
     children: [
-      { path: 'patients', component: PatientsComponent },
-      { path: 'patients/gestion', component: PatientFormDialogComponent },
-      // { path: 'citas', component: AppointmentsComponent },
-      { path: 'citas', loadComponent: () => import('./appointment/appointment').then(m => m.AppointmentsComponent) },
-
-      // Default interno
-      { path: '', redirectTo: 'patients', pathMatch: 'full' }
+      { path: APP_ROUTES.patients, component: PatientsComponent },
+      { path: APP_ROUTES.patientManagement, component: PatientFormDialogComponent },
+      {
+        path: APP_ROUTES.appointments,
+        loadComponent: () => import('./appointment/appointment').then((m) => m.AppointmentsComponent)
+      },
+      { path: APP_ROUTES.root, redirectTo: APP_ROUTES.patients, pathMatch: 'full' }
     ]
   },
-
-  // 🔹 Wildcard
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: APP_ROUTES.login }
 ];

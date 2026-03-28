@@ -1,59 +1,54 @@
 # FrontFisen
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.6.
+Proyecto Angular (standalone components) para gestión de pacientes, citas, paquetes y autenticación.
 
-## Development server
+## Stack
+- Angular 20
+- Angular Material
+- Signals + HttpClient
+- SSR (`@angular/ssr`)
 
-To start a local development server, run:
+## Estructura modular estandarizada
 
-```bash
-ng serve
+```text
+src/app
+├── authentication/
+│   ├── data-access/         # auth.service
+│   ├── login/
+│   └── register/
+├── patients/
+│   ├── data-access/         # patient.service
+│   └── patient-form-dialog/
+├── appointment/
+│   ├── data-access/         # servicios API + store + catálogos
+│   └── components/
+├── package/
+│   ├── data-access/         # package + package-status
+│   └── package-form-dialog/
+├── cie10/
+│   └── data-access/
+├── core/
+│   ├── components/
+│   ├── constants/           # routes + endpoints
+│   └── models/              # ApiResponse
+├── shared/
+└── models/
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Convenciones
+1. **Data Access por feature**: toda llamada HTTP y estado compartido vive en `feature/data-access`.
+2. **Naming de servicios**: `*.service.ts` + clase `PascalCaseService`.
+3. **Sin endpoints hardcodeados**: usar `core/constants/api.constants.ts`.
+4. **Rutas centralizadas**: usar `core/constants/app-routes.constants.ts`.
+5. **Contrato HTTP común**: `core/models/api-response.ts`.
 
-## Code scaffolding
+## Responsive y UX
+- Vistas de pacientes y citas ajustadas con breakpoints (`1024px`, `768px`, `640px`).
+- Diálogos de citas con `backdrop` oscurecido para foco visual (igual criterio que pacientes).
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+## Scripts
 ```bash
-ng generate component component-name
+npm start
+npm run build
+npm test
 ```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
