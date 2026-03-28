@@ -1,59 +1,72 @@
 # FrontFisen
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.6.
+Proyecto Angular (standalone components) para la gestión de pacientes, citas, paquetes y autenticación.
 
-## Development server
+## Stack
 
-To start a local development server, run:
+- Angular 20
+- Angular Material
+- Signals + HttpClient
+- SSR (configurado con `@angular/ssr`)
 
-```bash
-ng serve
+## Estructura modular recomendada
+
+```text
+src/app
+├── app.config.ts
+├── app.routes.ts
+├── authentication/          # Login/registro/guard
+├── appointment/             # Feature de citas
+├── patients/                # Feature de pacientes
+├── package/                 # Feature de paquetes
+├── cie10/                   # Feature CIE10
+├── core/
+│   ├── components/          # Layout, header, sidebar
+│   ├── constants/           # Rutas y endpoints centralizados
+│   ├── models/              # Contratos globales (ApiResponse)
+│   └── services/            # Servicios transversales
+├── shared/
+│   ├── animations/
+│   ├── confirm-dialog/
+│   ├── models/
+│   └── table/
+└── services/                # Servicios legacy en transición
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Convenciones para estandarizar desarrollo
 
-## Code scaffolding
+1. **Sin endpoints hardcodeados en features**: usar `core/constants/api.constants.ts`.
+2. **Rutas centralizadas**: usar `core/constants/app-routes.constants.ts`.
+3. **Respuestas HTTP tipadas**: usar `core/models/api-response.ts`.
+4. **Nomenclatura**:
+   - Componentes: `*.component.ts` o mantener convención actual por feature (evitar mezclar en archivos nuevos).
+   - Servicios: `*.service.ts` y nombre de clase alineado al archivo.
+   - Modelos: `*.model.ts` por feature y `core/models` para contratos globales.
+5. **Responsabilidad por capa**:
+   - `core`: transversal y reutilizable.
+   - `shared`: UI/UX reutilizable.
+   - `feature/*`: lógica de negocio por dominio.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Scripts
 
 ```bash
-ng build
+npm start
+npm run build
+npm test
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Próximos pasos de refactor (iterativo)
 
-## Running unit tests
+- Migrar `src/app/services/*` (legacy) a servicios por feature.
+- Unificar naming de clases y archivos legacy (`*-data-service`).
+- Mover assets de app a `src/assets` salvo casos estrictamente encapsulados.
+- Introducir una capa `data-access` por feature para separar estado/UI.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Desarrollo local
 
 ```bash
-ng test
+npm install
+npm start
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Abrir `http://localhost:4200/`.

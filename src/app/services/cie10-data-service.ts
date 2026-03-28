@@ -1,16 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ApiResponse } from '../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../core/constants/api.constants';
 import { Cie10 } from '../models/cie10';
 
-interface ApiResponse<T> {
-  status: number;
-  message: string;
-  response: T;
-}
 
 @Injectable({ providedIn: 'root' })
 export class Cie10DataService {
-  private apiBaseUrl = 'https://back-fisent.onrender.com/cie10';
+  private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.cie10}`;
 
   private _cie10 = signal<Cie10[]>([]);
   cie10 = this._cie10.asReadonly();
