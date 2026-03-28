@@ -1,14 +1,14 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse } from '../core/models/api-response';
-import { API_BASE_URL, API_ENDPOINTS } from '../core/constants/api.constants';
-import { Patient } from '../models/patient';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { Patient } from '../../models/patient';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class PatientDataService {
+export class PatientService {
   private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.patients}`;
 
   private _patients = signal<Patient[]>([]);

@@ -12,7 +12,7 @@ export type PackageType = {
 };
 
 @Injectable({ providedIn: 'root' })
-export class PackageDataService {
+export class AppointmentPackagesService {
 
   private http = inject(HttpClient);
 

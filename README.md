@@ -1,72 +1,54 @@
 # FrontFisen
 
-Proyecto Angular (standalone components) para la gestión de pacientes, citas, paquetes y autenticación.
+Proyecto Angular (standalone components) para gestión de pacientes, citas, paquetes y autenticación.
 
 ## Stack
-
 - Angular 20
 - Angular Material
 - Signals + HttpClient
-- SSR (configurado con `@angular/ssr`)
+- SSR (`@angular/ssr`)
 
-## Estructura modular recomendada
+## Estructura modular estandarizada
 
 ```text
 src/app
-├── app.config.ts
-├── app.routes.ts
-├── authentication/          # Login/registro/guard
-├── appointment/             # Feature de citas
-├── patients/                # Feature de pacientes
-├── package/                 # Feature de paquetes
-├── cie10/                   # Feature CIE10
+├── authentication/
+│   ├── data-access/         # auth.service
+│   ├── login/
+│   └── register/
+├── patients/
+│   ├── data-access/         # patient.service
+│   └── patient-form-dialog/
+├── appointment/
+│   ├── data-access/         # servicios API + store + catálogos
+│   └── components/
+├── package/
+│   ├── data-access/         # package + package-status
+│   └── package-form-dialog/
+├── cie10/
+│   └── data-access/
 ├── core/
-│   ├── components/          # Layout, header, sidebar
-│   ├── constants/           # Rutas y endpoints centralizados
-│   ├── models/              # Contratos globales (ApiResponse)
-│   └── services/            # Servicios transversales
+│   ├── components/
+│   ├── constants/           # routes + endpoints
+│   └── models/              # ApiResponse
 ├── shared/
-│   ├── animations/
-│   ├── confirm-dialog/
-│   ├── models/
-│   └── table/
-└── services/                # Servicios legacy en transición
+└── models/
 ```
 
-## Convenciones para estandarizar desarrollo
+## Convenciones
+1. **Data Access por feature**: toda llamada HTTP y estado compartido vive en `feature/data-access`.
+2. **Naming de servicios**: `*.service.ts` + clase `PascalCaseService`.
+3. **Sin endpoints hardcodeados**: usar `core/constants/api.constants.ts`.
+4. **Rutas centralizadas**: usar `core/constants/app-routes.constants.ts`.
+5. **Contrato HTTP común**: `core/models/api-response.ts`.
 
-1. **Sin endpoints hardcodeados en features**: usar `core/constants/api.constants.ts`.
-2. **Rutas centralizadas**: usar `core/constants/app-routes.constants.ts`.
-3. **Respuestas HTTP tipadas**: usar `core/models/api-response.ts`.
-4. **Nomenclatura**:
-   - Componentes: `*.component.ts` o mantener convención actual por feature (evitar mezclar en archivos nuevos).
-   - Servicios: `*.service.ts` y nombre de clase alineado al archivo.
-   - Modelos: `*.model.ts` por feature y `core/models` para contratos globales.
-5. **Responsabilidad por capa**:
-   - `core`: transversal y reutilizable.
-   - `shared`: UI/UX reutilizable.
-   - `feature/*`: lógica de negocio por dominio.
+## Responsive y UX
+- Vistas de pacientes y citas ajustadas con breakpoints (`1024px`, `768px`, `640px`).
+- Diálogos de citas con `backdrop` oscurecido para foco visual (igual criterio que pacientes).
 
 ## Scripts
-
 ```bash
 npm start
 npm run build
 npm test
 ```
-
-## Próximos pasos de refactor (iterativo)
-
-- Migrar `src/app/services/*` (legacy) a servicios por feature.
-- Unificar naming de clases y archivos legacy (`*-data-service`).
-- Mover assets de app a `src/assets` salvo casos estrictamente encapsulados.
-- Introducir una capa `data-access` por feature para separar estado/UI.
-
-## Desarrollo local
-
-```bash
-npm install
-npm start
-```
-
-Abrir `http://localhost:4200/`.

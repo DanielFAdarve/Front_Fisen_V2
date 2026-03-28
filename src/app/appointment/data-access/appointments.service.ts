@@ -5,7 +5,7 @@ import { Appointment } from '../models/appointment.model';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class AppointmentDataService {
+export class AppointmentsService {
 
     private http = inject(HttpClient);
 

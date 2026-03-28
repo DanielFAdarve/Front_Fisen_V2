@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { PaymentDataService } from './services/payment.service';
+import { AppointmentPaymentsService } from './data-access/payments.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,7 @@ export class PaymentDialogComponent {
     private fb = inject(FormBuilder);
     private dialogRef = inject(MatDialogRef<PaymentDialogComponent>);
     private data = inject(MAT_DIALOG_DATA);
-    private paymentService = inject(PaymentDataService);
+    private paymentService = inject(AppointmentPaymentsService);
 
 
     form: FormGroup;

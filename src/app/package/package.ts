@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { PackageDataService } from '../services/package-data-service';
-import { StatusPackageDataService } from '../services/status-package-data-service';
+import { PackageService } from './data-access/package.service';
+import { PackageStatusService } from './data-access/package-status.service';
 import { Package } from '../models/package';
 import { StatusPackage } from '../models/status-package';
 import { PackageFormDialog } from './package-form-dialog/package-form-dialog';
@@ -13,8 +13,8 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule]
 })
 export class PackageComponent implements OnInit {
-  private packageService = inject(PackageDataService);
-  private statusService = inject(StatusPackageDataService);
+  private packageService = inject(PackageService);
+  private statusService = inject(PackageStatusService);
   private dialog = inject(MatDialog);
 
   packages = this.packageService.packages;

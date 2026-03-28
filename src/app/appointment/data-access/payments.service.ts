@@ -5,7 +5,7 @@ import { Payment } from '../models/payment.model';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class PaymentDataService {
+export class AppointmentPaymentsService {
 
     private http = inject(HttpClient);
     base = `${API_BASE_URL}/${API_ENDPOINTS.payments}`;

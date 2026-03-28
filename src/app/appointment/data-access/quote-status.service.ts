@@ -1,12 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse } from '../core/models/api-response';
-import { API_BASE_URL, API_ENDPOINTS } from '../core/constants/api.constants';
-import { StatusQuote } from '../models/status-quote';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { StatusQuote } from '../../models/status-quote';
 
 
 @Injectable({ providedIn: 'root' })
-export class StatusQuoteDataService {
+export class QuoteStatusService {
   private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.statusQuotes}`;
 
   private _estados = signal<StatusQuote[]>([]);

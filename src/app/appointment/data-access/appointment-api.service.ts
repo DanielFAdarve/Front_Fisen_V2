@@ -1,12 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse } from '../core/models/api-response';
-import { API_BASE_URL, API_ENDPOINTS } from '../core/constants/api.constants';
-import { Appointment } from '../models/appointment_or';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { Appointment } from '../../models/appointment_or';
 
 
 @Injectable({ providedIn: 'root' })
-export class AppointmentDataService {
+export class AppointmentApiService {
   private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.appointmentLegacy}`;
 
   private _appointments = signal<Appointment[]>([]);

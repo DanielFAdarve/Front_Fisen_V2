@@ -1,12 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse } from '../core/models/api-response';
-import { API_BASE_URL, API_ENDPOINTS } from '../core/constants/api.constants';
-import { Cie10 } from '../models/cie10';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { Cie10 } from '../../models/cie10';
 
 
 @Injectable({ providedIn: 'root' })
-export class Cie10DataService {
+export class Cie10Service {
   private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.cie10}`;
 
   private _cie10 = signal<Cie10[]>([]);

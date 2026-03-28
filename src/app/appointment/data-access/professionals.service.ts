@@ -1,32 +1,32 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
-import { Patient } from '../models/patient.model';
+import { Professional } from '../models/professional.model';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class PatientDataService {
-
+export class AppointmentProfessionalsService {
     private http = inject(HttpClient);
-    patients = signal<Patient[]>([]);
+    professionals = signal<Professional[]>([]);
     loading = signal(false);
-    base = `${API_BASE_URL}/${API_ENDPOINTS.patients}`;
+    base = `${API_BASE_URL}/${API_ENDPOINTS.professionalsAlt}`;
 
-    async getPatients() {
+    async loadAll() {
         this.loading.set(true);
         try {
             const res = await firstValueFrom(
-                this.http.get<{ status: number; message: string; response: Patient[] }>(
-                    `${this.base}/get-patients`
-                )
+                this.http.get<any>(`${this.base}/get-all`)
             );
-            this.patients.set(res?.response || []);
+
+            const list = Array.isArray(res)
+                ? res
+                : Array.isArray(res.response)
+                    ? res.response
+                    : [];
+
+            this.professionals.set(list);
         } finally {
             this.loading.set(false);
         }
-    }
-
-    findById(id: number) {
-        return this.patients().find(p => p.id === id);
     }
 }

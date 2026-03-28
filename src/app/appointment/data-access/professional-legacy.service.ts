@@ -1,12 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse } from '../core/models/api-response';
-import { API_BASE_URL, API_ENDPOINTS } from '../core/constants/api.constants';
-import { Profesional } from '../models/profesional';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { Profesional } from '../../models/profesional';
 
 
 @Injectable({ providedIn: 'root' })
-export class ProfesionalDataService {
+export class ProfessionalLegacyService {
   private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.professionals}`;
 
   private _profesionales = signal<Profesional[]>([]);

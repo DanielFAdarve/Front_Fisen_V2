@@ -1,12 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse } from '../core/models/api-response';
-import { API_BASE_URL, API_ENDPOINTS } from '../core/constants/api.constants';
-import { Package } from '../models/package';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { Package } from '../../models/package';
 
 
 @Injectable({ providedIn: 'root' })
-export class PackageDataService {
+export class PackageService {
   private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.packages}`;
 
   private _packages = signal<Package[]>([]);
