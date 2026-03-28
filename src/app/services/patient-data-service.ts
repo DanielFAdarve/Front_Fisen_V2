@@ -1,18 +1,15 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ApiResponse } from '../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../core/constants/api.constants';
 import { Patient } from '../models/patient';
 
-interface ApiResponse<T> {
-  status: number;
-  message: string;
-  response: T;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class PatientDataService {
-  private apiBaseUrl = 'https://back-fisent.onrender.com/patient';
+  private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.patients}`;
 
   private _patients = signal<Patient[]>([]);
   patients = this._patients.asReadonly();

@@ -1,5 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
 import { Patient } from '../models/patient.model';
 import { firstValueFrom } from 'rxjs';
 
@@ -9,7 +10,7 @@ export class PatientDataService {
     private http = inject(HttpClient);
     patients = signal<Patient[]>([]);
     loading = signal(false);
-    base = `https://back-fisent.onrender.com/patient`;
+    base = `${API_BASE_URL}/${API_ENDPOINTS.patients}`;
 
     async getPatients() {
         this.loading.set(true);
