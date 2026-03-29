@@ -1,9 +1,9 @@
 import { Injectable, signal } from '@angular/core';
-import { Appointment } from '../models/appointment';
-import { PatientDataService } from './patient-data-service';
+import { Appointment } from '../../models/appointment';
+import { PatientService } from '../../patients/data-access/patient.service';
 
 @Injectable({ providedIn: 'root' })
-export class AppointmentDataService {
+export class AppointmentStoreService {
 
   private _appointments = signal<Appointment[]>([]);
   appointments = this._appointments.asReadonly();
@@ -11,7 +11,7 @@ export class AppointmentDataService {
   loading = signal(false);
   errorMessage = signal<string | null>(null);
 
-  constructor(private patientService: PatientDataService) {}
+  constructor(private patientService: PatientService) {}
 
   // Inicializar datos dummy basados en pacientes
   seedAppointments(): void {

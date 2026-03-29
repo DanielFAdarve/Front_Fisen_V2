@@ -1,16 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Appointment } from '../models/appointment_or';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { Appointment } from '../../models/appointment_or';
 
-interface ApiResponse<T> {
-  status: number;
-  message: string;
-  response: T;
-}
 
 @Injectable({ providedIn: 'root' })
-export class AppointmentDataService {
-  private apiBaseUrl = 'https://back-fisent.onrender.com/appointment';
+export class AppointmentApiService {
+  private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.appointmentLegacy}`;
 
   private _appointments = signal<Appointment[]>([]);
   appointments = this._appointments.asReadonly();

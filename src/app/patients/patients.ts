@@ -2,7 +2,7 @@
 // import { CommonModule } from '@angular/common';
 // import { MatButtonModule } from '@angular/material/button';
 // import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-// import { PatientDataService } from '../services/patient-data-service';
+// import { PatientService } from './data-access/patient.service';
 // import { Patient } from '../models/patient';
 // import { PatientFormDialogComponent } from './patient-form-dialog/patient-form-dialog';
 // import { SharedTableComponent } from '../shared/table/shared-table';
@@ -22,7 +22,7 @@
 //   styleUrls: ['./patients.scss']
 // })
 // export class PatientsComponent implements OnInit {
-//   private patientService = inject(PatientDataService);
+//   private patientService = inject(PatientService);
 //   private dialog = inject(MatDialog);
 
 //   patients = this.patientService.patients;
@@ -141,7 +141,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { PatientDataService } from '../services/patient-data-service';
+import { PatientService } from './data-access/patient.service';
 import { Patient } from '../models/patient';
 import { PatientFormDialogComponent } from './patient-form-dialog/patient-form-dialog';
 import { SharedTableComponent } from '../shared/table/shared-table';
@@ -160,7 +160,7 @@ import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog'
   styleUrls: ['./patients.scss']
 })
 export class PatientsComponent implements OnInit {
-  private patientService = inject(PatientDataService);
+  private patientService = inject(PatientService);
   private dialog = inject(MatDialog);
 
   patients = this.patientService.patients;

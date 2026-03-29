@@ -8,10 +8,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
-import { AppointmentDataService } from './../../services/appointment.service';
-import { PatientDataService } from './../../services/patient.service';
-import { ProfessionalDataService } from './../../services/professional.service';
-import { PackageDataService } from './../../services/package.service';
+import { AppointmentsService } from './../../data-access/appointments.service';
+import { AppointmentPatientsService } from './../../data-access/patients.service';
+import { AppointmentProfessionalsService } from './../../data-access/professionals.service';
+import { AppointmentPackagesService } from './../../data-access/packages.service';
 
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -48,10 +48,10 @@ export class AppointmentDialogComponent implements OnInit {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<AppointmentDialogComponent>);
 
-  private appointmentService = inject(AppointmentDataService);
-  private patientService = inject(PatientDataService);
-  private professionalService = inject(ProfessionalDataService);
-  private packageService = inject(PackageDataService);
+  private appointmentService = inject(AppointmentsService);
+  private patientService = inject(AppointmentPatientsService);
+  private professionalService = inject(AppointmentProfessionalsService);
+  private packageService = inject(AppointmentPackagesService);
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data:any

@@ -1,14 +1,15 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
 import { Professional } from '../models/professional.model';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class ProfessionalDataService {
+export class AppointmentProfessionalsService {
     private http = inject(HttpClient);
     professionals = signal<Professional[]>([]);
     loading = signal(false);
-    base = `https://back-fisent.onrender.com/professionals`;
+    base = `${API_BASE_URL}/${API_ENDPOINTS.professionalsAlt}`;
 
     async loadAll() {
         this.loading.set(true);

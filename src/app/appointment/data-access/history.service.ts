@@ -1,16 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { History } from '../models/history';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { History } from '../../models/history';
 
-interface ApiResponse<T> {
-  status: number;
-  message: string;
-  response: T;
-}
 
 @Injectable({ providedIn: 'root' })
-export class HistoryDataService {
-  private apiBaseUrl = 'https://back-fisent.onrender.com/history';
+export class HistoryService {
+  private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.histories}`;
 
   private _histories = signal<History[]>([]);
   histories = this._histories.asReadonly();

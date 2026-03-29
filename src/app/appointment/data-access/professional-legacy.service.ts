@@ -1,16 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Profesional } from '../models/profesional';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { Profesional } from '../../models/profesional';
 
-interface ApiResponse<T> {
-  status: number;
-  message: string;
-  response: T;
-}
 
 @Injectable({ providedIn: 'root' })
-export class ProfesionalDataService {
-  private apiBaseUrl = 'https://back-fisent.onrender.com/professional';
+export class ProfessionalLegacyService {
+  private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.professionals}`;
 
   private _profesionales = signal<Profesional[]>([]);
   profesionales = this._profesionales.asReadonly();

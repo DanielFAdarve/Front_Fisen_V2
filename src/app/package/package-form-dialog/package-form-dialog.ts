@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { Package } from '../../models/package';
 import { StatusPackage } from '../../models/status-package';
-import { StatusPackageDataService } from '../../services/status-package-data-service';
+import { PackageStatusService } from '../data-access/package-status.service';
 
 @Component({
   selector: 'app-package-form-dialog',
@@ -26,7 +26,7 @@ import { StatusPackageDataService } from '../../services/status-package-data-ser
 })
 export class PackageFormDialog {
   private fb = inject(FormBuilder);
-  private statusService = inject(StatusPackageDataService);
+  private statusService = inject(PackageStatusService);
 
   estados = this.statusService.estados;
 

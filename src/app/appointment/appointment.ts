@@ -2,11 +2,10 @@ import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { AppointmentDataService } from './services/appointment.service';
-import { ProfessionalDataService } from './services/professional.service';
-import { PackageDataService } from './services/package.service';
+import { AppointmentsService } from './data-access/appointments.service';
+import { AppointmentProfessionalsService } from './data-access/professionals.service';
+import { AppointmentPackagesService } from './data-access/packages.service';
 import { AppointmentDialogComponent } from './components/dialog/appointment-dialog.component';
-import { SharedTableComponent } from '../shared/table/shared-table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { PaymentDialogComponent } from './payment-dialog.component';
@@ -22,7 +21,6 @@ import { AppointmentCalendarComponent } from './components/calendar/appointment-
     MatButtonModule,
     MatIconModule,
     MatInputModule,
-    SharedTableComponent,
     AppointmentCalendarComponent
 
   ],
@@ -51,9 +49,9 @@ export class AppointmentsComponent implements OnInit {
     });
   }
 
-  public appointmentsService = inject(AppointmentDataService);
-  public professionalService = inject(ProfessionalDataService);
-  public packageService = inject(PackageDataService);
+  public appointmentsService = inject(AppointmentsService);
+  public professionalService = inject(AppointmentProfessionalsService);
+  public packageService = inject(AppointmentPackagesService);
   private dialog = inject(MatDialog);
 
   appointments = this.appointmentsService.appointments;
@@ -171,6 +169,10 @@ export class AppointmentsComponent implements OnInit {
   nuevaCita() {
     const ref = this.dialog.open(AppointmentDialogComponent, {
       width: '720px',
+      maxWidth: '94vw',
+      panelClass: 'appointments-dialog',
+      backdropClass: 'appointments-backdrop',
+      hasBackdrop: true,
       data: { mode: 'create' }
     });
 
@@ -182,6 +184,10 @@ export class AppointmentsComponent implements OnInit {
   editarCita(cita: any) {
     const ref = this.dialog.open(AppointmentDialogComponent, {
       width: '720px',
+      maxWidth: '94vw',
+      panelClass: 'appointments-dialog',
+      backdropClass: 'appointments-backdrop',
+      hasBackdrop: true,
       data: { mode: 'edit', appointment: cita }
     });
 
@@ -198,6 +204,10 @@ export class AppointmentsComponent implements OnInit {
   pagarCita(cita: any) {
     const ref = this.dialog.open(PaymentDialogComponent, {
       width: '420px',
+      maxWidth: '94vw',
+      panelClass: 'appointments-dialog',
+      backdropClass: 'appointments-backdrop',
+      hasBackdrop: true,
       data: cita
     });
 
@@ -209,11 +219,15 @@ export class AppointmentsComponent implements OnInit {
   verDetalle(cita: any) {
     this.dialog.open(AppointmentDialogComponent, {
       width: '720px',
+      maxWidth: '94vw',
+      panelClass: 'appointments-dialog',
+      backdropClass: 'appointments-backdrop',
+      hasBackdrop: true,
       data: {
         mode: 'edit',
         appointment: cita
       }
-    })
+    });
   }
   
 }

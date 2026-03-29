@@ -1,13 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
 import { Payment } from '../models/payment.model';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class PaymentDataService {
+export class AppointmentPaymentsService {
 
     private http = inject(HttpClient);
-    base = `https://back-fisent.onrender.com/payments`;
+    base = `${API_BASE_URL}/${API_ENDPOINTS.payments}`;
 
     async createPayment(payment: Payment) {
         const res = await firstValueFrom(

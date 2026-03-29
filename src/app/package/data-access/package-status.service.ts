@@ -1,16 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { StatusPackage } from '../models/status-package';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { StatusPackage } from '../../models/status-package';
 
-interface ApiResponse<T> {
-  status: number;
-  message: string;
-  response: T;
-}
 
 @Injectable({ providedIn: 'root' })
-export class StatusPackageDataService {
-  private apiBaseUrl = 'https://back-fisent.onrender.com/estado-paquetes';
+export class PackageStatusService {
+  private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.statusPackages}`;
 
   private _estados = signal<StatusPackage[]>([]);
   estados = this._estados.asReadonly();

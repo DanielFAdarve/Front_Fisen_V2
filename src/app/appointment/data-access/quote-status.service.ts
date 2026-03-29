@@ -1,16 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { StatusQuote } from '../models/status-quote';
+import { ApiResponse } from '../../core/models/api-response';
+import { API_BASE_URL, API_ENDPOINTS } from '../../core/constants/api.constants';
+import { StatusQuote } from '../../models/status-quote';
 
-interface ApiResponse<T> {
-  status: number;
-  message: string;
-  response: T;
-}
 
 @Injectable({ providedIn: 'root' })
-export class StatusQuoteDataService {
-  private apiBaseUrl = 'https://back-fisent.onrender.com/estado-citas';
+export class QuoteStatusService {
+  private apiBaseUrl = `${API_BASE_URL}/${API_ENDPOINTS.statusQuotes}`;
 
   private _estados = signal<StatusQuote[]>([]);
   estados = this._estados.asReadonly();
