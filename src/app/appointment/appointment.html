@@ -2,39 +2,27 @@
   <h2>📅 Citas</h2>
 
   <div class="acciones-bar">
-
-    <button mat-raised-button color="primary" (click)="nuevaCita()">
+    <button mat-raised-button color="primary" (click)="nuevaCita()" class="full-mobile-btn">
       ➕ Nueva Cita
     </button>
 
-    <!-- Filtro general -->
-    <input matInput placeholder="🔍 Buscar" [value]="filtro()" (input)="onFiltroTexto($event)" />
+    <input
+      matInput
+      class="filter-control"
+      placeholder="🔍 Buscar"
+      [value]="filtro()"
+      (input)="onFiltroTexto($event)"
+    />
 
-    <!-- Filtro por fecha -->
-    <input type="date" matInput (change)="onFechaChange($event)" />
+    <input type="date" matInput class="filter-control" (change)="onFechaChange($event)" />
 
-    <!-- Filtro por profesional -->
-    <select matInput (change)="onProfesionalChange($event)">
+    <select matInput class="filter-control" (change)="onProfesionalChange($event)">
       <option value="">Todos los profesionales</option>
       <option *ngFor="let p of professionals()" [value]="p.id">
         {{ p.nombre }}
       </option>
     </select>
-
   </div>
-  <!-- 
-  <app-shared-table
-    [dataSource]="filteredAppointments()"
-    [displayedColumns]="displayedColumns"
-    [loading]="appointmentsService.loading()"
-    (edit)="editarCita($event)"
-    (view)="seleccionar($event)"
-    (delete)="eliminar($event)"
-    (pay)="pagarCita($event)"
-  >
-  </app-shared-table> -->
-  <!-- <app-appointment-calendar [appointments]="filteredAppointments()" (eventClick)="verDetalle($event)">
-  </app-appointment-calendar> -->
 
   <app-appointment-calendar [appointments]="filteredAppointments()" (eventClick)="verDetalle($event)">
   </app-appointment-calendar>
