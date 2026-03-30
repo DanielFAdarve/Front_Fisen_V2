@@ -9,34 +9,35 @@
   border-radius: 1rem;
   background: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-
-  h2 {
-    margin: 0 0 1rem;
-    color: #2c3e50;
-  }
 }
 
 .acciones-bar {
   display: grid;
-  grid-template-columns: minmax(180px, auto) minmax(180px, 1fr) minmax(160px, 220px) minmax(190px, 240px);
+  grid-template-columns: auto 1fr auto auto;
   gap: 0.75rem;
   align-items: center;
   margin-bottom: 1rem;
+
+  input,
+  select {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 0 0.75rem;
+    font-size: 0.92rem;
+    background: #fff;
+  }
 }
 
-.filter-control {
-  width: 100%;
-  min-height: 40px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  padding: 0 0.75rem;
-  font-size: 0.92rem;
-  background: #fff;
-}
-
-.full-mobile-btn {
-  white-space: nowrap;
-}
+.pay-btn {
+  background-color: #43a047 !important;
+  color: white !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 6px;
 
 @media (max-width: 1024px) {
   .acciones-bar {
@@ -49,6 +50,25 @@
   }
 }
 
+.badge.paid {
+  background: #2e7d32;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+@media (max-width: 1024px) {
+  .acciones-bar {
+    grid-template-columns: 1fr 1fr;
+
+    button {
+      grid-column: 1 / -1;
+      width: 100%;
+    }
+  }
+}
+
 @media (max-width: 640px) {
   .contenedor {
     padding: 0.75rem;
@@ -58,8 +78,13 @@
   .acciones-bar {
     grid-template-columns: 1fr;
   }
+}
 
-  .full-mobile-btn {
-    grid-column: auto;
-  }
+:host ::ng-deep .appointments-backdrop {
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(1px);
+}
+
+:host ::ng-deep .appointments-dialog .mat-mdc-dialog-surface {
+  border-radius: 14px;
 }
