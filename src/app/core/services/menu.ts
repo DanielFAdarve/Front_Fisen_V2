@@ -20,6 +20,7 @@ export class MenuService {
         route:'/patients', badge:{text:'5'} 
       },
       { id:'citas', label:'Citas', icon:'fas fa-calendar-alt', route:'/citas', badge:{text:'5'} },
+      { id:'historias', label:'Historia clínica', icon:'fas fa-notes-medical', route:'/historias-clinicas' },
       { id:'reportes', label:'Reportes', icon:'fas fa-chart-bar', route:'/reportes' }
     ];
   }

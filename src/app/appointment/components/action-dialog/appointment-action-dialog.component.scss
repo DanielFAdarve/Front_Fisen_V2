@@ -1,0 +1,36 @@
+.action-dialog {
+  h3 {
+    margin: 0 0 0.4rem;
+    color: #37474f;
+  }
+
+  p {
+    margin: 0 0 0.85rem;
+    color: #607d8b;
+  }
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.option {
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.view { background: #eceff1; }
+.edit { background: #fff8e1; }
+.history { background: #e0f7f4; }
+.payment { background: #e8f5e9; }
+
+@media (max-width: 680px) {
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+}
