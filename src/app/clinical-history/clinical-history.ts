@@ -3,12 +3,9 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { firstValueFrom } from 'rxjs';
 import { AppointmentsService } from '../appointment/data-access/appointments.service';
-import { AppointmentPackagesService } from '../appointment/data-access/packages.service';
 import { ClinicalHistoryForm, ClinicalHistoryService } from '../appointment/data-access/clinical-history.service';
 import { Cie10Service } from '../cie10/data-access/cie10.service';
-import { PatientService } from '../patients/data-access/patient.service';
 import { HistoryDocumentViewerComponent } from './history-document-viewer.component';
 
 @Component({
@@ -23,10 +20,8 @@ export class ClinicalHistoryComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private appointmentsService = inject(AppointmentsService);
-  private packageService = inject(AppointmentPackagesService);
   private clinicalHistoryService = inject(ClinicalHistoryService);
   private cie10Service = inject(Cie10Service);
-  private patientService = inject(PatientService);
   private dialog = inject(MatDialog);
 
   citaId = signal<number | null>(null);
@@ -55,8 +50,10 @@ export class ClinicalHistoryComponent implements OnInit {
 
   patientName = computed(() => {
     const patient = this.patientContext();
-    if (!patient) return 'Paciente no identificado';
-    return `${patient?.nombre ?? ''} ${patient?.apellido ?? ''}`.trim();
+    if (patient?.paciente) return patient.paciente;
+
+    const fullName = `${patient?.nombre ?? ''} ${patient?.apellido ?? ''}`.trim();
+    return fullName || 'Paciente no identificado';
   });
 
   selectedCieLabel = computed(() => {
@@ -93,25 +90,8 @@ export class ClinicalHistoryComponent implements OnInit {
     }
 
     const appointment = this.appointmentContext();
-
-    if (!appointment?.id_paquetes) return;
-
-    const detail = await this.packageService.getPackageDetail(appointment.id_paquetes);
-    const patientId = detail?.patient?.id;
-
-    if (patientId) {
-      try {
-        const patientRes = await firstValueFrom(this.patientService.getPatientById(patientId));
-        this.patientContext.set(patientRes?.response ?? detail?.patient ?? null);
-      } catch {
-        this.patientContext.set(detail?.patient ?? null);
-      }
-    } else {
-      this.patientContext.set(detail?.patient ?? null);
-    }
-
-    if (!this.clinicalForm.controls.id_cie.value && detail?.patient?.['id_cie']) {
-      this.clinicalForm.patchValue({ id_cie: Number(detail.patient['id_cie']) });
+    if (appointment?.paciente) {
+      this.patientContext.set({ paciente: appointment.paciente });
     }
   }
 
@@ -124,13 +104,21 @@ export class ClinicalHistoryComponent implements OnInit {
       if (!history) return;
 
       this.existingHistory.set(history);
+      this.patientContext.set(history);
+
+      const historyCieId = Number(
+        history.id_cie
+        ?? history.cie10_historia?.id
+        ?? history.cie10_paciente?.id
+      );
+
       this.clinicalForm.patchValue({
-        id_cie: Number(history.id_cie),
-        subjetivo: history.subjetivo,
-        objetivo: history.objetivo,
-        intervencion: history.intervencion,
-        descripcion_estado_paciente: history.descripcion_estado_paciente,
-        recomendaciones: history.recomendaciones
+        id_cie: Number.isNaN(historyCieId) ? null : historyCieId,
+        subjetivo: history.subjetivo ?? '',
+        objetivo: history.objetivo ?? '',
+        intervencion: history.intervencion ?? '',
+        descripcion_estado_paciente: history.descripcion_estado_paciente ?? '',
+        recomendaciones: history.recomendaciones ?? ''
       });
     } catch {
       this.errorMessage.set('No fue posible cargar la historia clínica de esta cita.');
@@ -162,8 +150,9 @@ export class ClinicalHistoryComponent implements OnInit {
 
     try {
       const current = this.existingHistory();
-      const result = current?.id
-        ? await this.clinicalHistoryService.update(current.id, payload)
+      const historyId = current?.id ?? current?.id_historial;
+      const result = historyId
+        ? await this.clinicalHistoryService.update(historyId, payload)
         : await this.clinicalHistoryService.create(payload);
 
       this.existingHistory.set(result);
@@ -178,7 +167,7 @@ export class ClinicalHistoryComponent implements OnInit {
 
 
   async printHistory() {
-    const historyId = this.existingHistory()?.id;
+    const historyId = this.existingHistory()?.id ?? this.existingHistory()?.id_historial;
     if (!historyId) {
       this.errorMessage.set('Primero guarda la historia clínica para poder generar el documento.');
       return;
@@ -187,14 +176,14 @@ export class ClinicalHistoryComponent implements OnInit {
     this.errorMessage.set(null);
 
     try {
-      const blob = await this.clinicalHistoryService.exportDocument(historyId);
+      const { blob, fileName } = await this.clinicalHistoryService.exportDocument(historyId);
       this.dialog.open(HistoryDocumentViewerComponent, {
         width: '92vw',
         maxWidth: '1100px',
         panelClass: 'appointments-dialog',
         data: {
           blob,
-          fileName: `historia-clinica-${historyId}.docx`
+          fileName
         }
       });
     } catch {

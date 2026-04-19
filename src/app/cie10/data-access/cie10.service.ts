@@ -18,7 +18,7 @@ export class Cie10Service {
 
   getCie10(): void {
     this.loading.set(true);
-    this.http.get<ApiResponse<Cie10[]>>(`${this.apiBaseUrl}/get-cie10`).subscribe({
+    this.http.get<ApiResponse<Cie10[]>>(`${this.apiBaseUrl}/all`).subscribe({
       next: (data) => {
         this._cie10.set(data.response || []);
         this.errorMessage.set(null);

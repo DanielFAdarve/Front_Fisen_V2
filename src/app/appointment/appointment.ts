@@ -4,12 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { AppointmentsService } from './data-access/appointments.service';
 import { AppointmentProfessionalsService } from './data-access/professionals.service';
-import { AppointmentPackagesService } from './data-access/packages.service';
 import { AppointmentDialogComponent } from './components/dialog/appointment-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { PaymentDialogComponent } from './payment-dialog.component';
-import { effect } from '@angular/core';
 import { AppointmentCalendarComponent } from './components/calendar/appointment-calendar.component';
 import { Router } from '@angular/router';
 import { AppointmentActionDialogComponent } from './components/action-dialog/appointment-action-dialog.component';
@@ -29,28 +27,10 @@ import { AppointmentActionDialogComponent } from './components/action-dialog/app
   styleUrls: ['./appointment.scss']
 })
 export class AppointmentsComponent implements OnInit {
-  constructor() {
-    effect(() => {
-      const appointments = this.appointments();
-
-      const cache = this.packageCache();
-
-      const idsToLoad = appointments
-        .map(a => a.id_paquetes)
-        .filter(
-          (id): id is number =>
-            !!id && !cache.has(id)
-        );
-
-      idsToLoad.forEach(id => {
-        this.loadPackageDetail(id);
-      });
-    });
-  }
+  constructor() {}
 
   public appointmentsService = inject(AppointmentsService);
   public professionalService = inject(AppointmentProfessionalsService);
-  public packageService = inject(AppointmentPackagesService);
   private dialog = inject(MatDialog);
   private router = inject(Router);
 
@@ -60,8 +40,6 @@ export class AppointmentsComponent implements OnInit {
   filtro = signal('');
   filtroFecha = signal<string | null>(null);
   filtroProfesional = signal<number | null>(null);
-
-  private packageCache = signal<Map<number, any>>(new Map());
 
   onProfesionalChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
@@ -83,24 +61,6 @@ export class AppointmentsComponent implements OnInit {
     this.appointmentsService.loadAll();
   }
 
-  private async loadPackageDetail(idPaquete: number) {
-    if (!idPaquete) return;
-
-    const cache = this.packageCache();
-    if (cache.has(idPaquete)) return;
-
-    try {
-      const detail = await this.packageService.getPackageDetail(idPaquete);
-      if (detail) {
-        this.packageCache.set(
-          new Map(this.packageCache()).set(idPaquete, detail)
-        );
-      }
-    } catch (e) {
-      console.error('Error cargando paquete', e);
-    }
-  }
-
   filteredAppointments = computed(() => {
     const term = this.filtro().toLowerCase();
     const date = this.filtroFecha();
@@ -115,33 +75,34 @@ export class AppointmentsComponent implements OnInit {
     }
 
     if (date) {
-      list = list.filter(a => a.fecha_agendamiento === date);
+      list = list.filter(a => (a.fecha || a.fecha_agendamiento) === date);
     }
 
     if (prof) {
       list = list.filter(a => a.id_profesional === prof);
     }
 
-    const cache = this.packageCache();
     const professionals = this.professionals();
 
     return list.map(a => {
-      const paquete = a.id_paquetes
-        ? cache.get(a.id_paquetes)
-        : null;
+      const fecha = a.fecha || a.fecha_agendamiento || '';
+      const horarioInicio = a.hora_inicio || a.horario_inicio || '';
+      const pacienteNombre = a.paciente?.trim() || '—';
+      const profesionalNombre = a.profesional?.trim()
+        || professionals.find(p => p.id === a.id_profesional)?.nombre
+        || '—';
 
       return {
         ...a,
-        fecha_completa: `${a.fecha_agendamiento} ${a.horario_inicio}`,
-        profesional_nombre:
-          professionals.find(p => p.id === a.id_profesional)?.nombre || '—',
-        paciente_nombre: paquete?.patient
-          ? `${paquete.patient.nombre} ${paquete.patient.apellido}`
-          : '—',
-        paciente_documento: paquete?.patient?.num_doc || '—',
-        paquete_nombre: paquete?.attentionPackage?.descripcion || '—',
-        paquete_sesiones: paquete?.attentionPackage?.cantidad_sesiones || '—',
-        estado_paquete: paquete?.statusPackage?.nombre || '—'
+        fecha_agendamiento: fecha,
+        horario_inicio: horarioInicio,
+        fecha_completa: `${fecha} ${horarioInicio}`.trim(),
+        profesional_nombre: profesionalNombre,
+        paciente_nombre: pacienteNombre,
+        paciente_documento: '—',
+        paquete_nombre: '—',
+        paquete_sesiones: a.numero_sesion ?? '—',
+        estado_paquete: a.estado || (a.pagado ? 'Pagado' : 'Pendiente')
       };
     });
   });
