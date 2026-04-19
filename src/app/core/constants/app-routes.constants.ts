@@ -3,5 +3,6 @@ export const APP_ROUTES = {
   login: 'login',
   patients: 'patients',
   patientManagement: 'patients/gestion',
-  appointments: 'citas'
+  appointments: 'citas',
+  clinicalHistory: 'historias-clinicas'
 } as const;
