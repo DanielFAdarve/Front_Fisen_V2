@@ -1,0 +1,69 @@
+<div class="contenedor historia-page">
+  <div class="header">
+    <div>
+      <h2>🩺 Historia clínica de cita</h2>
+      <p class="subtitle">Registra la evolución del paciente sin perder el contexto de la cita.</p>
+    </div>
+    <button class="secondary-btn" type="button" (click)="goBackToAppointments()">← Volver a citas</button>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <label>Paciente</label>
+      <strong>{{ patientName() }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <label>Cita</label>
+      <strong>#{{ citaId() }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <label>Fecha y hora</label>
+      <strong>
+        {{ appointmentContext()?.fecha_agendamiento || 'Sin fecha' }} {{ appointmentContext()?.horario_inicio || '' }}
+      </strong>
+    </div>
+  </div>
+
+  <p *ngIf="errorMessage()" class="msg error">{{ errorMessage() }}</p>
+  <p *ngIf="successMessage()" class="msg success">{{ successMessage() }}</p>
+
+  <form class="history-form" [formGroup]="clinicalForm" (ngSubmit)="save()">
+    <div class="field">
+      <label for="id_cie">Diagnóstico CIE10</label>
+      <input id="id_cie" type="number" formControlName="id_cie" placeholder="Ej: 120" />
+    </div>
+
+    <div class="field">
+      <label for="subjetivo">Subjetivo</label>
+      <textarea id="subjetivo" formControlName="subjetivo" rows="3" placeholder="Síntomas y percepción del paciente"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="objetivo">Objetivo</label>
+      <textarea id="objetivo" formControlName="objetivo" rows="3" placeholder="Hallazgos observables"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="intervencion">Intervención</label>
+      <textarea id="intervencion" formControlName="intervencion" rows="3" placeholder="Procedimientos aplicados"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="estado">Estado del paciente</label>
+      <textarea id="estado" formControlName="descripcion_estado_paciente" rows="3" placeholder="Evolución y respuesta clínica"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="recomendaciones">Recomendaciones</label>
+      <textarea id="recomendaciones" formControlName="recomendaciones" rows="3" placeholder="Indicaciones para casa o siguientes sesiones"></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="primary-btn" type="submit" [disabled]="saving() || loading()">
+        {{ saving() ? 'Guardando...' : 'Guardar historia clínica' }}
+      </button>
+    </div>
+  </form>
+</div>

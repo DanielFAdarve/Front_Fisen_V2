@@ -26,4 +26,29 @@
 
   <app-appointment-calendar [appointments]="filteredAppointments()" (eventClick)="verDetalle($event)">
   </app-appointment-calendar>
+
+  <div class="appointments-list">
+    <div class="appointments-list__header">
+      <h3>Citas visibles</h3>
+      <small>Haz clic en “Historia clínica” para continuar con la evolución.</small>
+    </div>
+
+    <div class="cards-grid" *ngIf="citasVisibles().length; else emptyState">
+      <article class="appointment-card" *ngFor="let cita of citasVisibles()">
+        <div>
+          <strong>{{ cita.paciente_nombre }}</strong>
+          <p>{{ cita.fecha_agendamiento }} · {{ cita.horario_inicio }}</p>
+          <small>Profesional: {{ cita.profesional_nombre }}</small>
+        </div>
+
+        <button type="button" class="history-btn" (click)="goToClinicalHistory(cita)">
+          Historia clínica
+        </button>
+      </article>
+    </div>
+  </div>
+
+  <ng-template #emptyState>
+    <p class="empty-state">No hay citas que coincidan con los filtros actuales.</p>
+  </ng-template>
 </div>
