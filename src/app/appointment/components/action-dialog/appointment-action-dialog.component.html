@@ -1,0 +1,18 @@
+<div class="dialog-header">
+  <h2>⚙️ Acción sobre cita</h2>
+  <button class="close-btn" (click)="close()">✖</button>
+</div>
+
+<div class="dialog-body">
+  <p class="subtitle">
+    <strong>{{ data?.appointment?.paciente_nombre || 'Paciente' }}</strong>
+    · {{ data?.appointment?.fecha_agendamiento }} {{ data?.appointment?.horario_inicio }}
+  </p>
+
+  <div class="actions-grid">
+    <button type="button" class="option" (click)="choose('view')">👁️ Ver detalle</button>
+    <button type="button" class="option" (click)="choose('edit')">✏️ Ajustar cita</button>
+    <button type="button" class="option" (click)="choose('history')">🩺 Historia clínica</button>
+    <button type="button" class="option" (click)="choose('payment')">💳 Registrar pago</button>
+  </div>
+</div>

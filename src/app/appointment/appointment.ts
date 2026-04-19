@@ -11,7 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { PaymentDialogComponent } from './payment-dialog.component';
 import { effect } from '@angular/core';
 import { AppointmentCalendarComponent } from './components/calendar/appointment-calendar.component';
-
+import { Router } from '@angular/router';
+import { AppointmentActionDialogComponent } from './components/action-dialog/appointment-action-dialog.component';
 
 @Component({
   selector: 'app-appointments',
@@ -28,8 +29,6 @@ import { AppointmentCalendarComponent } from './components/calendar/appointment-
   styleUrls: ['./appointment.scss']
 })
 export class AppointmentsComponent implements OnInit {
-
-
   constructor() {
     effect(() => {
       const appointments = this.appointments();
@@ -53,6 +52,7 @@ export class AppointmentsComponent implements OnInit {
   public professionalService = inject(AppointmentProfessionalsService);
   public packageService = inject(AppointmentPackagesService);
   private dialog = inject(MatDialog);
+  private router = inject(Router);
 
   appointments = this.appointmentsService.appointments;
   professionals = this.professionalService.professionals;
@@ -61,12 +61,8 @@ export class AppointmentsComponent implements OnInit {
   filtroFecha = signal<string | null>(null);
   filtroProfesional = signal<number | null>(null);
 
-  // 🚀 Signal para cache de paquetes
   private packageCache = signal<Map<number, any>>(new Map());
 
-  // -------------------------------------
-  // Handlers
-  // -------------------------------------
   onProfesionalChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
     this.filtroProfesional.set(value ? Number(value) : null);
@@ -82,15 +78,10 @@ export class AppointmentsComponent implements OnInit {
     this.filtro.set(value);
   }
 
-  seleccionar(item: any) {
-    console.log("Seleccionado:", item);
-  }
-
   ngOnInit(): void {
     this.professionalService.loadAll();
     this.appointmentsService.loadAll();
   }
-
 
   private async loadPackageDetail(idPaquete: number) {
     if (!idPaquete) return;
@@ -109,6 +100,7 @@ export class AppointmentsComponent implements OnInit {
       console.error('Error cargando paquete', e);
     }
   }
+
   filteredAppointments = computed(() => {
     const term = this.filtro().toLowerCase();
     const date = this.filtroFecha();
@@ -154,17 +146,7 @@ export class AppointmentsComponent implements OnInit {
     });
   });
 
-  displayedColumns = [
-    'id',
-    'fecha_completa',
-    'paciente_nombre',
-    'paciente_documento',
-    'numero_sesion',
-    'profesional_nombre',
-    'paquete_nombre',
-
-
-  ];
+  citasVisibles = computed(() => this.filteredAppointments().slice(0, 8));
 
   nuevaCita() {
     const ref = this.dialog.open(AppointmentDialogComponent, {
@@ -217,17 +199,46 @@ export class AppointmentsComponent implements OnInit {
   }
 
   verDetalle(cita: any) {
-    this.dialog.open(AppointmentDialogComponent, {
-      width: '720px',
+    const ref = this.dialog.open(AppointmentActionDialogComponent, {
+      width: '480px',
       maxWidth: '94vw',
-      panelClass: 'appointments-dialog',
-      backdropClass: 'appointments-backdrop',
-      hasBackdrop: true,
-      data: {
-        mode: 'edit',
-        appointment: cita
+      data: { appointment: cita }
+    });
+
+    ref.afterClosed().subscribe((action: 'view' | 'edit' | 'history' | 'payment' | undefined) => {
+      if (!action) return;
+
+      if (action === 'view') {
+        this.dialog.open(AppointmentDialogComponent, {
+          width: '720px',
+          maxWidth: '94vw',
+          panelClass: 'appointments-dialog',
+          backdropClass: 'appointments-backdrop',
+          hasBackdrop: true,
+          data: { mode: 'view', appointment: cita }
+        });
+        return;
       }
+
+      if (action === 'edit') {
+        this.editarCita(cita);
+        return;
+      }
+
+      if (action === 'payment') {
+        this.pagarCita(cita);
+        return;
+      }
+
+      this.goToClinicalHistory(cita);
     });
   }
-  
+
+  goToClinicalHistory(cita: any) {
+    if (!cita?.id) return;
+
+    this.router.navigate(['/historias-clinicas', cita.id], {
+      state: { appointment: cita }
+    });
+  }
 }

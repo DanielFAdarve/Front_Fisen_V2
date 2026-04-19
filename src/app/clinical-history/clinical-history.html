@@ -1,0 +1,110 @@
+<div class="contenedor historia-page">
+  <div class="header">
+    <div>
+      <h2>🩺 Historia clínica de cita</h2>
+      <p class="subtitle">Registra la evolución del paciente sin perder el contexto de la cita.</p>
+    </div>
+    <div class="header-actions">
+      <button class="secondary-btn" type="button" (click)="goBackToAppointments()">← Volver a citas</button>
+      <button class="primary-btn" type="button" (click)="printHistory()" [disabled]="!existingHistory()?.id">🖨 Imprimir / Exportar</button>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <label>Paciente</label>
+      <strong>{{ patientName() }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <label>Cita</label>
+      <strong>#{{ citaId() }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <label>Fecha y hora</label>
+      <strong>
+        {{ appointmentContext()?.fecha_agendamiento || 'Sin fecha' }} {{ appointmentContext()?.horario_inicio || '' }}
+      </strong>
+    </div>
+  </div>
+
+  <section class="patient-extra" *ngIf="patientContext() as patient">
+    <button type="button" class="collapse-btn" (click)="toggleContact()">
+      {{ showContact() ? '▼' : '▶' }} Datos de contacto y administrativos
+    </button>
+
+    <div class="info-grid" *ngIf="showContact()">
+      <p><strong>Documento:</strong> {{ patient.tipo_doc }} {{ patient.num_doc }}</p>
+      <p><strong>Teléfono:</strong> {{ patient.telefono || 'N/A' }}</p>
+      <p><strong>Tel. secundario:</strong> {{ patient.telefono_secundario || 'N/A' }}</p>
+      <p><strong>Email:</strong> {{ patient.email || 'N/A' }}</p>
+      <p><strong>Dirección:</strong> {{ patient.direccion || 'N/A' }}</p>
+      <p><strong>EPS:</strong> {{ patient.eps || 'N/A' }}</p>
+      <p><strong>Ocupación:</strong> {{ patient.ocupacion || 'N/A' }}</p>
+      <p><strong>Modalidad deportiva:</strong> {{ patient.modalidad_deportiva || 'N/A' }}</p>
+    </div>
+
+    <button type="button" class="collapse-btn" (click)="toggleClinicalBackground()">
+      {{ showClinicalBackground() ? '▼' : '▶' }} Antecedentes clínicos
+    </button>
+
+    <div class="info-grid" *ngIf="showClinicalBackground()">
+      <p><strong>Antecedentes generales:</strong> {{ patient.antecedentes || 'N/A' }}</p>
+      <p><strong>Personales:</strong> {{ patient.antecedentes_personales || 'N/A' }}</p>
+      <p><strong>Patológicos:</strong> {{ patient.antecedentes_patologicos || 'N/A' }}</p>
+      <p><strong>Quirúrgicos:</strong> {{ patient.antecedentes_quirurgicos || 'N/A' }}</p>
+      <p><strong>Traumáticos:</strong> {{ patient.antecedentes_traumaticos || 'N/A' }}</p>
+      <p><strong>Farmacológicos:</strong> {{ patient.antecedentes_farmacologicos || 'N/A' }}</p>
+      <p><strong>Familiares:</strong> {{ patient.antecedentes_familiares || 'N/A' }}</p>
+      <p><strong>Sociales:</strong> {{ patient.antecedentes_sociales || 'N/A' }}</p>
+    </div>
+  </section>
+
+  <p *ngIf="errorMessage()" class="msg error">{{ errorMessage() }}</p>
+  <p *ngIf="successMessage()" class="msg success">{{ successMessage() }}</p>
+
+  <form class="history-form" [formGroup]="clinicalForm" (ngSubmit)="save()">
+    <div class="field">
+      <label for="id_cie">Diagnóstico CIE10</label>
+      <select id="id_cie" formControlName="id_cie">
+        <option [ngValue]="null">Selecciona un diagnóstico</option>
+        <option *ngFor="let cie of cie10Catalog()" [ngValue]="cie.id">
+          {{ cie.codigo }} · {{ cie.descripcion }}
+        </option>
+      </select>
+      <small class="hint">Seleccionado: {{ selectedCieLabel() }}</small>
+    </div>
+
+    <div class="field">
+      <label for="subjetivo">Subjetivo</label>
+      <textarea id="subjetivo" formControlName="subjetivo" rows="3" placeholder="Síntomas y percepción del paciente"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="objetivo">Objetivo</label>
+      <textarea id="objetivo" formControlName="objetivo" rows="3" placeholder="Hallazgos observables"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="intervencion">Intervención</label>
+      <textarea id="intervencion" formControlName="intervencion" rows="3" placeholder="Procedimientos aplicados"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="estado">Estado del paciente</label>
+      <textarea id="estado" formControlName="descripcion_estado_paciente" rows="3" placeholder="Evolución y respuesta clínica"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="recomendaciones">Recomendaciones</label>
+      <textarea id="recomendaciones" formControlName="recomendaciones" rows="3" placeholder="Indicaciones para casa o siguientes sesiones"></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="primary-btn" type="submit" [disabled]="saving() || loading()">
+        {{ saving() ? 'Guardando...' : 'Guardar historia clínica' }}
+      </button>
+    </div>
+  </form>
+</div>

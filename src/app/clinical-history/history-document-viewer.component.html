@@ -1,0 +1,17 @@
+<div class="viewer-header">
+  <h2>📄 Documento de historia clínica</h2>
+  <button type="button" class="close-btn" (click)="close()">✖</button>
+</div>
+
+<div class="viewer-body">
+  <p class="hint">
+    Vista previa del .docx generado por backend. Si tu navegador no lo renderiza, usa “Descargar .docx”.
+  </p>
+
+  <iframe #docFrame [src]="safeFileUrl" title="Vista previa documento"></iframe>
+</div>
+
+<div class="viewer-actions">
+  <button type="button" class="secondary" (click)="downloadDocx()">⬇ Descargar .docx</button>
+  <button type="button" class="primary" (click)="exportPdf()">🖨 Exportar / Imprimir PDF</button>
+</div>

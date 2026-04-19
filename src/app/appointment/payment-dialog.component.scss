@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+
+.pay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #d9ece9;
+  background: #f0fdfa;
+
+  h2 {
+    margin: 0;
+    color: #00695c;
+    font-size: 1.2rem;
+  }
+}
+
+.close-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.pay-content {
+  padding-top: 0.8rem;
+
+  .summary {
+    background: #f8fffe;
+    border: 1px solid #d8ebe8;
+    border-radius: 8px;
+    padding: 0.6rem;
+    margin-bottom: 0.7rem;
+
+    p {
+      margin: 0.15rem 0;
+      color: #455a64;
+    }
+  }
+}
+
+.full {
+  width: 100%;
+}
+
+.error {
+  color: #c62828;
+  font-size: 0.84rem;
+}
+
+.pay-actions {
+  padding: 0.8rem 1rem 1rem;
+}

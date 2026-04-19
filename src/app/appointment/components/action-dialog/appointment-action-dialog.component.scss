@@ -1,0 +1,61 @@
+:host {
+  display: block;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  background: #f0fdfa;
+  border-bottom: 1px solid #b2dfdb;
+
+  h2 {
+    margin: 0;
+    color: #00796b;
+  }
+}
+
+.close-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dialog-body {
+  padding: 1rem 1.2rem 1.2rem;
+
+  .subtitle {
+    margin: 0 0 0.9rem;
+    color: #607d8b;
+  }
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.option {
+  border: 1px solid #d5ebe8;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.7rem 0.85rem;
+  text-align: left;
+  font-weight: 600;
+  color: #37474f;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #26a69a;
+    background: #f5fffd;
+  }
+}
+
+@media (max-width: 680px) {
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+}

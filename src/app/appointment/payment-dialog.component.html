@@ -1,27 +1,37 @@
-<h2 mat-dialog-title>Pagar</h2>
-<mat-dialog-content [formGroup]="form">
-    <mat-form-field appearance="fill" class="full">
-        <mat-label>Valor</mat-label>
-        <input matInput formControlName="valor" type="number">
-    </mat-form-field>
+<div class="pay-header">
+  <h2>💳 Registrar pago</h2>
+  <button type="button" class="close-btn" (click)="cancel()">✖</button>
+</div>
 
+<mat-dialog-content [formGroup]="form" class="pay-content">
+  <div class="summary">
+    <p><strong>Cita:</strong> #{{ form.value.id_cita || 'N/A' }}</p>
+    <p><strong>Tipo:</strong> {{ form.value.id_cita ? 'Pago de cita' : 'Pago de paquete' }}</p>
+  </div>
 
-    <mat-form-field appearance="fill" class="full">
-        <mat-label>Método</mat-label>
-        <input matInput formControlName="metodo_pago">
-    </mat-form-field>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Valor</mat-label>
+    <input matInput formControlName="valor" type="number" />
+  </mat-form-field>
 
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Método</mat-label>
+    <mat-select formControlName="metodo_pago">
+      <mat-option *ngFor="let method of paymentMethods" [value]="method.value">{{ method.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full">
-        <mat-label>Observación</mat-label>
-        <input matInput formControlName="observacion">
-    </mat-form-field>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Observación</mat-label>
+    <textarea matInput formControlName="observacion" rows="2"></textarea>
+  </mat-form-field>
 
-
-    <div class="error" *ngIf="error">{{ error }}</div>
+  <div class="error" *ngIf="error">{{ error }}</div>
 </mat-dialog-content>
 
-
-<mat-dialog-actions align="end">
-    <button mat-button (click)="cancel()">Cancelar</button>
-    <button mat-flat-button color="primary" (click)="save()" [disabled]="busy">Pagar</button>
+<mat-dialog-actions align="end" class="pay-actions">
+  <button mat-stroked-button type="button" (click)="cancel()">Cancelar</button>
+  <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="busy">
+    {{ busy ? 'Guardando...' : 'Guardar pago' }}
+  </button>
+</mat-dialog-actions>
