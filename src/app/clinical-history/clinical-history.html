@@ -4,7 +4,10 @@
       <h2>🩺 Historia clínica de cita</h2>
       <p class="subtitle">Registra la evolución del paciente sin perder el contexto de la cita.</p>
     </div>
-    <button class="secondary-btn" type="button" (click)="goBackToAppointments()">← Volver a citas</button>
+    <div class="header-actions">
+      <button class="secondary-btn" type="button" (click)="goBackToAppointments()">← Volver a citas</button>
+      <button class="primary-btn" type="button" (click)="printHistory()" [disabled]="!existingHistory()?.id">🖨 Imprimir / Exportar</button>
+    </div>
   </div>
 
   <div class="summary-grid">

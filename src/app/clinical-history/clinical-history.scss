@@ -11,6 +11,12 @@
 }
 
 .header {
+
+  .header-actions {
+    display: flex;
+    gap: 0.55rem;
+    align-items: center;
+  }
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -135,6 +141,11 @@
 .msg.success { color: #2e7d32; }
 
 @media (max-width: 900px) {
+  .header .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
   .summary-grid,
   .history-form {
     grid-template-columns: 1fr;

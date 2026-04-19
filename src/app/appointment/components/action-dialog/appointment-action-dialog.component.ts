@@ -14,6 +14,10 @@ export class AppointmentActionDialogComponent {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { appointment: any }) {}
 
+  close() {
+    this.dialogRef.close();
+  }
+
   choose(action: 'view' | 'edit' | 'history' | 'payment') {
     this.dialogRef.close(action);
   }

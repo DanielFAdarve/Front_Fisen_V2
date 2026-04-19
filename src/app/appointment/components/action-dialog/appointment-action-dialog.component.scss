@@ -1,11 +1,32 @@
-.action-dialog {
-  h3 {
-    margin: 0 0 0.4rem;
-    color: #37474f;
-  }
+:host {
+  display: block;
+}
 
-  p {
-    margin: 0 0 0.85rem;
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  background: #f0fdfa;
+  border-bottom: 1px solid #b2dfdb;
+
+  h2 {
+    margin: 0;
+    color: #00796b;
+  }
+}
+
+.close-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dialog-body {
+  padding: 1rem 1.2rem 1.2rem;
+
+  .subtitle {
+    margin: 0 0 0.9rem;
     color: #607d8b;
   }
 }
@@ -17,17 +38,21 @@
 }
 
 .option {
-  border: none;
-  border-radius: 8px;
-  padding: 0.65rem 0.8rem;
+  border: 1px solid #d5ebe8;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.7rem 0.85rem;
+  text-align: left;
   font-weight: 600;
+  color: #37474f;
   cursor: pointer;
-}
+  transition: all 0.15s ease;
 
-.view { background: #eceff1; }
-.edit { background: #fff8e1; }
-.history { background: #e0f7f4; }
-.payment { background: #e8f5e9; }
+  &:hover {
+    border-color: #26a69a;
+    background: #f5fffd;
+  }
+}
 
 @media (max-width: 680px) {
   .actions-grid {

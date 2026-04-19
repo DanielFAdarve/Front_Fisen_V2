@@ -1,0 +1,68 @@
+:host {
+  display: block;
+}
+
+.viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #d9ece9;
+  background: #f0fdfa;
+
+  h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #00695c;
+  }
+}
+
+.close-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.viewer-body {
+  padding: 0.8rem 1rem;
+
+  .hint {
+    margin: 0 0 0.6rem;
+    color: #607d8b;
+    font-size: 0.84rem;
+  }
+
+  iframe {
+    width: 100%;
+    min-height: 65vh;
+    border: 1px solid #dfe7ea;
+    border-radius: 10px;
+    background: #fff;
+  }
+}
+
+.viewer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem 1rem;
+
+  button {
+    border: none;
+    border-radius: 8px;
+    padding: 0.55rem 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .primary {
+    background: #26a69a;
+    color: #fff;
+  }
+
+  .secondary {
+    background: #eceff1;
+    color: #37474f;
+  }
+}

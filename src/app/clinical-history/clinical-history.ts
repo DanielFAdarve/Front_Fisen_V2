@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { AppointmentsService } from '../appointment/data-access/appointments.service';
 import { AppointmentPackagesService } from '../appointment/data-access/packages.service';
 import { ClinicalHistoryForm, ClinicalHistoryService } from '../appointment/data-access/clinical-history.service';
 import { Cie10Service } from '../cie10/data-access/cie10.service';
 import { PatientService } from '../patients/data-access/patient.service';
+import { HistoryDocumentViewerComponent } from './history-document-viewer.component';
 
 @Component({
   selector: 'app-clinical-history',
@@ -25,6 +27,7 @@ export class ClinicalHistoryComponent implements OnInit {
   private clinicalHistoryService = inject(ClinicalHistoryService);
   private cie10Service = inject(Cie10Service);
   private patientService = inject(PatientService);
+  private dialog = inject(MatDialog);
 
   citaId = signal<number | null>(null);
   loading = signal(false);
@@ -169,6 +172,33 @@ export class ClinicalHistoryComponent implements OnInit {
       this.errorMessage.set('No fue posible guardar la historia clínica.');
     } finally {
       this.saving.set(false);
+    }
+  }
+
+
+
+  async printHistory() {
+    const historyId = this.existingHistory()?.id;
+    if (!historyId) {
+      this.errorMessage.set('Primero guarda la historia clínica para poder generar el documento.');
+      return;
+    }
+
+    this.errorMessage.set(null);
+
+    try {
+      const blob = await this.clinicalHistoryService.exportDocument(historyId);
+      this.dialog.open(HistoryDocumentViewerComponent, {
+        width: '92vw',
+        maxWidth: '1100px',
+        panelClass: 'appointments-dialog',
+        data: {
+          blob,
+          fileName: `historia-clinica-${historyId}.docx`
+        }
+      });
+    } catch {
+      this.errorMessage.set('No fue posible generar el documento de historia clínica.');
     }
   }
 

@@ -47,6 +47,15 @@ export class ClinicalHistoryService {
     return res.response;
   }
 
+
+  async exportDocument(historyId: number) {
+    return firstValueFrom(
+      this.http.get(`${this.base}/export-pdf/${historyId}`, {
+        responseType: 'blob'
+      })
+    );
+  }
+
   async update(id: number, payload: Partial<ClinicalHistoryForm>) {
     const res = await firstValueFrom(
       this.http.put<{ response: ClinicalHistoryForm }>(
