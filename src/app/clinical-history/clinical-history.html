@@ -6,7 +6,7 @@
     </div>
     <div class="header-actions">
       <button class="secondary-btn" type="button" (click)="goBackToAppointments()">← Volver a citas</button>
-      <button class="primary-btn" type="button" (click)="printHistory()" [disabled]="!existingHistory()?.id">🖨 Imprimir / Exportar</button>
+      <button class="primary-btn" type="button" (click)="printHistory()" [disabled]="!(existingHistory()?.id || existingHistory()?.id_historial)">🖨 Imprimir / Exportar</button>
     </div>
   </div>
 
@@ -24,7 +24,8 @@
     <div class="summary-card">
       <label>Fecha y hora</label>
       <strong>
-        {{ appointmentContext()?.fecha_agendamiento || 'Sin fecha' }} {{ appointmentContext()?.horario_inicio || '' }}
+        {{ appointmentContext()?.fecha || appointmentContext()?.fecha_agendamiento || 'Sin fecha' }}
+        {{ appointmentContext()?.hora_inicio || appointmentContext()?.horario_inicio || '' }}
       </strong>
     </div>
   </div>

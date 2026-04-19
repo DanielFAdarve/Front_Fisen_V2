@@ -4,14 +4,15 @@
 </div>
 
 <div class="viewer-body">
-  <p class="hint">
-    Vista previa del .docx generado por backend. Si tu navegador no lo renderiza, usa “Descargar .docx”.
-  </p>
+  <p class="hint" *ngIf="isPdf; else docxHint">Vista previa en PDF del documento generado por backend.</p>
+  <ng-template #docxHint>
+    <p class="hint">No fue posible convertir a PDF. Puedes descargar el archivo .docx.</p>
+  </ng-template>
 
   <iframe #docFrame [src]="safeFileUrl" title="Vista previa documento"></iframe>
 </div>
 
 <div class="viewer-actions">
-  <button type="button" class="secondary" (click)="downloadDocx()">⬇ Descargar .docx</button>
+  <button type="button" class="secondary" (click)="downloadFile()">⬇ Descargar archivo</button>
   <button type="button" class="primary" (click)="exportPdf()">🖨 Exportar / Imprimir PDF</button>
 </div>

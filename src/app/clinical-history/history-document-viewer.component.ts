@@ -18,11 +18,13 @@ export class HistoryDocumentViewerComponent implements OnDestroy {
 
   fileUrl: string;
   safeFileUrl: SafeResourceUrl;
+  isPdf: boolean;
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: { blob: Blob; fileName: string }
   ) {
+    this.isPdf = this.data.blob.type.includes('pdf') || this.data.fileName.toLowerCase().endsWith('.pdf');
     this.fileUrl = URL.createObjectURL(this.data.blob);
     this.safeFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.fileUrl);
   }
@@ -31,11 +33,13 @@ export class HistoryDocumentViewerComponent implements OnDestroy {
     this.dialogRef.close();
   }
 
-  downloadDocx() {
+  downloadFile() {
     const link = document.createElement('a');
     link.href = this.fileUrl;
     link.download = this.data.fileName;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   }
 
   exportPdf() {
