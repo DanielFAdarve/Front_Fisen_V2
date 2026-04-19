@@ -1,0 +1,14 @@
+<div class="action-dialog">
+  <h3>¿Qué deseas hacer con esta cita?</h3>
+  <p>
+    <strong>{{ data?.appointment?.paciente_nombre || 'Paciente' }}</strong>
+    · {{ data?.appointment?.fecha_agendamiento }} {{ data?.appointment?.horario_inicio }}
+  </p>
+
+  <div class="actions-grid">
+    <button type="button" class="option view" (click)="choose('view')">👁️ Ver cita</button>
+    <button type="button" class="option edit" (click)="choose('edit')">✏️ Ajustar cita</button>
+    <button type="button" class="option history" (click)="choose('history')">🩺 Ir a historia</button>
+    <button type="button" class="option payment" (click)="choose('payment')">💳 Registrar pago</button>
+  </div>
+</div>

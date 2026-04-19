@@ -12,6 +12,7 @@ import { PaymentDialogComponent } from './payment-dialog.component';
 import { effect } from '@angular/core';
 import { AppointmentCalendarComponent } from './components/calendar/appointment-calendar.component';
 import { Router } from '@angular/router';
+import { AppointmentActionDialogComponent } from './components/action-dialog/appointment-action-dialog.component';
 
 @Component({
   selector: 'app-appointments',
@@ -198,7 +199,39 @@ export class AppointmentsComponent implements OnInit {
   }
 
   verDetalle(cita: any) {
-    this.goToClinicalHistory(cita);
+    const ref = this.dialog.open(AppointmentActionDialogComponent, {
+      width: '480px',
+      maxWidth: '94vw',
+      data: { appointment: cita }
+    });
+
+    ref.afterClosed().subscribe((action: 'view' | 'edit' | 'history' | 'payment' | undefined) => {
+      if (!action) return;
+
+      if (action === 'view') {
+        this.dialog.open(AppointmentDialogComponent, {
+          width: '720px',
+          maxWidth: '94vw',
+          panelClass: 'appointments-dialog',
+          backdropClass: 'appointments-backdrop',
+          hasBackdrop: true,
+          data: { mode: 'view', appointment: cita }
+        });
+        return;
+      }
+
+      if (action === 'edit') {
+        this.editarCita(cita);
+        return;
+      }
+
+      if (action === 'payment') {
+        this.pagarCita(cita);
+        return;
+      }
+
+      this.goToClinicalHistory(cita);
+    });
   }
 
   goToClinicalHistory(cita: any) {

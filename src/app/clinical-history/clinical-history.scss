@@ -80,6 +80,7 @@
   }
 
   input,
+  select,
   textarea {
     border: 1px solid #cfd8dc;
     border-radius: 8px;
@@ -138,4 +139,48 @@
   .history-form {
     grid-template-columns: 1fr;
   }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.patient-extra {
+  border: 1px solid #d9ece9;
+  border-radius: 10px;
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+  background: #fcfefe;
+}
+
+.collapse-btn {
+  width: 100%;
+  border: none;
+  text-align: left;
+  background: #eef7f6;
+  color: #0b6d62;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.45rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 1rem;
+  padding: 0.55rem 0.2rem;
+
+  p {
+    margin: 0;
+    color: #455a64;
+    font-size: 0.9rem;
+  }
+}
+
+.hint {
+  color: #607d8b;
+  font-size: 0.78rem;
 }

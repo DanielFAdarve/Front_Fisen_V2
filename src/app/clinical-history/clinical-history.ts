@@ -2,9 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { AppointmentsService } from '../appointment/data-access/appointments.service';
 import { AppointmentPackagesService } from '../appointment/data-access/packages.service';
 import { ClinicalHistoryForm, ClinicalHistoryService } from '../appointment/data-access/clinical-history.service';
+import { Cie10Service } from '../cie10/data-access/cie10.service';
+import { PatientService } from '../patients/data-access/patient.service';
 
 @Component({
   selector: 'app-clinical-history',
@@ -20,6 +23,8 @@ export class ClinicalHistoryComponent implements OnInit {
   private appointmentsService = inject(AppointmentsService);
   private packageService = inject(AppointmentPackagesService);
   private clinicalHistoryService = inject(ClinicalHistoryService);
+  private cie10Service = inject(Cie10Service);
+  private patientService = inject(PatientService);
 
   citaId = signal<number | null>(null);
   loading = signal(false);
@@ -30,6 +35,11 @@ export class ClinicalHistoryComponent implements OnInit {
   appointmentContext = signal<any | null>(null);
   patientContext = signal<any | null>(null);
   existingHistory = signal<ClinicalHistoryForm | null>(null);
+
+  showContact = signal(false);
+  showClinicalBackground = signal(true);
+
+  cie10Catalog = this.cie10Service.cie10;
 
   clinicalForm = this.fb.group({
     id_cie: this.fb.control<number | null>(null, [Validators.required]),
@@ -46,7 +56,17 @@ export class ClinicalHistoryComponent implements OnInit {
     return `${patient?.nombre ?? ''} ${patient?.apellido ?? ''}`.trim();
   });
 
+  selectedCieLabel = computed(() => {
+    const id = Number(this.clinicalForm.controls.id_cie.value);
+    if (!id) return 'Sin diagnóstico seleccionado';
+    const cie = this.cie10Catalog().find((item) => item.id === id);
+    if (!cie) return `CIE10 #${id}`;
+    return `${cie.codigo} · ${cie.descripcion}`;
+  });
+
   async ngOnInit() {
+    this.cie10Service.getCie10();
+
     const idFromRoute = Number(this.route.snapshot.paramMap.get('idCita'));
     if (!idFromRoute) {
       this.errorMessage.set('No fue posible identificar la cita.');
@@ -74,10 +94,21 @@ export class ClinicalHistoryComponent implements OnInit {
     if (!appointment?.id_paquetes) return;
 
     const detail = await this.packageService.getPackageDetail(appointment.id_paquetes);
-    this.patientContext.set(detail?.patient ?? null);
+    const patientId = detail?.patient?.id;
+
+    if (patientId) {
+      try {
+        const patientRes = await firstValueFrom(this.patientService.getPatientById(patientId));
+        this.patientContext.set(patientRes?.response ?? detail?.patient ?? null);
+      } catch {
+        this.patientContext.set(detail?.patient ?? null);
+      }
+    } else {
+      this.patientContext.set(detail?.patient ?? null);
+    }
 
     if (!this.clinicalForm.controls.id_cie.value && detail?.patient?.['id_cie']) {
-      this.clinicalForm.patchValue({ id_cie: detail.patient['id_cie'] });
+      this.clinicalForm.patchValue({ id_cie: Number(detail.patient['id_cie']) });
     }
   }
 
@@ -91,7 +122,7 @@ export class ClinicalHistoryComponent implements OnInit {
 
       this.existingHistory.set(history);
       this.clinicalForm.patchValue({
-        id_cie: history.id_cie,
+        id_cie: Number(history.id_cie),
         subjetivo: history.subjetivo,
         objetivo: history.objetivo,
         intervencion: history.intervencion,
@@ -143,5 +174,13 @@ export class ClinicalHistoryComponent implements OnInit {
 
   goBackToAppointments() {
     this.router.navigate(['/citas']);
+  }
+
+  toggleContact() {
+    this.showContact.update((v) => !v);
+  }
+
+  toggleClinicalBackground() {
+    this.showClinicalBackground.update((v) => !v);
   }
 }

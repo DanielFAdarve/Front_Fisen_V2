@@ -22,12 +22,15 @@ export class ClinicalHistoryService {
   async getByQuoteId(idCita: number) {
     try {
       const res = await firstValueFrom(
-        this.http.get<{ response: ClinicalHistoryForm | null }>(
+        this.http.get<{ response: ClinicalHistoryForm | ClinicalHistoryForm[] | null }>(
           `${this.base}/get-by-quote/${idCita}`
         )
       );
 
-      return res?.response ?? null;
+      const payload = res?.response;
+      if (!payload) return null;
+
+      return Array.isArray(payload) ? (payload[0] ?? null) : payload;
     } catch {
       return null;
     }
