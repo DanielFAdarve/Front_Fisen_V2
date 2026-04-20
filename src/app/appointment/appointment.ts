@@ -198,7 +198,7 @@ export class AppointmentsComponent implements OnInit {
   goToClinicalHistory(cita: any) {
     if (!cita?.id) return;
 
-    this.router.navigate(['/historias-clinicas', cita.id], {
+    this.router.navigate(['/historias-clinicas'], {
       state: { appointment: cita }
     });
   }

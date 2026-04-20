@@ -26,10 +26,10 @@ export const routes: Routes = [
         path: APP_ROUTES.clinicalHistory,
         loadComponent: () => import('./clinical-history/clinical-history').then((m) => m.ClinicalHistoryComponent)
       },
-      {
-        path: `${APP_ROUTES.clinicalHistory}/:idCita`,
-        loadComponent: () => import('./clinical-history/clinical-history').then((m) => m.ClinicalHistoryComponent)
-      },
+      // {
+      //   path: `${APP_ROUTES.clinicalHistory}`,
+      //   loadComponent: () => import('./clinical-history/clinical-history').then((m) => m.ClinicalHistoryComponent)
+      // },
       { path: APP_ROUTES.root, redirectTo: APP_ROUTES.patients, pathMatch: 'full' }
     ]
   },

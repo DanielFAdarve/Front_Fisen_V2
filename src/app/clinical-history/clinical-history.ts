@@ -93,15 +93,34 @@ export class ClinicalHistoryComponent implements OnInit {
   async ngOnInit() {
     this.cie10Service.getCie10();
 
-    const idFromRoute = Number(this.route.snapshot.paramMap.get('idCita'));
-    if (!idFromRoute) {
-      this.errorMessage.set('No fue posible identificar la cita.');
+    // const idFromRoute = Number(this.route.snapshot.paramMap.get('idCita'));
+    // if (!idFromRoute) {
+    //   this.errorMessage.set('No fue posible identificar la cita.');
+    //   return;
+    // }
+
+    // this.citaId.set(idFromRoute);
+    // await this.hydrateContext(idFromRoute);
+    // await this.loadHistory(idFromRoute);
+
+    const navState = history.state?.appointment;
+
+    if (!navState) {
+      this.errorMessage.set('No se recibió información de la cita.');
       return;
     }
 
-    this.citaId.set(idFromRoute);
-    await this.hydrateContext(idFromRoute);
-    await this.loadHistory(idFromRoute);
+    // 👇 AQUÍ está la clave
+    this.appointmentContext.set(navState);
+    this.citaId.set(navState.id);
+
+    this.patientContext.set({
+      paciente: navState.paciente,
+      nombre: navState.nombre ?? navState.paciente_nombre,
+      apellido: navState.apellido ?? navState.paciente_apellido
+    });
+
+    await this.loadHistory(navState.id);
   }
 
   private async hydrateContext(idCita: number) {
