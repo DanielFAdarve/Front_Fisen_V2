@@ -6,7 +6,16 @@
     </div>
     <div class="header-actions">
       <button class="secondary-btn" type="button" (click)="goBackToAppointments()">← Volver a citas</button>
-      <button class="primary-btn" type="button" (click)="printHistory()" [disabled]="!(existingHistory()?.id || existingHistory()?.id_historial)">🖨 Imprimir / Exportar</button>
+      <button class="primary-btn" type="button" (click)="printHistory()"
+        [disabled]="!(existingHistory()?.id || existingHistory()?.id_historial)">🖨 Imprimir / Exportar</button>
+    </div>
+  </div>
+
+  <div class="field search-cita">
+    <label>Buscar cita</label>
+    <div style="display:flex; gap:8px;">
+      <input type="number" [(ngModel)]="searchCitaId" placeholder="Ingresa ID de cita">
+      <button type="button" class="secondary-btn" (click)="searchCita()">Buscar</button>
     </div>
   </div>
 
@@ -50,7 +59,7 @@
       {{ showClinicalBackground() ? '▼' : '▶' }} Antecedentes clínicos
     </button>
 
-    <div class="info-grid" *ngIf="showClinicalBackground()">
+    <!-- <div class="info-grid" *ngIf="showClinicalBackground()">
       <p><strong>Antecedentes generales:</strong> {{ patient.antecedentes || 'N/A' }}</p>
       <p><strong>Personales:</strong> {{ patient.antecedentes_personales || 'N/A' }}</p>
       <p><strong>Patológicos:</strong> {{ patient.antecedentes_patologicos || 'N/A' }}</p>
@@ -59,6 +68,102 @@
       <p><strong>Farmacológicos:</strong> {{ patient.antecedentes_farmacologicos || 'N/A' }}</p>
       <p><strong>Familiares:</strong> {{ patient.antecedentes_familiares || 'N/A' }}</p>
       <p><strong>Sociales:</strong> {{ patient.antecedentes_sociales || 'N/A' }}</p>
+    </div> -->
+    <!-- <div class="info-grid" *ngIf="showClinicalBackground()">
+
+      <button class="secondary-btn" type="button" (click)="editingBackground.set(!editingBackground())">
+        {{ editingBackground() ? 'Guardar antecedentes' : 'Editar antecedentes' }}
+      </button>
+
+      <ng-container *ngIf="!editingBackground(); else editBlock">
+        <p><strong>Antecedentes generales:</strong> {{ patient.antecedentes || 'N/A' }}</p>
+        <p><strong>Personales:</strong> {{ patient.antecedentes_personales || 'N/A' }}</p>
+        <p><strong>Patológicos:</strong> {{ patient.antecedentes_patologicos || 'N/A' }}</p>
+        <p><strong>Quirúrgicos:</strong> {{ patient.antecedentes_quirurgicos || 'N/A' }}</p>
+        <p><strong>Traumáticos:</strong> {{ patient.antecedentes_traumaticos || 'N/A' }}</p>
+        <p><strong>Farmacológicos:</strong> {{ patient.antecedentes_farmacologicos || 'N/A' }}</p>
+        <p><strong>Familiares:</strong> {{ patient.antecedentes_familiares || 'N/A' }}</p>
+        <p><strong>Sociales:</strong> {{ patient.antecedentes_sociales || 'N/A' }}</p>
+      </ng-container>
+
+      <ng-template #editBlock>
+        <textarea [(ngModel)]="patientContext().antecedentes"></textarea>
+        <textarea [(ngModel)]="patientContext().antecedentes_personales"></textarea>
+        <textarea [(ngModel)]="patientContext().antecedentes_patologicos"></textarea>
+        <textarea [(ngModel)]="patientContext().antecedentes_quirurgicos"></textarea>
+        <textarea [(ngModel)]="patientContext().antecedentes_traumaticos"></textarea>
+        <textarea [(ngModel)]="patientContext().antecedentes_farmacologicos"></textarea>
+        <textarea [(ngModel)]="patientContext().antecedentes_familiares"></textarea>
+        <textarea [(ngModel)]="patientContext().antecedentes_sociales"></textarea>
+      </ng-template> -->
+
+    <!-- </div> -->
+    <div class="info-grid antecedentes-grid" *ngIf="showClinicalBackground()">
+
+      <div class="antecedentes-header">
+        <h4>Antecedentes clínicos</h4>
+        <button class="secondary-btn" type="button" (click)="editingBackground.set(!editingBackground())">
+          {{ editingBackground() ? 'Cerrar edición' : 'Editar' }}
+        </button>
+      </div>
+
+      <!-- MODO LECTURA -->
+      <ng-container *ngIf="!editingBackground(); else editBlock">
+        <p><strong>Generales:</strong> {{ backgroundForm.value.antecedentes || 'N/A' }}</p>
+        <p><strong>Personales:</strong> {{ backgroundForm.value.antecedentes_personales || 'N/A' }}</p>
+        <p><strong>Patológicos:</strong> {{ backgroundForm.value.antecedentes_patologicos || 'N/A' }}</p>
+        <p><strong>Quirúrgicos:</strong> {{ backgroundForm.value.antecedentes_quirurgicos || 'N/A' }}</p>
+        <p><strong>Traumáticos:</strong> {{ backgroundForm.value.antecedentes_traumaticos || 'N/A' }}</p>
+        <p><strong>Farmacológicos:</strong> {{ backgroundForm.value.antecedentes_farmacologicos || 'N/A' }}</p>
+        <p><strong>Familiares:</strong> {{ backgroundForm.value.antecedentes_familiares || 'N/A' }}</p>
+        <p><strong>Sociales:</strong> {{ backgroundForm.value.antecedentes_sociales || 'N/A' }}</p>
+      </ng-container>
+
+      <!-- MODO EDICIÓN -->
+      <ng-template #editBlock>
+        <form [formGroup]="backgroundForm" class="history-form antecedentes-form">
+          <div class="field">
+            <label>Generales</label>
+            <textarea formControlName="antecedentes"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Personales</label>
+            <textarea formControlName="antecedentes_personales"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Patológicos</label>
+            <textarea formControlName="antecedentes_patologicos"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Quirúrgicos</label>
+            <textarea formControlName="antecedentes_quirurgicos"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Traumáticos</label>
+            <textarea formControlName="antecedentes_traumaticos"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Farmacológicos</label>
+            <textarea formControlName="antecedentes_farmacologicos"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Familiares</label>
+            <textarea formControlName="antecedentes_familiares"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Sociales</label>
+            <textarea formControlName="antecedentes_sociales"></textarea>
+          </div>
+        </form>
+      </ng-template>
+
     </div>
   </section>
 
@@ -79,7 +184,8 @@
 
     <div class="field">
       <label for="subjetivo">Subjetivo</label>
-      <textarea id="subjetivo" formControlName="subjetivo" rows="3" placeholder="Síntomas y percepción del paciente"></textarea>
+      <textarea id="subjetivo" formControlName="subjetivo" rows="3"
+        placeholder="Síntomas y percepción del paciente"></textarea>
     </div>
 
     <div class="field">
@@ -89,17 +195,20 @@
 
     <div class="field">
       <label for="intervencion">Intervención</label>
-      <textarea id="intervencion" formControlName="intervencion" rows="3" placeholder="Procedimientos aplicados"></textarea>
+      <textarea id="intervencion" formControlName="intervencion" rows="3"
+        placeholder="Procedimientos aplicados"></textarea>
     </div>
 
     <div class="field">
       <label for="estado">Estado del paciente</label>
-      <textarea id="estado" formControlName="descripcion_estado_paciente" rows="3" placeholder="Evolución y respuesta clínica"></textarea>
+      <textarea id="estado" formControlName="descripcion_estado_paciente" rows="3"
+        placeholder="Evolución y respuesta clínica"></textarea>
     </div>
 
     <div class="field">
       <label for="recomendaciones">Recomendaciones</label>
-      <textarea id="recomendaciones" formControlName="recomendaciones" rows="3" placeholder="Indicaciones para casa o siguientes sesiones"></textarea>
+      <textarea id="recomendaciones" formControlName="recomendaciones" rows="3"
+        placeholder="Indicaciones para casa o siguientes sesiones"></textarea>
     </div>
 
     <div class="actions">

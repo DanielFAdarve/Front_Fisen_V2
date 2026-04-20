@@ -24,9 +24,18 @@ export class HistoryDocumentViewerComponent implements OnDestroy {
     @Inject(MAT_DIALOG_DATA)
     public data: { blob: Blob; fileName: string }
   ) {
-    this.isPdf = this.data.blob.type.includes('pdf') || this.data.fileName.toLowerCase().endsWith('.pdf');
+    // this.isPdf = this.data.blob.type.includes('pdf') || this.data.fileName.toLowerCase().endsWith('.pdf');
+    this.isPdf = this.data.blob.type.includes('pdf')
+      || this.data.fileName.toLowerCase().endsWith('.pdf');
     this.fileUrl = URL.createObjectURL(this.data.blob);
-    this.safeFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.fileUrl);
+    if (!this.isPdf) {
+      this.safeFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl('');
+    } else {
+      this.safeFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.fileUrl);
+    }
+
+    this.dialogRef.close();
+    // this.safeFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.fileUrl);
   }
 
   close() {
@@ -41,7 +50,14 @@ export class HistoryDocumentViewerComponent implements OnDestroy {
     link.click();
     document.body.removeChild(link);
   }
-
+  downloadDocx() {
+    const link = document.createElement('a');
+    link.href = this.fileUrl;
+    link.download = this.data.fileName.endsWith('.docx')
+      ? this.data.fileName
+      : this.data.fileName + '.docx';
+    link.click();
+  }
   exportPdf() {
     const iframeWindow = this.docFrame?.nativeElement?.contentWindow;
 

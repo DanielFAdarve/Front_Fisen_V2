@@ -17,6 +17,7 @@
     gap: 0.55rem;
     align-items: center;
   }
+
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -137,8 +138,13 @@
   font-size: 0.9rem;
 }
 
-.msg.error { color: #c62828; }
-.msg.success { color: #2e7d32; }
+.msg.error {
+  color: #c62828;
+}
+
+.msg.success {
+  color: #2e7d32;
+}
 
 @media (max-width: 900px) {
   .header .header-actions {
@@ -194,4 +200,58 @@
 .hint {
   color: #607d8b;
   font-size: 0.78rem;
+}
+
+.search-cita {
+  margin-bottom: 1rem;
+
+  input {
+    flex: 1;
+  }
+}
+
+.antecedentes-grid {
+  margin-top: 0.5rem;
+}
+
+.antecedentes-header {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h4 {
+    margin: 0;
+    color: #2c3e50;
+  }
+}
+
+.antecedentes-form {
+  grid-column: 1 / -1;
+}
+
+.search-cita {
+  margin-bottom: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  div {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  input {
+    flex: 1;
+    border-radius: 10px;
+  }
+
+  button {
+    white-space: nowrap;
+  }
+}
+.custom-dialog .mat-mdc-dialog-container {
+  padding: 0 !important;
+  border-radius: 14px !important;
 }

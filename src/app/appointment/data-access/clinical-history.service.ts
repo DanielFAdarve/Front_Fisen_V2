@@ -38,7 +38,7 @@ export interface ClinicalHistoryForm {
 export class ClinicalHistoryService {
   private http = inject(HttpClient);
   private base = `${API_BASE_URL}/${API_ENDPOINTS.histories}`;
-
+//  private base = `http://localhost:3000/${API_ENDPOINTS.histories}`;
   async getByQuoteId(idCita: number) {
     try {
       const res = await firstValueFrom(
@@ -78,7 +78,7 @@ export class ClinicalHistoryService {
 
       return {
         blob: pdfBlob,
-        fileName: `historia-clinica-${historyId}.pdf`
+        fileName: `historia-clinica-${historyId}.docx`
       };
     } catch {
       const docxBlob = await firstValueFrom(

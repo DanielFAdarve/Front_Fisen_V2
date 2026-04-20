@@ -7,11 +7,12 @@ import { AppointmentsService } from '../appointment/data-access/appointments.ser
 import { ClinicalHistoryForm, ClinicalHistoryService } from '../appointment/data-access/clinical-history.service';
 import { Cie10Service } from '../cie10/data-access/cie10.service';
 import { HistoryDocumentViewerComponent } from './history-document-viewer.component';
-
+import { FormsModule } from '@angular/forms';
+import { ResultDialog } from './clinical-history-modal';
 @Component({
   selector: 'app-clinical-history',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './clinical-history.html',
   styleUrls: ['./clinical-history.scss']
 })
@@ -39,6 +40,23 @@ export class ClinicalHistoryComponent implements OnInit {
 
   cie10Catalog = this.cie10Service.cie10;
 
+  searchCitaId: number | null = null;
+
+  //Signal para gestion de antecedentes 
+  editingBackground = signal(false);
+
+  //Background form para editar antedecentes del paciente 
+  backgroundForm = this.fb.group({
+    antecedentes: [''],
+    antecedentes_personales: [''],
+    antecedentes_patologicos: [''],
+    antecedentes_quirurgicos: [''],
+    antecedentes_traumaticos: [''],
+    antecedentes_farmacologicos: [''],
+    antecedentes_familiares: [''],
+    antecedentes_sociales: ['']
+  });
+
   clinicalForm = this.fb.group({
     id_cie: this.fb.control<number | null>(null, [Validators.required]),
     subjetivo: this.fb.nonNullable.control('', [Validators.required, Validators.maxLength(500)]),
@@ -49,11 +67,19 @@ export class ClinicalHistoryComponent implements OnInit {
   });
 
   patientName = computed(() => {
-    const patient = this.patientContext();
-    if (patient?.paciente) return patient.paciente;
+    const p = this.patientContext();
 
-    const fullName = `${patient?.nombre ?? ''} ${patient?.apellido ?? ''}`.trim();
-    return fullName || 'Paciente no identificado';
+    if (!p) return 'Paciente no identificado';
+
+    // prioridad 1: nombre completo ya armado
+    if (p.paciente && p.paciente.trim()) return p.paciente;
+
+    // prioridad 2: nombre + apellido
+    const fullName = `${p.nombre ?? ''} ${p.apellido ?? ''}`.trim();
+    if (fullName) return fullName;
+
+    // fallback final
+    return 'Paciente no identificado';
   });
 
   selectedCieLabel = computed(() => {
@@ -90,9 +116,11 @@ export class ClinicalHistoryComponent implements OnInit {
     }
 
     const appointment = this.appointmentContext();
-    if (appointment?.paciente) {
-      this.patientContext.set({ paciente: appointment.paciente });
-    }
+    this.patientContext.set({
+      paciente: appointment?.paciente,
+      nombre: appointment?.nombre ?? appointment?.paciente_nombre,
+      apellido: appointment?.apellido ?? appointment?.paciente_apellido
+    });
   }
 
   private async loadHistory(idCita: number) {
@@ -104,7 +132,13 @@ export class ClinicalHistoryComponent implements OnInit {
       if (!history) return;
 
       this.existingHistory.set(history);
-      this.patientContext.set(history);
+      // this.patientContext.set(history);
+      const currentPatient = this.patientContext();
+
+      this.patientContext.set({
+        ...currentPatient,   // 👈 conserva datos de cita
+        ...history           // 👈 añade lo clínico
+      });
 
       const historyCieId = Number(
         history.id_cie
@@ -112,6 +146,16 @@ export class ClinicalHistoryComponent implements OnInit {
         ?? history.cie10_paciente?.id
       );
 
+      this.backgroundForm.patchValue({
+        antecedentes: history.antecedentes ?? '',
+        antecedentes_personales: history.antecedentes_personales ?? '',
+        antecedentes_patologicos: history.antecedentes_patologicos ?? '',
+        antecedentes_quirurgicos: history.antecedentes_quirurgicos ?? '',
+        antecedentes_traumaticos: history.antecedentes_traumaticos ?? '',
+        antecedentes_farmacologicos: history.antecedentes_farmacologicos ?? '',
+        antecedentes_familiares: history.antecedentes_familiares ?? '',
+        antecedentes_sociales: history.antecedentes_sociales ?? ''
+      });
       this.clinicalForm.patchValue({
         id_cie: Number.isNaN(historyCieId) ? null : historyCieId,
         subjetivo: history.subjetivo ?? '',
@@ -127,6 +171,16 @@ export class ClinicalHistoryComponent implements OnInit {
     }
   }
 
+  async searchCita() {
+    if (!this.searchCitaId) return;
+
+    this.citaId.set(this.searchCitaId);
+    this.existingHistory.set(null);
+    this.clinicalForm.reset();
+
+    await this.hydrateContext(this.searchCitaId);
+    await this.loadHistory(this.searchCitaId);
+  }
   async save() {
     this.successMessage.set(null);
     this.errorMessage.set(null);
@@ -135,17 +189,46 @@ export class ClinicalHistoryComponent implements OnInit {
       this.clinicalForm.markAllAsTouched();
       return;
     }
+    // const patient = this.patientContext();
+    const bg = this.backgroundForm.value;
 
+    // const payload: ClinicalHistoryForm = {
+    //   id_cita: this.citaId()!,
+    //   id_cie: Number(this.clinicalForm.value.id_cie),
+    //   subjetivo: this.clinicalForm.value.subjetivo?.trim() ?? '',
+    //   objetivo: this.clinicalForm.value.objetivo?.trim() ?? '',
+    //   intervencion: this.clinicalForm.value.intervencion?.trim() ?? '',
+    //   descripcion_estado_paciente: this.clinicalForm.value.descripcion_estado_paciente?.trim() ?? '',
+    //   recomendaciones: this.clinicalForm.value.recomendaciones?.trim() ?? ''
+    // };
     const payload: ClinicalHistoryForm = {
       id_cita: this.citaId()!,
       id_cie: Number(this.clinicalForm.value.id_cie),
+
       subjetivo: this.clinicalForm.value.subjetivo?.trim() ?? '',
       objetivo: this.clinicalForm.value.objetivo?.trim() ?? '',
       intervencion: this.clinicalForm.value.intervencion?.trim() ?? '',
       descripcion_estado_paciente: this.clinicalForm.value.descripcion_estado_paciente?.trim() ?? '',
-      recomendaciones: this.clinicalForm.value.recomendaciones?.trim() ?? ''
-    };
+      recomendaciones: this.clinicalForm.value.recomendaciones?.trim() ?? '',
 
+      // 👇 NUEVO
+      // antecedentes: patient?.antecedentes,
+      // antecedentes_personales: patient?.antecedentes_personales,
+      // antecedentes_patologicos: patient?.antecedentes_patologicos,
+      // antecedentes_quirurgicos: patient?.antecedentes_quirurgicos,
+      // antecedentes_traumaticos: patient?.antecedentes_traumaticos,
+      // antecedentes_farmacologicos: patient?.antecedentes_farmacologicos,
+      // antecedentes_familiares: patient?.antecedentes_familiares,
+      // antecedentes_sociales: patient?.antecedentes_sociales
+      antecedentes: bg.antecedentes?.trim() ?? '',
+      antecedentes_personales: bg.antecedentes_personales?.trim() ?? '',
+      antecedentes_patologicos: bg.antecedentes_patologicos?.trim() ?? '',
+      antecedentes_quirurgicos: bg.antecedentes_quirurgicos?.trim() ?? '',
+      antecedentes_traumaticos: bg.antecedentes_traumaticos?.trim() ?? '',
+      antecedentes_farmacologicos: bg.antecedentes_farmacologicos?.trim() ?? '',
+      antecedentes_familiares: bg.antecedentes_familiares?.trim() ?? '',
+      antecedentes_sociales: bg.antecedentes_sociales?.trim() ?? ''
+    };
     this.saving.set(true);
 
     try {
@@ -156,9 +239,21 @@ export class ClinicalHistoryComponent implements OnInit {
         : await this.clinicalHistoryService.create(payload);
 
       this.existingHistory.set(result);
-      this.successMessage.set('Historia clínica guardada correctamente.');
+      // this.successMessage.set('Historia clínica guardada correctamente.');
+      const dialogRef = this.dialog.open(ResultDialog, {
+        data: { success: true, message: 'Historia clínica guardada correctamente' },
+        panelClass: 'custom-dialog'
+      });
+
+      setTimeout(() => dialogRef.close(), 3800);
     } catch {
-      this.errorMessage.set('No fue posible guardar la historia clínica.');
+      // this.errorMessage.set('No fue posible guardar la historia clínica.');
+      const dialogRef = this.dialog.open(ResultDialog, {
+        data: { success: false, message: 'Error al guardar la historia clínica' },
+        panelClass: 'custom-dialog'
+      });
+
+      setTimeout(() => dialogRef.close(), 3800);
     } finally {
       this.saving.set(false);
     }
@@ -177,15 +272,30 @@ export class ClinicalHistoryComponent implements OnInit {
 
     try {
       const { blob, fileName } = await this.clinicalHistoryService.exportDocument(historyId);
-      this.dialog.open(HistoryDocumentViewerComponent, {
-        width: '92vw',
-        maxWidth: '1100px',
-        panelClass: 'appointments-dialog',
-        data: {
-          blob,
-          fileName
-        }
-      });
+
+      //-------------------------------------------------------
+      //VISOR PARA LA OTRA VERSION
+      //-------------------------------------------------------
+
+
+      // this.dialog.open(HistoryDocumentViewerComponent, {
+      //   width: '92vw',
+      //   maxWidth: '1100px',
+      //   panelClass: 'appointments-dialog',
+      //   data: {
+      //     blob,
+      //     fileName
+      //   }
+      // });
+
+      const fileUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = fileName.endsWith('.docx')
+        ? fileName
+        : fileName + '.docx';
+      link.click();
+
     } catch {
       this.errorMessage.set('No fue posible generar el documento de historia clínica.');
     }
@@ -202,4 +312,5 @@ export class ClinicalHistoryComponent implements OnInit {
   toggleClinicalBackground() {
     this.showClinicalBackground.update((v) => !v);
   }
+
 }
