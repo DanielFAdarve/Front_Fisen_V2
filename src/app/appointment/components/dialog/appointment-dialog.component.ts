@@ -69,7 +69,8 @@ export class AppointmentDialogComponent implements OnInit {
   packagesLoading = signal(false);
   detailsLoading = signal(false);
   creatingPackage = signal(false);
-  showCreatePackagePanel = signal(false);
+  showPackageTypeModal = signal(false);
+  isHydratingEdit = false;
 
   pacienteSearchSignal = toSignal(
     this.form.controls.pacienteSearch.valueChanges,
@@ -105,6 +106,7 @@ export class AppointmentDialogComponent implements OnInit {
     // cargar paquetes al cambiar paciente
     this.form.get('id_paciente')?.valueChanges.subscribe(id => {
       if (id) {
+        if (this.isHydratingEdit) return;
         this.form.patchValue({ id_paquetes: null });
         this.loadPackages(id);
       }
@@ -127,23 +129,29 @@ export class AppointmentDialogComponent implements OnInit {
 
   async loadEditData(appointmentId: number) {
     this.detailsLoading.set(true);
+    this.isHydratingEdit = true;
     try {
       const summary = await this.appointmentService.getSummaryByQuoteNumber(appointmentId);
       const patient = await this.patientService.getPatientById(summary.id_paciente);
+      const selectedPackageId = summary.id_paquete || null;
 
       this.form.patchValue({
         fecha_agendamiento: summary.fecha_cita ? new Date(summary.fecha_cita) : null,
         horario_inicio: summary.hora_cita || null,
         horario_fin: summary.hora_cita || null,
         id_profesional: summary.id_profesional || null,
-        id_paquetes: summary.id_paquete || null,
         motivo: summary.motivo || null,
         pacienteSearch: `${patient.nombre} ${patient.apellido}`.trim(),
         id_paciente: patient.id
-      });
+      }, { emitEvent: false });
 
       await this.loadPackages(patient.id);
+
+      this.form.patchValue({
+        id_paquetes: selectedPackageId
+      }, { emitEvent: false });
     } finally {
+      this.isHydratingEdit = false;
       this.detailsLoading.set(false);
     }
   }
@@ -169,10 +177,18 @@ export class AppointmentDialogComponent implements OnInit {
         id_tipo_paquete: null
       });
 
-      this.showCreatePackagePanel.set(false);
+      this.showPackageTypeModal.set(false);
     } finally {
       this.creatingPackage.set(false);
     }
+  }
+
+  openPackageTypeModal() {
+    this.showPackageTypeModal.set(true);
+  }
+
+  closePackageTypeModal() {
+    this.showPackageTypeModal.set(false);
   }
 
   selectPatient(patient: any) {
@@ -180,8 +196,6 @@ export class AppointmentDialogComponent implements OnInit {
       id_paciente: patient.id,
       pacienteSearch: `${patient.nombre} ${patient.apellido}`
     });
-
-    this.loadPackages(patient.id);
   }
 
   packageLabel(pack: any) {

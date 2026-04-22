@@ -131,11 +131,17 @@
 }
 
 .create-package-panel {
-  margin-bottom: 1rem;
-  padding: 1rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2100;
+  width: min(520px, calc(100vw - 2rem));
+  padding: 1.2rem;
   border: 1px solid #c8e6e1;
   border-radius: 12px;
-  background: #f7fffd;
+  background: #ffffff;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
 
   h4 {
     margin: 0 0 0.4rem;
@@ -147,6 +153,19 @@
     color: #607d8b;
     font-size: 0.9rem;
   }
+}
+
+.package-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2050;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
 }
 
 /* ACTIONS */
