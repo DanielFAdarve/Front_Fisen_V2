@@ -109,7 +109,7 @@
 
         <mat-option 
           *ngFor="let pack of (availablePackages() || []); trackBy: trackById" 
-          [value]="pack.id || pack.id_paquete">
+          [value]="resolvePackageId(pack)">
 
           {{ packageLabel(pack) }}
 
