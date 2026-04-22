@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppointmentsService } from './../../data-access/appointments.service';
 import { AppointmentPatientsService } from './../../data-access/patients.service';
 import { AppointmentProfessionalsService } from './../../data-access/professionals.service';
@@ -48,12 +48,12 @@ export class AppointmentDialogComponent implements OnInit {
 
   // ✅ FORM CORRECTO
   form = new FormGroup({
-    pacienteSearch: new FormControl<string | null>(null),
-    fecha_agendamiento: new FormControl<Date | null>(null),
-    horario_inicio: new FormControl<string | null>(null),
+    pacienteSearch: new FormControl<string | any | null>(null, { validators: [Validators.required] }),
+    fecha_agendamiento: new FormControl<Date | null>(null, { validators: [Validators.required] }),
+    horario_inicio: new FormControl<string | null>(null, { validators: [Validators.required] }),
     horario_fin: new FormControl<string | null>(null),
-    id_paciente: new FormControl<number | null>(null),
-    id_profesional: new FormControl<number | null>(null),
+    id_paciente: new FormControl<number | null>(null, { validators: [Validators.required] }),
+    id_profesional: new FormControl<number | null>(null, { validators: [Validators.required] }),
     id_paquetes: new FormControl<number | null>(null),
     id_tipo_paquete: new FormControl<number | null>(null),
     motivo: new FormControl<string | null>(null)
@@ -78,7 +78,10 @@ export class AppointmentDialogComponent implements OnInit {
   );
 
   filteredPatients = computed(() => {
-    const term = (this.pacienteSearchSignal() || '').toLowerCase().trim();
+    const currentValue = this.pacienteSearchSignal();
+    const term = typeof currentValue === 'string'
+      ? currentValue.toLowerCase().trim()
+      : `${currentValue?.nombre || ''} ${currentValue?.apellido || ''}`.toLowerCase().trim();
 
     if (!term) return this.patients();
 
@@ -198,6 +201,14 @@ export class AppointmentDialogComponent implements OnInit {
     });
   }
 
+  displayPatient = (value: any): string => {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    return `${value.nombre || ''} ${value.apellido || ''}`.trim();
+  };
+
+  trackById = (_index: number, item: any) => item?.id ?? item?.id_paquete ?? _index;
+
   packageLabel(pack: any) {
     const packageName = pack.tipo_paquete
       || this.attentionPackageMap().get(pack.id_paquetes_atenciones)
@@ -220,8 +231,10 @@ export class AppointmentDialogComponent implements OnInit {
 
   // ----------------------------------------------------
   async save() {
-
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     const raw = this.form.getRawValue();
 
