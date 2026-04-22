@@ -1,46 +1,42 @@
-/* ---------- CONTENEDOR MODAL ---------- */
 /* ==========================================
-   FIX REAL PARA ANGULAR MATERIAL MDC
+   OVERLAY FIX (Angular Material)
    ========================================== */
-
 ::ng-deep .cdk-overlay-pane {
   z-index: 2000 !important;
 }
 
-/* PANEL DEL SELECT (MDC) */
+/* SELECT PANEL */
 ::ng-deep .mat-mdc-select-panel {
   background-color: #ffffff !important;
-  opacity: 1 !important;
-
   border-radius: 12px;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22) !important;
   padding: 0.5rem 0;
 }
 
-/* OPCIONES */
+/* OPTIONS */
 ::ng-deep .mat-mdc-option {
   font-size: 0.95rem;
   padding: 0.75rem 1rem !important;
   background-color: #ffffff !important;
 }
 
-/* HOVER */
 ::ng-deep .mat-mdc-option:hover,
 ::ng-deep .mat-mdc-option.mdc-list-item--selected,
 ::ng-deep .mat-mdc-option.mdc-list-item--activated {
   background-color: #e0f2f1 !important;
 }
 
-/* TEXTO */
 ::ng-deep .mat-mdc-option .mdc-list-item__primary-text {
   color: #263238;
 }
 
-/* BACKDROP (evita transparencias raras) */
+/* BACKDROP */
 ::ng-deep .cdk-overlay-backdrop {
-  background: transparent !important;
+  background: rgba(0, 0, 0, 0.15) !important;
 }
-
+/* ==========================================
+   DIALOG
+   ========================================== */
 ::ng-deep .mat-dialog-container {
   padding: 0;
   border-radius: 14px;
@@ -48,7 +44,7 @@
   max-height: 90vh;
 }
 
-/* ---------- CABECERA ---------- */
+/* HEADER */
 .dialog-header {
   display: flex;
   justify-content: space-between;
@@ -70,7 +66,7 @@
     font-size: 1.3rem;
     cursor: pointer;
     color: #555;
-    transition: transform 0.25s ease, color 0.25s;
+    transition: all 0.25s;
 
     &:hover {
       color: #d32f2f;
@@ -79,7 +75,7 @@
   }
 }
 
-/* ---------- FORMULARIO ---------- */
+/* FORM */
 .dialog-form {
   padding: 1.5rem;
   overflow-y: auto;
@@ -96,7 +92,7 @@
   }
 }
 
-/* ---------- GRID ---------- */
+/* GRID */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -108,18 +104,23 @@
   }
 }
 
+/* 👉 FILA COMPLETA (para calendario) */
+.full-width-row {
+  grid-column: 1 / -1;
+}
+
 .full-width {
   width: 100%;
 }
 
-/* ---------- BOTÓN CREAR PAQUETE ---------- */
+/* BOTÓN */
 .package-action {
   display: flex;
   justify-content: flex-end;
   margin: 0.5rem 0 1rem;
 }
 
-/* ---------- ACCIONES ---------- */
+/* ACTIONS */
 .dialog-actions {
   display: flex;
   justify-content: flex-end;
@@ -127,4 +128,89 @@
   padding: 1rem 1.3rem;
   background: #fafafa;
   border-top: 1px solid #e0e0e0;
+}
+
+/* ==========================================
+   CALENDARIO INLINE (AQUÍ ESTÁ LA MAGIA)
+   ========================================== */
+
+/* CONTENEDOR */
+::ng-deep .mat-calendar {
+  width: 100%;
+  max-width: 320px;
+  margin-top: 0.5rem;
+  border-radius: 12px;
+  background: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* HEADER */
+::ng-deep .mat-calendar-header {
+  background: #f0fdfa;
+  color: #00796b;
+  border-bottom: 1px solid #b2dfdb;
+}
+
+/* LABEL MES */
+::ng-deep .mat-calendar-period-button {
+  color: #00796b;
+  font-weight: 600;
+}
+
+/* FLECHAS */
+::ng-deep .mat-calendar-previous-button,
+::ng-deep .mat-calendar-next-button {
+  color: #00796b;
+}
+
+/* DÍAS */
+::ng-deep .mat-calendar-body-cell-content {
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+/* HOVER */
+::ng-deep .mat-calendar-body-cell:hover .mat-calendar-body-cell-content {
+  background-color: #e0f2f1;
+}
+
+/* SELECCIONADO */
+::ng-deep .mat-calendar-body-selected {
+  background-color: #26a69a !important;
+  color: #fff !important;
+}
+
+/* HOY */
+::ng-deep .mat-calendar-body-today {
+  border: 1px solid #26a69a;
+}
+
+/* PANEL DATEPICKER */
+::ng-deep .mat-datepicker-content {
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+/* CALENDARIO INTERNO */
+::ng-deep .mat-calendar {
+  background: #ffffff !important;
+}
+
+/* HEADER */
+::ng-deep .mat-calendar-header {
+  background: #f0fdfa;
+  color: #00796b;
+}
+
+/* SELECCIÓN */
+::ng-deep .mat-calendar-body-selected {
+  background-color: #26a69a !important;
+  color: white !important;
+}
+
+/* HOVER */
+::ng-deep .mat-calendar-body-cell:hover .mat-calendar-body-cell-content {
+  background-color: #e0f2f1;
 }

@@ -220,6 +220,35 @@ export class ClinicalHistoryComponent implements OnInit {
     //   descripcion_estado_paciente: this.clinicalForm.value.descripcion_estado_paciente?.trim() ?? '',
     //   recomendaciones: this.clinicalForm.value.recomendaciones?.trim() ?? ''
     // };
+    // const payload: ClinicalHistoryForm = {
+    //   id_cita: this.citaId()!,
+    //   id_cie: Number(this.clinicalForm.value.id_cie),
+
+    //   subjetivo: this.clinicalForm.value.subjetivo?.trim() ?? '',
+    //   objetivo: this.clinicalForm.value.objetivo?.trim() ?? '',
+    //   intervencion: this.clinicalForm.value.intervencion?.trim() ?? '',
+    //   descripcion_estado_paciente: this.clinicalForm.value.descripcion_estado_paciente?.trim() ?? '',
+    //   recomendaciones: this.clinicalForm.value.recomendaciones?.trim() ?? '',
+
+    //   // 👇 NUEVO
+    //   // antecedentes: patient?.antecedentes,
+    //   // antecedentes_personales: patient?.antecedentes_personales,
+    //   // antecedentes_patologicos: patient?.antecedentes_patologicos,
+    //   // antecedentes_quirurgicos: patient?.antecedentes_quirurgicos,
+    //   // antecedentes_traumaticos: patient?.antecedentes_traumaticos,
+    //   // antecedentes_farmacologicos: patient?.antecedentes_farmacologicos,
+    //   // antecedentes_familiares: patient?.antecedentes_familiares,
+    //   // antecedentes_sociales: patient?.antecedentes_sociales
+    //   antecedentes: bg.antecedentes?.trim() ?? '',
+    //   antecedentes_personales: bg.antecedentes_personales?.trim() ?? '',
+    //   antecedentes_patologicos: bg.antecedentes_patologicos?.trim() ?? '',
+    //   antecedentes_quirurgicos: bg.antecedentes_quirurgicos?.trim() ?? '',
+    //   antecedentes_traumaticos: bg.antecedentes_traumaticos?.trim() ?? '',
+    //   antecedentes_farmacologicos: bg.antecedentes_farmacologicos?.trim() ?? '',
+    //   antecedentes_familiares: bg.antecedentes_familiares?.trim() ?? '',
+    //   antecedentes_sociales: bg.antecedentes_sociales?.trim() ?? ''
+    // };
+
     const payload: ClinicalHistoryForm = {
       id_cita: this.citaId()!,
       id_cie: Number(this.clinicalForm.value.id_cie),
@@ -230,23 +259,14 @@ export class ClinicalHistoryComponent implements OnInit {
       descripcion_estado_paciente: this.clinicalForm.value.descripcion_estado_paciente?.trim() ?? '',
       recomendaciones: this.clinicalForm.value.recomendaciones?.trim() ?? '',
 
-      // 👇 NUEVO
-      // antecedentes: patient?.antecedentes,
-      // antecedentes_personales: patient?.antecedentes_personales,
-      // antecedentes_patologicos: patient?.antecedentes_patologicos,
-      // antecedentes_quirurgicos: patient?.antecedentes_quirurgicos,
-      // antecedentes_traumaticos: patient?.antecedentes_traumaticos,
-      // antecedentes_farmacologicos: patient?.antecedentes_farmacologicos,
-      // antecedentes_familiares: patient?.antecedentes_familiares,
-      // antecedentes_sociales: patient?.antecedentes_sociales
-      antecedentes: bg.antecedentes?.trim() ?? '',
-      antecedentes_personales: bg.antecedentes_personales?.trim() ?? '',
-      antecedentes_patologicos: bg.antecedentes_patologicos?.trim() ?? '',
-      antecedentes_quirurgicos: bg.antecedentes_quirurgicos?.trim() ?? '',
-      antecedentes_traumaticos: bg.antecedentes_traumaticos?.trim() ?? '',
-      antecedentes_farmacologicos: bg.antecedentes_farmacologicos?.trim() ?? '',
-      antecedentes_familiares: bg.antecedentes_familiares?.trim() ?? '',
-      antecedentes_sociales: bg.antecedentes_sociales?.trim() ?? ''
+      antecedentes: bg.antecedentes?.trim() || 'No registra',
+      antecedentes_personales: bg.antecedentes_personales?.trim() || 'No registra',
+      antecedentes_patologicos: bg.antecedentes_patologicos?.trim() || 'No registra',
+      antecedentes_quirurgicos: bg.antecedentes_quirurgicos?.trim() || 'No registra',
+      antecedentes_traumaticos: bg.antecedentes_traumaticos?.trim() || 'No registra',
+      antecedentes_farmacologicos: bg.antecedentes_farmacologicos?.trim() || 'No registra',
+      antecedentes_familiares: bg.antecedentes_familiares?.trim() || 'No registra',
+      antecedentes_sociales: bg.antecedentes_sociales?.trim() || 'No registra'
     };
     this.saving.set(true);
 
