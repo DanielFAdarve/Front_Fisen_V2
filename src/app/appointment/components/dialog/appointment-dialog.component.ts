@@ -66,14 +66,18 @@ export class AppointmentDialogComponent implements OnInit {
   packages = this.packageService.packages;
   attentionPackages = this.packageService.attentionPackages;
   packageTypes = this.packageService.packageTypes;
+  patientsLoading = this.patientService.loading;
+  professionalsLoading = this.professionalService.loading;
 
   packagesLoading = signal(false);
+  packageTypesLoading = signal(false);
   detailsLoading = signal(false);
   creatingPackage = signal(false);
   showPackageTypeModal = signal(false);
   isHydratingEdit = false;
   private lastLoadedPatientId: number | null = null;
   private selectedPackageId = signal<number | null>(null);
+  private selectedPackageTypeId = signal<number | null>(null);
 
   pacienteSearchSignal = toSignal(
     this.form.controls.pacienteSearch.valueChanges,
@@ -113,7 +117,15 @@ export class AppointmentDialogComponent implements OnInit {
   });
   // ----------------------------------------------------
   async ngOnInit() {
-    await this.professionalService.loadAll();
+    await Promise.all([
+      this.professionalService.loadAll(),
+      this.patientService.getPatients(),
+      this.packageService.getAttentionPackages()
+    ]);
+
+    this.packageTypesLoading.set(true);
+    await this.packageService.getPackageTypes();
+    this.packageTypesLoading.set(false);
 
     // cargar paquetes al cambiar paciente
     this.form.get('id_paciente')?.valueChanges.subscribe(id => {
@@ -128,8 +140,6 @@ export class AppointmentDialogComponent implements OnInit {
       await this.loadEditData(this.data.appointment.id);
       return;
     }
-
-    await this.patientService.getPatients();
   }
 
   // ----------------------------------------------------
@@ -146,7 +156,9 @@ export class AppointmentDialogComponent implements OnInit {
       const summary = await this.appointmentService.getSummaryByQuoteNumber(appointmentId);
       const patient = await this.patientService.getPatientById(summary.id_paciente);
       const selectedPackageId = this.toNumberOrNull(summary.id_paquete);
+      const selectedPackageTypeId = this.toNumberOrNull(summary.id_tipo_paquete);
       this.selectedPackageId.set(selectedPackageId);
+      this.selectedPackageTypeId.set(selectedPackageTypeId);
 
       this.form.patchValue({
         fecha_agendamiento: this.parseDateOnlyToLocalDate(summary.fecha_cita),
@@ -161,8 +173,11 @@ export class AppointmentDialogComponent implements OnInit {
       await this.loadPackages(patient.id);
       this.lastLoadedPatientId = patient.id;
 
+      const packageIdFromType = this.findPackageIdByType(selectedPackageTypeId);
+      const finalSelectedPackageId = selectedPackageId ?? packageIdFromType ?? null;
+
       this.form.patchValue({
-        id_paquetes: selectedPackageId
+        id_paquetes: finalSelectedPackageId
       }, { emitEvent: false });
     } finally {
       this.isHydratingEdit = false;
@@ -284,7 +299,9 @@ export class AppointmentDialogComponent implements OnInit {
 
   private normalizePackageForEdition(pack: any, selectedId: number | null) {
     const packageId = this.resolvePackageId(pack);
-    const isSelected = (selectedId !== null && packageId === selectedId) || this.isMarkedAsSelected(pack);
+    const selectedTypeId = this.selectedPackageTypeId();
+    const packageMatchesType = this.packageMatchesType(pack, selectedTypeId);
+    const isSelected = (selectedId !== null && packageId === selectedId) || this.isMarkedAsSelected(pack) || packageMatchesType;
 
     if (!isSelected) return pack;
 
@@ -292,15 +309,44 @@ export class AppointmentDialogComponent implements OnInit {
     const available = Number(pack?.sesiones_disponibles ?? 0);
     const used = Number(pack?.sesiones_usadas ?? 0);
 
-    if (total === 1 && available === 0) {
+    if (total === 1 && available > 0) {
       return {
         ...pack,
-        sesiones_disponibles: 1,
-        sesiones_usadas: Math.max(0, used - 1)
+        sesiones_disponibles: Math.max(0, available - 1),
+        sesiones_usadas: Math.min(total, used + 1)
       };
     }
 
     return pack;
+  }
+
+  private findPackageIdByType(typeId: number | null): number | null {
+    if (typeId === null) return null;
+
+    const packageByType = this.packages().find(pack => this.packageMatchesType(pack, typeId));
+    return this.resolvePackageId(packageByType);
+  }
+
+  private packageMatchesType(pack: any, typeId: number | null): boolean {
+    if (typeId === null) return false;
+
+    const packageTypeId = this.toNumberOrNull(pack?.id_paquetes_atenciones ?? pack?.id_tipo_paquete);
+    if (packageTypeId !== null) return packageTypeId === typeId;
+
+    const expectedTypeName = this.attentionPackageMap().get(typeId);
+    const packageTypeName = (pack?.tipo_paquete || '').toString().trim();
+
+    if (!expectedTypeName || !packageTypeName) return false;
+
+    return this.normalizeText(packageTypeName) === this.normalizeText(expectedTypeName);
+  }
+
+  private normalizeText(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
   }
 
   // ----------------------------------------------------
