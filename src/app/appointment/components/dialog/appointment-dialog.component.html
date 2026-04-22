@@ -101,42 +101,38 @@
       </mat-select>
     </mat-form-field>
 
-    <!-- NUEVO PAQUETE -->
-    <mat-form-field appearance="fill">
-      <mat-label>Nuevo paquete</mat-label>
-
-      <mat-select formControlName="id_tipo_paquete">
-
-        <mat-option 
-          *ngFor="let t of (packageTypes() || [])" 
-          [value]="t.id">
-
-          {{ t.descripcion }} ({{ t.cantidad_sesiones }} sesiones)
-
-        </mat-option>
-
-      </mat-select>
-
-    </mat-form-field>
-
   </div>
 
   <!-- BOTÓN -->
   <div class="package-action">
-    <button mat-stroked-button color="primary" type="button" (click)="createPackageForPatient()" [disabled]="!form.value.id_tipo_paquete || creatingPackage()">
+    <button mat-stroked-button color="primary" type="button" (click)="openPackageTypeModal()" [disabled]="!form.value.id_paciente || creatingPackage()">
       ➕ Crear paquete rápido
-    </button>
-    <button mat-button type="button" (click)="showCreatePackagePanel.set(!showCreatePackagePanel())">
-      {{ showCreatePackagePanel() ? 'Ocultar panel' : 'Abrir panel completo' }}
     </button>
   </div>
 
-  <section class="create-package-panel" *ngIf="showCreatePackagePanel()">
-    <h4>Crear nuevo paquete para este paciente</h4>
-    <p>Selecciona un tipo y crea el paquete sin salir de la cita.</p>
-    <button mat-raised-button color="primary" type="button" (click)="createPackageForPatient()" [disabled]="creatingPackage()">
-      {{ creatingPackage() ? 'Creando...' : 'Crear paquete' }}
-    </button>
+  <div class="package-modal-backdrop" *ngIf="showPackageTypeModal()" (click)="closePackageTypeModal()"></div>
+
+  <section class="create-package-panel" *ngIf="showPackageTypeModal()">
+    <h4>Selecciona el tipo de paquete</h4>
+    <p>Elige el paquete a crear para este paciente.</p>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Tipo de paquete</mat-label>
+      <mat-select formControlName="id_tipo_paquete">
+        <mat-option
+          *ngFor="let t of (packageTypes() || [])"
+          [value]="t.id">
+          {{ t.descripcion }} ({{ t.cantidad_sesiones }} sesiones)
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="modal-actions">
+      <button mat-button type="button" (click)="closePackageTypeModal()">Cancelar</button>
+      <button mat-raised-button color="primary" type="button" (click)="createPackageForPatient()" [disabled]="!form.value.id_tipo_paquete || creatingPackage()">
+        {{ creatingPackage() ? 'Creando...' : 'Crear paquete' }}
+      </button>
+    </div>
   </section>
 
   <!-- MOTIVO -->
