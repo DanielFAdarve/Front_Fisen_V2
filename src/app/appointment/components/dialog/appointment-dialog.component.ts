@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal, Inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -34,7 +34,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
   ],
   templateUrl: './appointment-dialog.component.html',
-  styleUrls: ['./appointment-dialog.component.scss']
+  styleUrls: ['./appointment-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppointmentDialogComponent implements OnInit {
   private dialogRef = inject(MatDialogRef<AppointmentDialogComponent>);
@@ -71,6 +72,7 @@ export class AppointmentDialogComponent implements OnInit {
   creatingPackage = signal(false);
   showPackageTypeModal = signal(false);
   isHydratingEdit = false;
+  private lastLoadedPatientId: number | null = null;
 
   pacienteSearchSignal = toSignal(
     this.form.controls.pacienteSearch.valueChanges,
@@ -108,11 +110,11 @@ export class AppointmentDialogComponent implements OnInit {
 
     // cargar paquetes al cambiar paciente
     this.form.get('id_paciente')?.valueChanges.subscribe(id => {
-      if (id) {
-        if (this.isHydratingEdit) return;
-        this.form.patchValue({ id_paquetes: null });
-        this.loadPackages(id);
-      }
+      if (!id || this.isHydratingEdit || this.lastLoadedPatientId === id) return;
+
+      this.lastLoadedPatientId = id;
+      this.form.patchValue({ id_paquetes: null }, { emitEvent: false });
+      this.loadPackages(id);
     });
 
     if (this.data?.mode === 'edit' && this.data?.appointment?.id) {
@@ -149,6 +151,7 @@ export class AppointmentDialogComponent implements OnInit {
       }, { emitEvent: false });
 
       await this.loadPackages(patient.id);
+      this.lastLoadedPatientId = patient.id;
 
       this.form.patchValue({
         id_paquetes: selectedPackageId
@@ -187,6 +190,7 @@ export class AppointmentDialogComponent implements OnInit {
   }
 
   openPackageTypeModal() {
+    if (!this.form.value.id_paciente || this.creatingPackage()) return;
     this.showPackageTypeModal.set(true);
   }
 
