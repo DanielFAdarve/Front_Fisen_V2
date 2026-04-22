@@ -15,12 +15,17 @@
         formControlName="pacienteSearch" 
         [matAutocomplete]="autoPaciente" />
 
+      <mat-error *ngIf="form.controls.pacienteSearch.touched && form.controls.id_paciente.invalid">
+        Debes seleccionar un paciente válido de la lista.
+      </mat-error>
+
       <mat-autocomplete 
         #autoPaciente="matAutocomplete"
+        [displayWith]="displayPatient"
         (optionSelected)="selectPatient($event.option.value)">
 
         <mat-option 
-          *ngFor="let p of (filteredPatients() || [])" 
+          *ngFor="let p of (filteredPatients() || []); trackBy: trackById" 
           [value]="p">
 
           <strong>{{ p.nombre }} {{ p.apellido }}</strong>
@@ -38,7 +43,7 @@
       <mat-select formControlName="id_profesional">
 
         <mat-option 
-          *ngFor="let prof of (professionals() || [])" 
+          *ngFor="let prof of (professionals() || []); trackBy: trackById" 
           [value]="prof.id">
 
           {{ prof.nombre }}
@@ -46,6 +51,10 @@
         </mat-option>
 
       </mat-select>
+
+      <mat-error *ngIf="form.controls.id_profesional.touched && form.controls.id_profesional.invalid">
+        El profesional es obligatorio.
+      </mat-error>
     </mat-form-field>
 
   </div>
@@ -65,11 +74,19 @@
 
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
+
+      <mat-error *ngIf="form.controls.fecha_agendamiento.touched && form.controls.fecha_agendamiento.invalid">
+        La fecha es obligatoria.
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Hora</mat-label>
       <input matInput type="time" formControlName="horario_inicio" />
+
+      <mat-error *ngIf="form.controls.horario_inicio.touched && form.controls.horario_inicio.invalid">
+        La hora es obligatoria.
+      </mat-error>
     </mat-form-field>
 
   </div>
@@ -91,7 +108,7 @@
         </mat-option>
 
         <mat-option 
-          *ngFor="let pack of (availablePackages() || [])" 
+          *ngFor="let pack of (availablePackages() || []); trackBy: trackById" 
           [value]="pack.id || pack.id_paquete">
 
           {{ packageLabel(pack) }}
@@ -120,7 +137,7 @@
       <mat-label>Tipo de paquete</mat-label>
       <mat-select formControlName="id_tipo_paquete">
         <mat-option
-          *ngFor="let t of (packageTypes() || [])"
+          *ngFor="let t of (packageTypes() || []); trackBy: trackById"
           [value]="t.id">
           {{ t.descripcion }} ({{ t.cantidad_sesiones }} sesiones)
         </mat-option>
