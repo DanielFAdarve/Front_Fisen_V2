@@ -73,6 +73,7 @@ export class AppointmentDialogComponent implements OnInit {
   showPackageTypeModal = signal(false);
   isHydratingEdit = false;
   private lastLoadedPatientId: number | null = null;
+  private selectedPackageId = signal<number | null>(null);
 
   pacienteSearchSignal = toSignal(
     this.form.controls.pacienteSearch.valueChanges,
@@ -93,7 +94,13 @@ export class AppointmentDialogComponent implements OnInit {
     );
   });
 
-  availablePackages = computed(() => this.packages());
+  availablePackages = computed(() => {
+    const selectedId = this.selectedPackageId();
+
+    return this.packages()
+      .filter(pack => this.isPackageSelectable(pack, selectedId))
+      .map(pack => this.normalizePackageForEdition(pack, selectedId));
+  });
 
   attentionPackageMap = computed(() => {
     const map = new Map<number, string>();
@@ -138,10 +145,11 @@ export class AppointmentDialogComponent implements OnInit {
     try {
       const summary = await this.appointmentService.getSummaryByQuoteNumber(appointmentId);
       const patient = await this.patientService.getPatientById(summary.id_paciente);
-      const selectedPackageId = summary.id_paquete || null;
+      const selectedPackageId = this.toNumberOrNull(summary.id_paquete);
+      this.selectedPackageId.set(selectedPackageId);
 
       this.form.patchValue({
-        fecha_agendamiento: summary.fecha_cita ? new Date(summary.fecha_cita) : null,
+        fecha_agendamiento: this.parseDateOnlyToLocalDate(summary.fecha_cita),
         horario_inicio: summary.hora_cita || null,
         horario_fin: summary.hora_cita || null,
         id_profesional: summary.id_profesional || null,
@@ -213,6 +221,10 @@ export class AppointmentDialogComponent implements OnInit {
 
   trackById = (_index: number, item: any) => item?.id ?? item?.id_paquete ?? _index;
 
+  resolvePackageId(pack: any): number | null {
+    return this.toNumberOrNull(pack?.id ?? pack?.id_paquete);
+  }
+
   packageLabel(pack: any) {
     const packageName = pack.tipo_paquete
       || this.attentionPackageMap().get(pack.id_paquetes_atenciones)
@@ -231,6 +243,64 @@ export class AppointmentDialogComponent implements OnInit {
     const month = ('0' + (d.getMonth() + 1)).slice(-2);
     const day = ('0' + d.getDate()).slice(-2);
     return `${d.getFullYear()}-${month}-${day}`;
+  }
+
+  private parseDateOnlyToLocalDate(value?: string | null): Date | null {
+    if (!value) return null;
+
+    const datePart = value.split('T')[0];
+    const [year, month, day] = datePart.split('-').map(Number);
+
+    if (!year || !month || !day) return null;
+
+    return new Date(year, month - 1, day, 12, 0, 0, 0);
+  }
+
+  private toNumberOrNull(value: unknown): number | null {
+    if (value === null || value === undefined || value === '') return null;
+
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? numeric : null;
+  }
+
+  private isMarkedAsSelected(pack: any): boolean {
+    return Boolean(
+      pack?.selected
+      ?? pack?.seleccionado
+      ?? pack?.is_selected
+      ?? pack?.paquete_seleccionado
+    );
+  }
+
+  private isPackageSelectable(pack: any, selectedId: number | null): boolean {
+    const packageId = this.resolvePackageId(pack);
+    const available = Number(pack?.sesiones_disponibles ?? 0);
+
+    if (selectedId !== null && packageId === selectedId) return true;
+    if (this.isMarkedAsSelected(pack)) return true;
+
+    return available > 0;
+  }
+
+  private normalizePackageForEdition(pack: any, selectedId: number | null) {
+    const packageId = this.resolvePackageId(pack);
+    const isSelected = (selectedId !== null && packageId === selectedId) || this.isMarkedAsSelected(pack);
+
+    if (!isSelected) return pack;
+
+    const total = Number(pack?.sesiones_totales ?? 0);
+    const available = Number(pack?.sesiones_disponibles ?? 0);
+    const used = Number(pack?.sesiones_usadas ?? 0);
+
+    if (total === 1 && available === 0) {
+      return {
+        ...pack,
+        sesiones_disponibles: 1,
+        sesiones_usadas: Math.max(0, used - 1)
+      };
+    }
+
+    return pack;
   }
 
   // ----------------------------------------------------
