@@ -120,6 +120,7 @@ export class AppointmentsComponent implements OnInit {
       panelClass: 'appointments-dialog',
       backdropClass: 'appointments-backdrop',
       hasBackdrop: true,
+      autoFocus: false,
       data: { mode: 'create' }
     });
 
@@ -135,6 +136,7 @@ export class AppointmentsComponent implements OnInit {
       panelClass: 'appointments-dialog',
       backdropClass: 'appointments-backdrop',
       hasBackdrop: true,
+      autoFocus: false,
       data: { mode: 'edit', appointment: cita }
     });
 

@@ -122,8 +122,15 @@
 
   <!-- BOTÓN -->
   <div class="package-action">
-    <button mat-stroked-button color="primary" type="button" (click)="openPackageTypeModal()" [disabled]="!form.value.id_paciente || creatingPackage()">
-      ➕ Crear paquete rápido
+    <p class="package-hint" *ngIf="!form.value.id_paciente">Selecciona un paciente para habilitar la creación de paquetes.</p>
+    <button
+      mat-flat-button
+      color="primary"
+      class="generate-package-btn"
+      type="button"
+      (click)="openPackageTypeModal()"
+      [disabled]="!form.value.id_paciente || creatingPackage()">
+      {{ creatingPackage() ? 'Generando paquete...' : 'Generar paquete' }}
     </button>
   </div>
 
