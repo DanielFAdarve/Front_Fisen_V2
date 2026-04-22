@@ -19,6 +19,8 @@ export class AppointmentPackagesService {
   packages = signal<Package[]>([]);
   attentionPackages = signal<AttentionPackage[]>([]);
   packageTypes = signal<PackageType[]>([]); // ✅ NUEVO
+  private attentionPackagesLoaded = false;
+  private packageTypesLoaded = false;
 
   loading = signal(false);
 
@@ -31,8 +33,23 @@ export class AppointmentPackagesService {
     this.loading.set(true);
     try {
       const res = await firstValueFrom(
+      this.http.get<{ response: Package[] }>(
+        `${this.base}/get-by-patient/${idPaciente}`
+      )
+      );
+
+      this.packages.set(res?.response || []);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  async loadAvailableByPatient(idPaciente: number) {
+    this.loading.set(true);
+    try {
+      const res = await firstValueFrom(
         this.http.get<{ response: Package[] }>(
-          `${this.base}/get-by-patient/${idPaciente}`
+          `${this.base}/get-available-by-patient/${idPaciente}`
         )
       );
 
@@ -45,7 +62,9 @@ export class AppointmentPackagesService {
   // ----------------------------------------------------
   // CATALOGO ATENCIONES
   // ----------------------------------------------------
-  async getAttentionPackages() {
+  async getAttentionPackages(force = false) {
+    if (this.attentionPackagesLoaded && !force) return;
+
     const res = await firstValueFrom(
       this.http.get<{ response: AttentionPackage[] }>(
         `${API_BASE_URL}/${API_ENDPOINTS.appointments}/all-attention-packages`
@@ -53,12 +72,15 @@ export class AppointmentPackagesService {
     );
 
     this.attentionPackages.set(res?.response || []);
+    this.attentionPackagesLoaded = true;
   }
 
   // ----------------------------------------------------
   // ✅ CATALOGO TIPOS DE PAQUETES
   // ----------------------------------------------------
-  async getPackageTypes() {
+  async getPackageTypes(force = false) {
+    if (this.packageTypesLoaded && !force) return;
+
     const res = await firstValueFrom(
       this.http.get<{ response: PackageType[] }>(
         `${this.base}/get-packages`
@@ -66,6 +88,7 @@ export class AppointmentPackagesService {
     );
 
     this.packageTypes.set(res?.response || []);
+    this.packageTypesLoaded = true;
   }
 
   // ----------------------------------------------------

@@ -58,6 +58,22 @@ export class AppointmentsService {
         );
     }
 
+    async deleteQuoteFromHistory(id: number) {
+        return firstValueFrom(
+            this.http.delete(`${API_BASE_URL}/${API_ENDPOINTS.histories}/delete-quote/${id}`)
+        );
+    }
+
+    async getSummaryByQuoteNumber(id: number) {
+        const res = await firstValueFrom(
+            this.http.get<{ response: any }>(
+                `${API_BASE_URL}/${API_ENDPOINTS.histories}/get-summary-by-quote-number/${id}`
+            )
+        );
+
+        return res.response;
+    }
+
     async availability(professionalId: number, date: string) {
         const res = await firstValueFrom(
             this.http.get<{ status: number; message: string; response: Appointment[] }>(

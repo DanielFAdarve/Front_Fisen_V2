@@ -29,4 +29,12 @@ export class AppointmentPatientsService {
     findById(id: number) {
         return this.patients().find(p => p.id === id);
     }
+
+    async getPatientById(id: number) {
+        const res = await firstValueFrom(
+            this.http.get<{ response: Patient }>(`${this.base}/get-patient/${id}`)
+        );
+
+        return res.response;
+    }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, computed, inject, signal, Inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,26 +10,12 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormControl, FormGroup } from '@angular/forms';
-
-
 import { AppointmentsService } from './../../data-access/appointments.service';
 import { AppointmentPatientsService } from './../../data-access/patients.service';
 import { AppointmentProfessionalsService } from './../../data-access/professionals.service';
 import { AppointmentPackagesService } from './../../data-access/packages.service';
 
 import { toSignal } from '@angular/core/rxjs-interop';
-
-type AppointmentForm = {
-  pacienteSearch: string | null;
-  fecha_agendamiento: Date | null;
-  horario_inicio: string | null;
-  horario_fin: string | null;
-  id_paciente: number | null;
-  id_profesional: number | null;
-  id_paquetes: number | null;
-  id_tipo_paquete: number | null;
-  motivo: string | null;
-};
 
 @Component({
   selector: 'app-appointment-dialog',
@@ -51,8 +37,6 @@ type AppointmentForm = {
   styleUrls: ['./appointment-dialog.component.scss']
 })
 export class AppointmentDialogComponent implements OnInit {
-
-  private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<AppointmentDialogComponent>);
 
   private appointmentService = inject(AppointmentsService);
@@ -83,6 +67,9 @@ export class AppointmentDialogComponent implements OnInit {
   packageTypes = this.packageService.packageTypes;
 
   packagesLoading = signal(false);
+  detailsLoading = signal(false);
+  creatingPackage = signal(false);
+  showCreatePackagePanel = signal(false);
 
   pacienteSearchSignal = toSignal(
     this.form.controls.pacienteSearch.valueChanges,
@@ -100,9 +87,7 @@ export class AppointmentDialogComponent implements OnInit {
     );
   });
 
-  availablePackages = computed(() =>
-    this.packages().filter(p => p.id_estado_citas !== 2)
-  );
+  availablePackages = computed(() => this.packages());
 
   attentionPackageMap = computed(() => {
     const map = new Map<number, string>();
@@ -114,12 +99,8 @@ export class AppointmentDialogComponent implements OnInit {
     return map;
   });
   // ----------------------------------------------------
-  ngOnInit() {
-
-    this.patientService.getPatients();
-    this.professionalService.loadAll();
-    this.packageService.getAttentionPackages();
-    this.packageService.getPackageTypes();
+  async ngOnInit() {
+    await this.professionalService.loadAll();
 
     // cargar paquetes al cambiar paciente
     this.form.get('id_paciente')?.valueChanges.subscribe(id => {
@@ -129,41 +110,42 @@ export class AppointmentDialogComponent implements OnInit {
       }
     });
 
-    // 🔥 EDIT MODE FIX
-    if (this.data?.appointment) {
-      const cita = this.data.appointment;
-
-      this.form.patchValue({
-        fecha_agendamiento: cita.fecha_agendamiento
-          ? new Date(cita.fecha_agendamiento)
-          : null,
-
-        horario_inicio: cita.horario_inicio || null,
-        horario_fin: cita.horario_inicio || null,
-
-        id_profesional: cita.id_profesional || null,
-        id_paquetes: cita.id_paquetes || null,
-
-        motivo: cita.motivo || null,
-        pacienteSearch: cita.paciente_nombre || null,
-        id_paciente: cita.id_paciente || null
-      });
-
-      if (cita.id_paciente) {
-        this.loadPackages(cita.id_paciente);
-      }
+    if (this.data?.mode === 'edit' && this.data?.appointment?.id) {
+      await this.loadEditData(this.data.appointment.id);
+      return;
     }
 
-    if (this.data?.mode === 'view') {
-      this.form.disable();
-    }
+    await this.patientService.getPatients();
   }
 
   // ----------------------------------------------------
   async loadPackages(patientId: number) {
     this.packagesLoading.set(true);
-    await this.packageService.loadByPatient(patientId);
+    await this.packageService.loadAvailableByPatient(patientId);
     this.packagesLoading.set(false);
+  }
+
+  async loadEditData(appointmentId: number) {
+    this.detailsLoading.set(true);
+    try {
+      const summary = await this.appointmentService.getSummaryByQuoteNumber(appointmentId);
+      const patient = await this.patientService.getPatientById(summary.id_paciente);
+
+      this.form.patchValue({
+        fecha_agendamiento: summary.fecha_cita ? new Date(summary.fecha_cita) : null,
+        horario_inicio: summary.hora_cita || null,
+        horario_fin: summary.hora_cita || null,
+        id_profesional: summary.id_profesional || null,
+        id_paquetes: summary.id_paquete || null,
+        motivo: summary.motivo || null,
+        pacienteSearch: `${patient.nombre} ${patient.apellido}`.trim(),
+        id_paciente: patient.id
+      });
+
+      await this.loadPackages(patient.id);
+    } finally {
+      this.detailsLoading.set(false);
+    }
   }
 
   async createPackageForPatient() {
@@ -172,21 +154,25 @@ export class AppointmentDialogComponent implements OnInit {
 
     if (!patientId || !tipo) return;
 
-    this.packagesLoading.set(true);
+    this.creatingPackage.set(true);
+    try {
+      const created = await this.packageService.create({
+        id_pacientes: patientId,
+        id_paquetes_atenciones: tipo,
+        id_estado_citas: 1
+      });
 
-    const created = await this.packageService.create({
-      id_pacientes: patientId,
-      id_paquetes_atenciones: tipo,
-      id_estado_citas: 1
-    });
+      await this.packageService.loadAvailableByPatient(patientId);
 
-    await this.packageService.loadByPatient(patientId);
+      this.form.patchValue({
+        id_paquetes: created.id ?? null,
+        id_tipo_paquete: null
+      });
 
-    this.form.patchValue({
-      id_paquetes: created.id
-    });
-
-    this.packagesLoading.set(false);
+      this.showCreatePackagePanel.set(false);
+    } finally {
+      this.creatingPackage.set(false);
+    }
   }
 
   selectPatient(patient: any) {
@@ -196,6 +182,18 @@ export class AppointmentDialogComponent implements OnInit {
     });
 
     this.loadPackages(patient.id);
+  }
+
+  packageLabel(pack: any) {
+    const packageName = pack.tipo_paquete
+      || this.attentionPackageMap().get(pack.id_paquetes_atenciones)
+      || 'Paquete';
+
+    const used = pack.sesiones_usadas ?? 0;
+    const available = pack.sesiones_disponibles ?? '—';
+    const total = pack.sesiones_totales ?? '—';
+
+    return `${packageName} · usadas ${used}/${total} · disponibles ${available}`;
   }
 
   // ----------------------------------------------------
@@ -236,7 +234,7 @@ export class AppointmentDialogComponent implements OnInit {
     }
 
     await this.appointmentService.refresh();
-    this.dialogRef.close(true);
+    this.dialogRef.close(this.data?.mode === 'edit' ? { updated: true } : { created: true });
   }
 
   close() {

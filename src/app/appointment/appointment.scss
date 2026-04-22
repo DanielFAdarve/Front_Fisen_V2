@@ -7,7 +7,7 @@
   width: 100%;
   padding: 1rem;
   border-radius: 1rem;
-  background: #fff;
+  background: linear-gradient(180deg, #ffffff, #fcfffe);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -57,7 +57,7 @@
 }
 
 .appointment-card {
-  border: 1px solid #d7efec;
+  border: 1px solid #cce8e3;
   border-radius: 10px;
   padding: 0.75rem;
   display: flex;
@@ -77,7 +77,7 @@
 
 .history-btn {
   border: none;
-  background: #26a69a;
+  background: linear-gradient(90deg, #26a69a, #1d9087);
   color: #fff;
   border-radius: 8px;
   padding: 0.45rem 0.75rem;
