@@ -1,6 +1,8 @@
 <form [formGroup]="form" class="dialog-form">
 
   <p class="loading-banner" *ngIf="detailsLoading()">Cargando información detallada de la cita...</p>
+  <p class="loading-banner" *ngIf="patientsLoading()">Cargando pacientes...</p>
+  <p class="loading-banner" *ngIf="professionalsLoading()">Cargando profesionales...</p>
 
   <h3>🧾 Información general</h3>
 
@@ -41,6 +43,9 @@
       <mat-label>Profesional</mat-label>
 
       <mat-select formControlName="id_profesional">
+        <mat-option *ngIf="professionalsLoading()" [disabled]="true">
+          Cargando profesionales...
+        </mat-option>
 
         <mat-option 
           *ngFor="let prof of (professionals() || []); trackBy: trackById" 
@@ -102,6 +107,9 @@
       <mat-select 
         formControlName="id_paquetes" 
         [disabled]="packagesLoading()">
+        <mat-option *ngIf="packagesLoading()" [disabled]="true">
+          Cargando paquetes disponibles...
+        </mat-option>
 
         <mat-option [value]="null">
           Sin paquete
@@ -143,6 +151,9 @@
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Tipo de paquete</mat-label>
       <mat-select formControlName="id_tipo_paquete">
+        <mat-option *ngIf="packageTypesLoading()" [disabled]="true">
+          Cargando tipos de paquete...
+        </mat-option>
         <mat-option
           *ngFor="let t of (packageTypes() || []); trackBy: trackById"
           [value]="t.id">
