@@ -9,9 +9,12 @@ export class AppointmentProfessionalsService {
     private http = inject(HttpClient);
     professionals = signal<Professional[]>([]);
     loading = signal(false);
+    private loaded = false;
     base = `${API_BASE_URL}/${API_ENDPOINTS.professionalsAlt}`;
 
-    async loadAll() {
+    async loadAll(force = false) {
+        if (this.loaded && !force) return;
+
         this.loading.set(true);
         try {
             const res = await firstValueFrom(
@@ -25,6 +28,7 @@ export class AppointmentProfessionalsService {
                     : [];
 
             this.professionals.set(list);
+            this.loaded = true;
         } finally {
             this.loading.set(false);
         }

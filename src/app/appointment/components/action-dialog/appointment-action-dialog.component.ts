@@ -18,7 +18,7 @@ export class AppointmentActionDialogComponent {
     this.dialogRef.close();
   }
 
-  choose(action: 'view' | 'edit' | 'history' | 'payment') {
+  choose(action: 'edit' | 'history' | 'payment' | 'delete') {
     this.dialogRef.close(action);
   }
 }

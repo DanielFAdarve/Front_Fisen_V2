@@ -6,10 +6,18 @@ export interface AttentionPackage {
 }
 
 export interface Package {
-  id: number;
-  id_pacientes: number;
-  id_paquetes_atenciones: number;
-  id_estado_citas: number;
+  id?: number;
+  id_pacientes?: number;
+  id_paquetes_atenciones?: number;
+  id_estado_citas?: number;
+  id_paquete?: number;
+  sesiones_disponibles?: number;
+  sesiones_totales?: number;
+  sesiones_usadas?: number;
+  tipo_paquete?: string;
+  id_profesional?: number | null;
+  profesional?: string | null;
+  motivo_secundario?: string | null;
 }
 
 

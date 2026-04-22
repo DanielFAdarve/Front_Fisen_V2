@@ -7,7 +7,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.2rem;
-  background: #f0fdfa;
+  background: linear-gradient(90deg, #f0fdfa, #e8f6f4);
   border-bottom: 1px solid #b2dfdb;
 
   h2 {
@@ -51,6 +51,16 @@
   &:hover {
     border-color: #26a69a;
     background: #f5fffd;
+  }
+}
+
+.option.danger {
+  border-color: #ffcdd2;
+  color: #b71c1c;
+
+  &:hover {
+    border-color: #ef5350;
+    background: #ffebee;
   }
 }
 

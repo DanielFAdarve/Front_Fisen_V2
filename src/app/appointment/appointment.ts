@@ -11,6 +11,7 @@ import { PaymentDialogComponent } from './payment-dialog.component';
 import { AppointmentCalendarComponent } from './components/calendar/appointment-calendar.component';
 import { Router } from '@angular/router';
 import { AppointmentActionDialogComponent } from './components/action-dialog/appointment-action-dialog.component';
+import { AppointmentPackagesService } from './data-access/packages.service';
 
 @Component({
   selector: 'app-appointments',
@@ -33,6 +34,7 @@ export class AppointmentsComponent implements OnInit {
   public professionalService = inject(AppointmentProfessionalsService);
   private dialog = inject(MatDialog);
   private router = inject(Router);
+  private packagesService = inject(AppointmentPackagesService);
 
   appointments = this.appointmentsService.appointments;
   professionals = this.professionalService.professionals;
@@ -58,6 +60,8 @@ export class AppointmentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.professionalService.loadAll();
+    this.packagesService.getAttentionPackages();
+    this.packagesService.getPackageTypes();
     this.appointmentsService.loadAll();
   }
 
@@ -140,7 +144,7 @@ export class AppointmentsComponent implements OnInit {
   }
 
   async eliminar(id: number) {
-    await this.appointmentsService.delete(id);
+    await this.appointmentsService.deleteQuoteFromHistory(id);
     await this.appointmentsService.refresh();
   }
 
@@ -166,20 +170,8 @@ export class AppointmentsComponent implements OnInit {
       data: { appointment: cita }
     });
 
-    ref.afterClosed().subscribe((action: 'view' | 'edit' | 'history' | 'payment' | undefined) => {
+    ref.afterClosed().subscribe((action: 'edit' | 'history' | 'payment' | 'delete' | undefined) => {
       if (!action) return;
-
-      if (action === 'view') {
-        this.dialog.open(AppointmentDialogComponent, {
-          width: '720px',
-          maxWidth: '94vw',
-          panelClass: 'appointments-dialog',
-          backdropClass: 'appointments-backdrop',
-          hasBackdrop: true,
-          data: { mode: 'view', appointment: cita }
-        });
-        return;
-      }
 
       if (action === 'edit') {
         this.editarCita(cita);
@@ -188,6 +180,11 @@ export class AppointmentsComponent implements OnInit {
 
       if (action === 'payment') {
         this.pagarCita(cita);
+        return;
+      }
+
+      if (action === 'delete') {
+        this.eliminar(cita.id);
         return;
       }
 

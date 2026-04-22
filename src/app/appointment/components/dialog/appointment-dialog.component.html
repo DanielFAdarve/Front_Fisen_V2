@@ -1,5 +1,7 @@
 <form [formGroup]="form" class="dialog-form">
 
+  <p class="loading-banner" *ngIf="detailsLoading()">Cargando información detallada de la cita...</p>
+
   <h3>🧾 Información general</h3>
 
   <div class="form-row">
@@ -90,11 +92,9 @@
 
         <mat-option 
           *ngFor="let pack of (availablePackages() || [])" 
-          [value]="pack.id">
+          [value]="pack.id || pack.id_paquete">
 
-          {{
-            attentionPackageMap().get(pack.id_paquetes_atenciones) || '—'
-          }}
+          {{ packageLabel(pack) }}
 
         </mat-option>
 
@@ -122,11 +122,22 @@
   </div>
 
   <!-- BOTÓN -->
-  <div class="package-action" *ngIf="data?.mode !== 'view'">
-    <button mat-stroked-button color="primary" type="button" (click)="createPackageForPatient()">
-      ➕ Crear paquete
+  <div class="package-action">
+    <button mat-stroked-button color="primary" type="button" (click)="createPackageForPatient()" [disabled]="!form.value.id_tipo_paquete || creatingPackage()">
+      ➕ Crear paquete rápido
+    </button>
+    <button mat-button type="button" (click)="showCreatePackagePanel.set(!showCreatePackagePanel())">
+      {{ showCreatePackagePanel() ? 'Ocultar panel' : 'Abrir panel completo' }}
     </button>
   </div>
+
+  <section class="create-package-panel" *ngIf="showCreatePackagePanel()">
+    <h4>Crear nuevo paquete para este paciente</h4>
+    <p>Selecciona un tipo y crea el paquete sin salir de la cita.</p>
+    <button mat-raised-button color="primary" type="button" (click)="createPackageForPatient()" [disabled]="creatingPackage()">
+      {{ creatingPackage() ? 'Creando...' : 'Crear paquete' }}
+    </button>
+  </section>
 
   <!-- MOTIVO -->
   <h3>📝 Motivo</h3>
@@ -134,5 +145,10 @@
   <mat-form-field appearance="fill" class="full-width">
     <textarea matInput rows="3" formControlName="motivo"></textarea>
   </mat-form-field>
+
+  <div class="dialog-actions">
+    <button mat-button type="button" (click)="close()">Cancelar</button>
+    <button mat-raised-button color="primary" type="button" (click)="save()">Guardar cita</button>
+  </div>
 
 </form>
